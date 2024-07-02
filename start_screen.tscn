@@ -1,21 +1,36 @@
-[gd_scene format=3 uid="uid://co87awa5i6u5c"]
+[gd_scene load_steps=2 format=3 uid="uid://co87awa5i6u5c"]
+
+[ext_resource type="Script" path="res://start_screen.gd" id="1_ugavs"]
 
 [node name="Node2D" type="Node2D"]
-
-[node name="Button3" type="Button" parent="."]
-offset_left = 1500.0
-offset_top = 800.0
-offset_right = 1650.0
-offset_bottom = 900.0
+script = ExtResource("1_ugavs")
 
 [node name="Button2" type="Button" parent="."]
 offset_left = 750.0
 offset_top = 400.0
 offset_right = 900.0
 offset_bottom = 500.0
+text = "?"
 
 [node name="Button" type="Button" parent="."]
 offset_left = 250.0
 offset_top = 400.0
 offset_right = 400.0
 offset_bottom = 500.0
+text = "Options"
+
+[node name="Button3" type="Button" parent="."]
+offset_left = 500.0
+offset_top = 400.0
+offset_right = 650.0
+offset_bottom = 500.0
+text = "Play"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 540.0
+offset_top = 200.0
+offset_right = 599.0
+offset_bottom = 223.0
+text = "SEACAT"
+
+[connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
