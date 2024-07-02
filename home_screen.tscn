@@ -1,8 +1,3 @@
-[gd_scene load_steps=2 format=3 uid="uid://c0lk8ms1uploi"]
-
-[ext_resource type="PackedScene" uid="uid://sis1u3rdone5" path="res://starting_prompts.tscn" id="1_xo1g2"]
+[gd_scene format=3 uid="uid://c0lk8ms1uploi"]
 
 [node name="HomeScreen" type="Node2D"]
-scale = Vector2(2.664, 1.55898)
-
-[node name="Node2D" parent="." instance=ExtResource("1_xo1g2")]
