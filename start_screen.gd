@@ -1,5 +1,5 @@
 extends Node2D
-var home = preload("res://home_screen.tscn").instantiate()
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -12,6 +12,6 @@ func _process(delta):
 
 
 func _on_button_3_pressed():
-	get_tree().get_root().add_child(home)
+	get_tree().get_root().add_child(preload("res://home_screen.tscn").instantiate())
 	hide ()
 

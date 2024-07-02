@@ -1,20 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://8tjfg3llox4d"]
+[gd_scene load_steps=3 format=3 uid="uid://ducg4oqqxsox1"]
 
 [ext_resource type="Script" path="res://CharacterBody2D.gd" id="1_1ndwy"]
-[ext_resource type="Texture2D" uid="uid://cr5a7j7uu3ekg" path="res://pixel font/pixil-frame-0.png" id="1_u2c16"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mpsby"]
 size = Vector2(51, 64)
 
-[node name="Card" type="Node2D"]
-
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+[node name="Card" type="CharacterBody2D"]
 script = ExtResource("1_1ndwy")
 
-[node name="Pixil-frame-0" type="Sprite2D" parent="CharacterBody2D"]
-position = Vector2(146, 229)
-texture = ExtResource("1_u2c16")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(132.5, 221)
 shape = SubResource("RectangleShape2D_mpsby")
