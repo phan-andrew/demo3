@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://b2ufqqc6nun3o"]
+
+[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="1_o2n4d"]
+
+[resource]
+default_font = ExtResource("1_o2n4d")
+default_font_size = 25
