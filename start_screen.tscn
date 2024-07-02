@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://co87awa5i6u5c"]
 
 [ext_resource type="Script" path="res://start_screen.gd" id="1_ugavs"]
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="2_8iye3"]
+[ext_resource type="Theme" path="res://mid_font_theme.tres" id="2_8iye3"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_ugavs")
@@ -31,10 +31,12 @@ theme = ExtResource("2_8iye3")
 text = "Play"
 
 [node name="Label" type="Label" parent="."]
-offset_left = 540.0
-offset_top = 200.0
-offset_right = 599.0
-offset_bottom = 223.0
+offset_left = 429.0
+offset_top = 220.0
+offset_right = 741.0
+offset_bottom = 273.0
+theme = ExtResource("2_8iye3")
+theme_override_font_sizes/font_size = 52
 text = "SEACAT"
 
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
