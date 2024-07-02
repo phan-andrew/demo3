@@ -12,3 +12,4 @@ func _process(delta):
 	if ($starting_prompts.CTT_title != null && !title):
 		$CTT_title.text = $starting_prompts.CTT_title
 		title = true
+		$starting_prompts.visible = false

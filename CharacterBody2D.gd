@@ -8,7 +8,8 @@ func _process(delta):
 	if Input.is_action_pressed("move_right"):
 		move=true
 	if move:
-		position += Vector2(7, 0)
+		position += Vector2(3, 0)
+		modulate = Color8(40,183,215)
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():

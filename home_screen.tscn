@@ -13,10 +13,10 @@ script = ExtResource("1_0dgku")
 
 [node name="CTT_title" type="Label" parent="."]
 texture_filter = 1
-offset_left = 376.877
-offset_top = 23.7335
-offset_right = 406.877
-offset_bottom = 49.7335
+offset_left = 199.324
+offset_top = 14.7532
+offset_right = 229.324
+offset_bottom = 40.7532
 scale = Vector2(1, 2)
 theme = ExtResource("3_j5dr0")
 theme_override_font_sizes/font_size = 12
