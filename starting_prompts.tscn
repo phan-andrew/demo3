@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://sis1u3rdone5"]
+[gd_scene load_steps=3 format=3 uid="uid://sis1u3rdone5"]
 
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="1_2nmyf"]
+[ext_resource type="Script" path="res://starting_prompts.gd" id="1_jomlb"]
 
 [node name="Node2D" type="CanvasLayer"]
+script = ExtResource("1_jomlb")
 
 [node name="Label" type="Label" parent="."]
 offset_left = 381.0
@@ -17,3 +19,5 @@ offset_left = 364.0
 offset_top = 208.0
 offset_right = 764.0
 offset_bottom = 248.0
+
+[connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
