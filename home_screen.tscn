@@ -29,6 +29,6 @@ visible = false
 [node name="dropdowns" parent="." instance=ExtResource("7_dsike")]
 visible = false
 
-[node name="Node2D" parent="." instance=ExtResource("7_u6xwi")]
-position = Vector2(230, 345)
-scale = Vector2(0.07, 0.07)
+[node name="card" parent="." instance=ExtResource("7_u6xwi")]
+position = Vector2(139, 404)
+scale = Vector2(0.165, 0.165)
