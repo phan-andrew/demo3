@@ -15,3 +15,7 @@ func _on_button_3_pressed():
 	get_tree().get_root().add_child(preload("res://home_screen.tscn").instantiate())
 	hide ()
 
+
+
+func _on_button_pressed():
+	pass # Replace with function body.
