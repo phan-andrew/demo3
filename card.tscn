@@ -15,6 +15,6 @@ shape = SubResource("RectangleShape2D_mpsby")
 
 [node name="Pixil-frame-0" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(132, 223)
+position = Vector2(134, 233)
 scale = Vector2(1.44, 1.34)
 texture = ExtResource("2_7axrr")
