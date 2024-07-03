@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://c0lk8ms1uploi"]
+[gd_scene load_steps=7 format=3 uid="uid://c0lk8ms1uploi"]
 
 [ext_resource type="Script" path="res://home_screen.gd" id="1_0dgku"]
 [ext_resource type="PackedScene" uid="uid://sis1u3rdone5" path="res://starting_prompts.tscn" id="1_xo1g2"]
 [ext_resource type="Script" path="res://Label.gd" id="2_pbnx2"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="3_j5dr0"]
 [ext_resource type="Texture2D" uid="uid://eae32ngq3rv8" path="res://pixil-frame-0.png" id="5_ea36f"]
+[ext_resource type="PackedScene" uid="uid://7h1n1u8c4dbv" path="res://progress_bar.tscn" id="6_4fnsk"]
 
 [node name="HomeScreen" type="Node2D"]
 script = ExtResource("1_0dgku")
@@ -23,7 +24,7 @@ script = ExtResource("2_pbnx2")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(899, 656)
+position = Vector2(941, 236)
 scale = Vector2(3.98, 3.98)
 texture = ExtResource("5_ea36f")
 
@@ -32,3 +33,6 @@ texture_filter = 1
 position = Vector2(931, 630)
 scale = Vector2(3.98, 3.98)
 texture = ExtResource("5_ea36f")
+
+[node name="progress_bar" parent="." instance=ExtResource("6_4fnsk")]
+visible = false
