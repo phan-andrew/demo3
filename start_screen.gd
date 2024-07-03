@@ -18,4 +18,5 @@ func _on_button_3_pressed():
 
 
 func _on_button_pressed():
-	pass # Replace with function body.
+	get_tree().get_root().add_child(preload("res://options_screen.tscn").instantiate())
+	hide ()
