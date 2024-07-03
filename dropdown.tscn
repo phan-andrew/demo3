@@ -3,10 +3,10 @@
 [node name="Node2D" type="Node2D"]
 
 [node name="OptionButton" type="OptionButton" parent="."]
-offset_left = 802.0
-offset_top = 487.0
-offset_right = 1002.0
-offset_bottom = 518.0
+offset_left = 150.0
+offset_top = 500.0
+offset_right = 350.0
+offset_bottom = 531.0
 item_count = 3
 popup/item_0/text = "Sigma"
 popup/item_0/id = 0
@@ -16,10 +16,10 @@ popup/item_2/text = "Rizz"
 popup/item_2/id = 2
 
 [node name="OptionButton2" type="OptionButton" parent="."]
-offset_left = 802.0
-offset_top = 487.0
-offset_right = 1002.0
-offset_bottom = 518.0
+offset_left = 800.0
+offset_top = 500.0
+offset_right = 1000.0
+offset_bottom = 531.0
 item_count = 3
 popup/item_0/text = "Sigma"
 popup/item_0/id = 0
