@@ -43,4 +43,5 @@ text = "SEACAT"
 offset_right = 40.0
 offset_bottom = 23.0
 
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
