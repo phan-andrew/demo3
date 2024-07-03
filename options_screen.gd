@@ -16,5 +16,4 @@ func _on_h_slider_value_changed(value):
 
 
 func _on_button_pressed():
-	get_tree().get_root().add_child(preload("res://options_screen.tscn").show())
-	hide()
+	pass
