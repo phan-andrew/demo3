@@ -3,7 +3,7 @@ extends Node2D
 var flipped = false
 var hovering = false
 var reset_count = 0
-var reset = 500
+var reset = 50
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
