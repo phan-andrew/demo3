@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Node2D
 var CTT_title 
 
 # Called when the node enters the scene tree for the first time.

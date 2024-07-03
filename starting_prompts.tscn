@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="1_2nmyf"]
 [ext_resource type="Script" path="res://starting_prompts.gd" id="1_jomlb"]
 
-[node name="Node2D" type="CanvasLayer"]
+[node name="Node2D" type="Node2D"]
 script = ExtResource("1_jomlb")
 
 [node name="Label" type="Label" parent="."]

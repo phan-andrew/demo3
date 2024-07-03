@@ -8,9 +8,8 @@ func _physics_process(delta):
 	if Input.is_action_pressed("move_right"):
 		move=true
 	if move:
-	
+		move_and_collide(Vector2(1,0))
 		modulate = Color8(40,183,215)
-	
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
-	pass # Replace with function body.
+	pass 

@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dhg0ohpps2lt8"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="OptionButton" type="OptionButton" parent="."]
+offset_left = 802.0
+offset_top = 487.0
+offset_right = 1002.0
+offset_bottom = 518.0
+item_count = 3
+popup/item_0/text = "Sigma"
+popup/item_0/id = 0
+popup/item_1/text = "Skibidi"
+popup/item_1/id = 1
+popup/item_2/text = "Rizz"
+popup/item_2/id = 2
+
+[node name="OptionButton2" type="OptionButton" parent="."]
+offset_left = 802.0
+offset_top = 487.0
+offset_right = 1002.0
+offset_bottom = 518.0
+item_count = 3
+popup/item_0/text = "Sigma"
+popup/item_0/id = 0
+popup/item_1/text = "Skibidi"
+popup/item_1/id = 1
+popup/item_2/text = "Rizz"
+popup/item_2/id = 2

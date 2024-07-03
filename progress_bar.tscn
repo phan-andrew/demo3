@@ -1,8 +1,22 @@
-[gd_scene format=3 uid="uid://7h1n1u8c4dbv"]
+[gd_scene load_steps=3 format=3 uid="uid://7h1n1u8c4dbv"]
 
-[node name="Node2D" type="ProgressBar"]
-offset_left = 230.0
-offset_top = 84.0
-offset_right = 940.0
-offset_bottom = 111.0
-value = 5.0
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="1_5aol8"]
+[ext_resource type="Script" path="res://Timer_Label.gd" id="2_7u13f"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = 271.0
+offset_top = 96.0
+offset_right = 871.0
+offset_bottom = 126.0
+
+[node name="Timer_Label" type="Label" parent="."]
+offset_left = 502.0
+offset_top = 48.0
+offset_right = 627.0
+offset_bottom = 74.0
+theme = ExtResource("1_5aol8")
+text = "10:00
+"
+script = ExtResource("2_7u13f")
