@@ -1,0 +1,109 @@
+[gd_scene load_steps=10 format=3 uid="uid://dpl22mpi7vi48"]
+
+[ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://cards/bluecard-back.png" id="1_4eg6w"]
+[ext_resource type="Script" path="res://cardFlip.gd" id="1_ocqbr"]
+[ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://cards/bluecard-front.png" id="2_3mnai"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fvgbg"]
+atlas = ExtResource("1_4eg6w")
+region = Rect2(0, 0, 825, 1335)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fgt5r"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fvgbg")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Animation" id="Animation_noan5"]
+resource_name = "card_flip"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("card:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.1, 1), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("card/card_back:z_index")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.189502, 0.213268),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [-1, 0]
+}
+
+[sub_resource type="Animation" id="Animation_2h8i5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("card:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("card/card_back:z_index")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bpgj4"]
+_data = {
+"RESET": SubResource("Animation_2h8i5"),
+"card_flip": SubResource("Animation_noan5")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7wmbb"]
+size = Vector2(846, 1352)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_ocqbr")
+
+[node name="card" type="Sprite2D" parent="."]
+z_index = -1
+texture = ExtResource("2_3mnai")
+
+[node name="card_back" type="AnimatedSprite2D" parent="card"]
+z_index = -1
+sprite_frames = SubResource("SpriteFrames_fgt5r")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_bpgj4")
+}
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_7wmbb")
+
+[connection signal="mouse_shape_entered" from="Area2D" to="." method="_on_area_2d_mouse_shape_entered"]
+[connection signal="mouse_shape_exited" from="Area2D" to="." method="_on_area_2d_mouse_shape_exited"]

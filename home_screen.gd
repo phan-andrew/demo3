@@ -16,3 +16,4 @@ func _process(delta):
 		$starting_prompts.visible = false
 		$progress_bar.visible = true
 		$progress_bar/Timer_Label.startTimer = true
+		$dropdowns.visible = true
