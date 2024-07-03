@@ -13,3 +13,8 @@ func _process(delta):
 
 func _on_h_slider_value_changed(value):
 	AudioServer.set_bus_volume_db(bus_index, linear_to_db(value))
+
+
+func _on_button_pressed():
+	get_tree().get_root().add_child(preload("res://options_screen.tscn").show())
+	hide()

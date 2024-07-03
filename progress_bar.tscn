@@ -25,6 +25,7 @@ script = ExtResource("2_7u13f")
 
 [node name="Button" type="Button" parent="Timer_Label"]
 texture_filter = 1
+layout_mode = 0
 offset_left = -36.0
 offset_top = -3.0
 offset_right = -20.0
