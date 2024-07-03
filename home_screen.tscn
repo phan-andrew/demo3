@@ -1,23 +1,34 @@
-[gd_scene load_steps=5 format=3 uid="uid://c0lk8ms1uploi"]
+[gd_scene load_steps=6 format=3 uid="uid://c0lk8ms1uploi"]
 
 [ext_resource type="Script" path="res://home_screen.gd" id="1_0dgku"]
 [ext_resource type="PackedScene" uid="uid://sis1u3rdone5" path="res://starting_prompts.tscn" id="1_xo1g2"]
 [ext_resource type="Script" path="res://Label.gd" id="2_pbnx2"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="3_j5dr0"]
+[ext_resource type="Texture2D" uid="uid://eae32ngq3rv8" path="res://pixil-frame-0.png" id="5_ea36f"]
 
 [node name="HomeScreen" type="Node2D"]
-scale = Vector2(2.664, 1.55898)
 script = ExtResource("1_0dgku")
 
 [node name="starting_prompts" parent="." instance=ExtResource("1_xo1g2")]
 
 [node name="CTT_title" type="Label" parent="."]
 texture_filter = 1
-offset_left = 199.324
-offset_top = 14.7532
-offset_right = 229.324
-offset_bottom = 40.7532
-scale = Vector2(1, 2)
+offset_left = 291.0
+offset_top = 59.0
+offset_right = 321.0
+offset_bottom = 85.0
 theme = ExtResource("3_j5dr0")
 theme_override_font_sizes/font_size = 12
 script = ExtResource("2_pbnx2")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(899, 656)
+scale = Vector2(3.98, 3.98)
+texture = ExtResource("5_ea36f")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprite2D"]
+texture_filter = 1
+position = Vector2(931, 630)
+scale = Vector2(3.98, 3.98)
+texture = ExtResource("5_ea36f")

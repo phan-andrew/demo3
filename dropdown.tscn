@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dhg0ohpps2lt8"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="OptionButton" type="OptionButton" parent="."]
+offset_right = 45.0
+offset_bottom = 20.0
