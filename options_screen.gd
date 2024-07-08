@@ -16,4 +16,6 @@ func _on_h_slider_value_changed(value):
 
 
 func _on_button_pressed():
-	pass
+	get_tree().change_scene_to_file("res://start_screen.tscn")
+	hide()
+	
