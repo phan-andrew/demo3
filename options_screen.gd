@@ -1,21 +1,21 @@
 extends Control
 @export
 var bus_name = "Master"
-var bus_index = 0
+var bus_index = 1
 
 func _ready():
-	pass
+	bus_index = AudioServer.get_bus_index(bus_name)
 
 
 func _process(delta):
 	pass
 
 
-func _on_h_slider_value_changed(value):
-	AudioServer.set_bus_volume_db(bus_index, linear_to_db(value))
-
-
 func _on_button_pressed():
 	get_tree().change_scene_to_file("res://start_screen.tscn")
 	hide()
 	
+
+
+func _on_h_slider_value_changed(value):
+	pass # Replace with function body.
