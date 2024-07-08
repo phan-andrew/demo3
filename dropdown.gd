@@ -12,9 +12,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	print(attack_choice)
-	print(defend_choice)
-
+	pass
+	
 func _on_attack_option_item_selected(index):
 	attack_choice = index
 	generateACard = true

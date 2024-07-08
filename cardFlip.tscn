@@ -1,10 +1,20 @@
-[gd_scene load_steps=10 format=3 uid="uid://dpl22mpi7vi48"]
+[gd_scene load_steps=15 format=3 uid="uid://dpl22mpi7vi48"]
 
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://cards/bluecard-back.png" id="1_4eg6w"]
 [ext_resource type="Script" path="res://cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://cards/bluecard-front.png" id="2_3mnai"]
+[ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://cards/standardcard-back.png" id="3_jsa7j"]
+[ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://cards/redcard-back.png" id="4_ovuep"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_fvgbg"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_nb5n5"]
+atlas = ExtResource("3_jsa7j")
+region = Rect2(0, 0, 825, 1335)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_by0vd"]
+atlas = ExtResource("4_ovuep")
+region = Rect2(0, 0, 825, 1335)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2p8a3"]
 atlas = ExtResource("1_4eg6w")
 region = Rect2(0, 0, 825, 1335)
 
@@ -12,7 +22,13 @@ region = Rect2(0, 0, 825, 1335)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_fvgbg")
+"texture": SubResource("AtlasTexture_nb5n5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_by0vd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2p8a3")
 }],
 "loop": true,
 "name": &"default",
@@ -74,10 +90,38 @@ tracks/1/keys = {
 "values": [-1, 0]
 }
 
+[sub_resource type="Animation" id="Animation_86bif"]
+resource_name = "start_flip"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("card:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.105, 1), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("card/card_back:z_index")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, -1]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bpgj4"]
 _data = {
 "RESET": SubResource("Animation_2h8i5"),
-"card_flip": SubResource("Animation_noan5")
+"card_flip": SubResource("Animation_noan5"),
+"start_flip": SubResource("Animation_86bif")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7wmbb"]
