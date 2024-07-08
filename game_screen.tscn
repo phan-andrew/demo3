@@ -1,13 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://7h1n1u8c4dbv"]
+[gd_scene load_steps=8 format=3 uid="uid://7h1n1u8c4dbv"]
 
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="1_0jfxs"]
+[ext_resource type="Script" path="res://game_screen.gd" id="1_2nm7d"]
 [ext_resource type="Script" path="res://Timer_Label.gd" id="2_quooa"]
 [ext_resource type="Texture2D" uid="uid://deyg0mophu1js" path="res://images/play_button.png" id="3_ydppf"]
 [ext_resource type="PackedScene" uid="uid://dlbmoou5r3oxf" path="res://card_shadowBackgrounds.tscn" id="4_u4wtv"]
 [ext_resource type="PackedScene" uid="uid://dhg0ohpps2lt8" path="res://dropdown.tscn" id="5_c2rya"]
 [ext_resource type="PackedScene" uid="uid://dpl22mpi7vi48" path="res://cardFlip.tscn" id="6_2l2jm"]
 
-[node name="Node2D" type="Node2D"]
+[node name="game_screen" type="Node2D"]
+script = ExtResource("1_2nm7d")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
 offset_left = 271.0
@@ -41,44 +43,52 @@ position = Vector2(0, -20)
 
 [node name="dropdown" parent="." instance=ExtResource("5_c2rya")]
 
-[node name="attack_2" parent="." instance=ExtResource("6_2l2jm")]
-z_index = 1
-position = Vector2(200, 381)
-scale = Vector2(0.136, 0.136)
-
-[node name="attack_1" parent="." instance=ExtResource("6_2l2jm")]
+[node name="a_1" parent="." instance=ExtResource("6_2l2jm")]
+visible = false
 z_index = 1
 position = Vector2(75, 381)
 scale = Vector2(0.136, 0.136)
 
-[node name="defend_4" parent="." instance=ExtResource("6_2l2jm")]
+[node name="a_2" parent="." instance=ExtResource("6_2l2jm")]
+visible = false
 z_index = 1
-position = Vector2(1075, 381)
+position = Vector2(200, 381)
 scale = Vector2(0.136, 0.136)
 
-[node name="defend_3" parent="." instance=ExtResource("6_2l2jm")]
+[node name="a_3" parent="." instance=ExtResource("6_2l2jm")]
+visible = false
 z_index = 1
-position = Vector2(950, 381)
+position = Vector2(325, 381)
 scale = Vector2(0.136, 0.136)
 
-[node name="defend_2" parent="." instance=ExtResource("6_2l2jm")]
-z_index = 1
-position = Vector2(825, 381)
-scale = Vector2(0.136, 0.136)
-
-[node name="defend_1" parent="." instance=ExtResource("6_2l2jm")]
-z_index = 1
-position = Vector2(700, 381)
-scale = Vector2(0.136, 0.136)
-
-[node name="attack_4" parent="." instance=ExtResource("6_2l2jm")]
+[node name="a_4" parent="." instance=ExtResource("6_2l2jm")]
+visible = false
 z_index = 1
 position = Vector2(450, 381)
 scale = Vector2(0.136, 0.136)
 
-[node name="attack_3" parent="." instance=ExtResource("6_2l2jm")]
+[node name="d_1" parent="." instance=ExtResource("6_2l2jm")]
+visible = false
 z_index = 1
-position = Vector2(325, 381)
+position = Vector2(700, 381)
+scale = Vector2(0.136, 0.136)
+
+[node name="d_2" parent="." instance=ExtResource("6_2l2jm")]
+visible = false
+z_index = 1
+position = Vector2(825, 381)
+scale = Vector2(0.136, 0.136)
+
+[node name="d_3" parent="." instance=ExtResource("6_2l2jm")]
+visible = false
+z_index = 1
+position = Vector2(950, 381)
+scale = Vector2(0.136, 0.136)
+
+[node name="d_4" parent="." instance=ExtResource("6_2l2jm")]
+visible = false
+z_index = 1
+position = Vector2(1075, 381)
 scale = Vector2(0.136, 0.136)
 
 [connection signal="pressed" from="Timer_Label/Button" to="Timer_Label" method="_on_button_pressed"]
