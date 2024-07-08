@@ -19,6 +19,5 @@ func _on_button_3_pressed():
 
 
 func _on_button_pressed():
-	#get_tree().get_root().add_child(preload("res://options_screen.tscn").instantiate())
 	get_tree().change_scene_to_file("res://options_screen.tscn")
 	hide ()
