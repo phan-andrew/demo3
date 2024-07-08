@@ -23,7 +23,8 @@ func _process(delta):
 		$AnimationPlayer.play_backwards("card_flip")
 		flipped = false
 		
-
+func pic(picture):
+	$card.texture = load(picture)
 
 func _on_area_2d_mouse_shape_entered(shape_idx):
 	hovering = true

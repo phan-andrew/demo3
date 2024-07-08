@@ -39,56 +39,39 @@ scale = Vector2(2, 2)
 icon = ExtResource("3_ydppf")
 
 [node name="cardShadow" parent="." instance=ExtResource("4_u4wtv")]
-position = Vector2(0, -20)
+position = Vector2(0, -40)
 
 [node name="dropdown" parent="." instance=ExtResource("5_c2rya")]
+position = Vector2(0, 25.735)
 
 [node name="a_1" parent="." instance=ExtResource("6_2l2jm")]
-visible = false
 z_index = 1
-position = Vector2(75, 381)
-scale = Vector2(0.136, 0.136)
+position = Vector2(100, 335)
+scale = Vector2(0.2, 0.2)
 
 [node name="a_2" parent="." instance=ExtResource("6_2l2jm")]
-visible = false
 z_index = 1
-position = Vector2(200, 381)
-scale = Vector2(0.136, 0.136)
+position = Vector2(275, 335)
+scale = Vector2(0.2, 0.2)
 
 [node name="a_3" parent="." instance=ExtResource("6_2l2jm")]
-visible = false
 z_index = 1
-position = Vector2(325, 381)
-scale = Vector2(0.136, 0.136)
-
-[node name="a_4" parent="." instance=ExtResource("6_2l2jm")]
-visible = false
-z_index = 1
-position = Vector2(450, 381)
-scale = Vector2(0.136, 0.136)
+position = Vector2(450, 335)
+scale = Vector2(0.2, 0.2)
 
 [node name="d_1" parent="." instance=ExtResource("6_2l2jm")]
-visible = false
 z_index = 1
-position = Vector2(700, 381)
-scale = Vector2(0.136, 0.136)
+position = Vector2(700, 335)
+scale = Vector2(0.2, 0.2)
 
 [node name="d_2" parent="." instance=ExtResource("6_2l2jm")]
-visible = false
 z_index = 1
-position = Vector2(825, 381)
-scale = Vector2(0.136, 0.136)
+position = Vector2(875, 335)
+scale = Vector2(0.2, 0.2)
 
 [node name="d_3" parent="." instance=ExtResource("6_2l2jm")]
-visible = false
 z_index = 1
-position = Vector2(950, 381)
-scale = Vector2(0.136, 0.136)
-
-[node name="d_4" parent="." instance=ExtResource("6_2l2jm")]
-visible = false
-z_index = 1
-position = Vector2(1075, 381)
-scale = Vector2(0.136, 0.136)
+position = Vector2(1050, 335)
+scale = Vector2(0.2, 0.2)
 
 [connection signal="pressed" from="Timer_Label/Button" to="Timer_Label" method="_on_button_pressed"]

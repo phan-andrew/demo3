@@ -13,11 +13,11 @@ offset_right = 350.0
 offset_bottom = 531.0
 theme = ExtResource("1_e5evp")
 item_count = 3
-popup/item_0/text = "Sigma"
+popup/item_0/text = "Account Manipulation"
 popup/item_0/id = 0
-popup/item_1/text = "Skibidi"
+popup/item_1/text = "BITS Jobs"
 popup/item_1/id = 1
-popup/item_2/text = "Rizz"
+popup/item_2/text = "Implant Internal Image"
 popup/item_2/id = 2
 
 [node name="defend_option" type="OptionButton" parent="."]
