@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://c0lk8ms1uploi"]
+[gd_scene load_steps=7 format=3 uid="uid://c0lk8ms1uploi"]
 
 [ext_resource type="Script" path="res://home_screen.gd" id="1_0dgku"]
 [ext_resource type="PackedScene" uid="uid://sis1u3rdone5" path="res://starting_prompts.tscn" id="1_xo1g2"]
 [ext_resource type="Script" path="res://Label.gd" id="2_pbnx2"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="3_j5dr0"]
-[ext_resource type="PackedScene" uid="uid://7h1n1u8c4dbv" path="res://progress_bar.tscn" id="6_4fnsk"]
-[ext_resource type="PackedScene" uid="uid://dhg0ohpps2lt8" path="res://dropdown.tscn" id="7_dsike"]
+[ext_resource type="PackedScene" uid="uid://7h1n1u8c4dbv" path="res://game_screen.tscn" id="5_v2ldq"]
 [ext_resource type="PackedScene" uid="uid://dpl22mpi7vi48" path="res://cardFlip.tscn" id="7_u6xwi"]
 
 [node name="HomeScreen" type="Node2D"]
@@ -23,10 +22,7 @@ theme = ExtResource("3_j5dr0")
 theme_override_font_sizes/font_size = 12
 script = ExtResource("2_pbnx2")
 
-[node name="progress_bar" parent="." instance=ExtResource("6_4fnsk")]
-visible = false
-
-[node name="dropdowns" parent="." instance=ExtResource("7_dsike")]
+[node name="game_screen" parent="." instance=ExtResource("5_v2ldq")]
 visible = false
 
 [node name="card" parent="." instance=ExtResource("7_u6xwi")]

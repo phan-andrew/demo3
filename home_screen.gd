@@ -14,6 +14,6 @@ func _process(delta):
 		$CTT_title.text = $starting_prompts.CTT_title
 		title = true
 		$starting_prompts.visible = false
-		$progress_bar.visible = true
-		$progress_bar/Timer_Label.startTimer = true
-		$dropdowns.visible = true
+		$game_screen.visible = true
+		$game_screen/Timer_Label.startTimer = true
+
