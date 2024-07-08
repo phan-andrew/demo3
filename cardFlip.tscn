@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dpl22mpi7vi48"]
+[gd_scene load_steps=10 format=3 uid="uid://bm8b0akto8r1i"]
 
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://cards/bluecard-back.png" id="1_4eg6w"]
 [ext_resource type="Script" path="res://cardFlip.gd" id="1_ocqbr"]
@@ -18,34 +18,6 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
-
-[sub_resource type="Animation" id="Animation_noan5"]
-resource_name = "card_flip"
-length = 0.4
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("card:scale")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(1, 1), Vector2(0.1, 1), Vector2(1, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("card/card_back:z_index")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.156818, 0.18467),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [-1, 0]
-}
 
 [sub_resource type="Animation" id="Animation_2h8i5"]
 length = 0.001
@@ -72,6 +44,34 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [-1]
+}
+
+[sub_resource type="Animation" id="Animation_noan5"]
+resource_name = "card_flip"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("card:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.1, 1), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("card/card_back:z_index")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.189502, 0.213268),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [-1, 0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bpgj4"]

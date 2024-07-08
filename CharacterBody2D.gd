@@ -12,6 +12,8 @@ func _physics_process(delta):
 		var collision := move_and_collide(Vector2(5,0))
 		if collision != null:
 			modulate = Color8(40,183,215)
-
+			print("collided")
+			position.x=0
+			position.y=0
 func _ready():
 	pass 
