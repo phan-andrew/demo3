@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://dhg0ohpps2lt8"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_e5evp"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/dropdown.gd" id="1_y6a3v"]
 [ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="2_8rqkl"]
+[ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="3_mo277"]
 
 [sub_resource type="Theme" id="Theme_xti8j"]
 default_font = ExtResource("2_8rqkl")
@@ -24,7 +24,7 @@ offset_left = 800.0
 offset_top = 500.0
 offset_right = 1000.0
 offset_bottom = 531.0
-theme = ExtResource("1_e5evp")
+theme = ExtResource("3_mo277")
 
 [connection signal="item_selected" from="attack_option" to="." method="_on_attack_option_item_selected"]
 [connection signal="item_selected" from="attack_option" to="." method="_on_option_button_item_selected"]
