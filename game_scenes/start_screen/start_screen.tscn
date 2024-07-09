@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=3 uid="uid://c3lhlwrt3ceu4"]
+
+[ext_resource type="Script" path="res://game_scenes/start_screen/start_screen.gd" id="1_ugavs"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="2_8iye3"]
+[ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI images/Startscreen.png" id="3_hxk6x"]
+[ext_resource type="AudioStream" uid="uid://bd5u4ye323kfo" path="res://audio/audio.mp3" id="4_gwq4y"]
+
+[node name="Node2D3" type="Node2D"]
+script = ExtResource("1_ugavs")
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 750.0
+offset_top = 400.0
+offset_right = 900.0
+offset_bottom = 500.0
+theme = ExtResource("2_8iye3")
+text = "?"
+
+[node name="Button" type="Button" parent="."]
+offset_left = 250.0
+offset_top = 400.0
+offset_right = 400.0
+offset_bottom = 500.0
+theme = ExtResource("2_8iye3")
+text = "Options"
+
+[node name="Button3" type="Button" parent="."]
+offset_left = 500.0
+offset_top = 400.0
+offset_right = 650.0
+offset_bottom = 500.0
+theme = ExtResource("2_8iye3")
+text = "Play"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 429.0
+offset_top = 220.0
+offset_right = 741.0
+offset_bottom = 273.0
+theme = ExtResource("2_8iye3")
+theme_override_font_sizes/font_size = 52
+text = "SEACAT"
+
+[node name="Label2" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(576, 324)
+scale = Vector2(1.152, 0.972973)
+texture = ExtResource("3_hxk6x")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("4_gwq4y")
+autoplay = true
+
+[connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
