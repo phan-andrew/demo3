@@ -1,0 +1,202 @@
+Abuse Elevation Control Mechanism
+Access Token Manipulation
+Account Access Removal
+Account Discovery
+Account Manipulation
+Acquire Access
+Acquire Infrastructure
+Active Scanning
+Adversary-in-the-Middle
+Application Layer Protocol
+Application Window Discovery
+Archive Collected Data
+Audio Capture
+Automated Collection
+Automated Exfiltration
+BITS Jobs
+Boot or Logon Autostart Execution
+Boot or Logon Initialization Scripts
+Browser Extensions
+Browser Information Discovery
+Browser Session Hijacking
+Brute Force
+Build Image on Host
+Clipboard Data
+Cloud Administration Command
+Cloud Infrastructure Discovery
+Cloud Service Dashboard
+Cloud Service Discovery
+Cloud Storage Object Discovery
+Command and Scripting Interpreter
+Communication Through Removable Media
+Compromise Accounts
+Compromise Host Software Binary
+Compromise Infrastructure
+Container Administration Command
+Container and Resource Discovery
+Content Injection
+Create Account
+Create or Modify System Process
+Credentials from Password Stores
+Data Destruction
+Data Encoding
+Data Encrypted for Impact
+Data from Cloud Storage
+Data from Configuration Repository
+Data from Information Repositories
+Data from Local System
+Data from Network Shared Drive
+Data from Removable Media
+Data Manipulation
+Data Obfuscation
+Data Staged
+Data Transfer Size Limits
+Debugger Evasion
+Defacement
+Deobfuscate/Decode Files or Information
+Deploy Container
+Develop Capabilities
+Device Driver Discovery
+Direct Volume Access
+Disk Wipe
+Domain or Tenant Policy Modification
+Domain Trust Discovery
+Drive-by Compromise
+Dynamic Resolution
+Email Collection
+Encrypted Channel
+Endpoint Denial of Service
+Escape to Host
+Establish Accounts
+Event Triggered Execution
+Execution Guardrails
+Exfiltration Over Alternative Protocol
+Exfiltration Over C2 Channel
+Exfiltration Over Other Network Medium
+Exfiltration Over Physical Medium
+Exfiltration Over Web Service
+Exploit Public-Facing Application
+Exploitation for Client Execution
+Exploitation for Credential Access
+Exploitation for Defense Evasion
+Exploitation for Privilege Escalation
+Exploitation of Remote Services
+External Remote Services
+Fallback Channels
+File and Directory Discovery
+File and Directory Permissions Modification
+Financial Theft
+Firmware Corruption
+Forced Authentication
+Forge Web Credentials
+Gather Victim Host Information
+Gather Victim Identity Information
+Gather Victim Network Information
+Gather Victim Org Information
+Group Policy Discovery
+Hardware Additions
+Hide Artifacts
+Hide Infrastructure
+Hijack Execution Flow
+Impair Defenses
+Impersonation
+Implant Internal Image
+Indicator Removal
+Indirect Command Execution
+Ingress Tool Transfer
+Inhibit System Recovery
+Input Capture
+Inter-Process Communication
+Internal Spearphishing
+Lateral Tool Transfer
+Log Enumeration
+Masquerading
+Modify Authentication Process
+Modify Cloud Compute Infrastructure
+Modify Registry
+Modify System Image
+Multi-Factor Authentication Interception
+Multi-Factor Authentication Request Generation
+Multi-Stage Channels
+Native API
+Network Boundary Bridging
+Network Denial of Service
+Network Service Discovery
+Network Share Discovery
+Network Sniffing
+Non-Application Layer Protocol
+Non-Standard Port
+Obfuscated Files or Information
+Obtain Capabilities
+Office Application Startup
+OS Credential Dumping
+Password Policy Discovery
+Peripheral Device Discovery
+Permission Groups Discovery
+Phishing
+Phishing for Information
+Plist File Modification
+Power Settings
+Pre-OS Boot
+Process Discovery
+Process Injection
+Protocol Tunneling
+Proxy
+Query Registry
+Reflective Code Loading
+Remote Access Software
+Remote Service Session Hijacking
+Remote Services
+Remote System Discovery
+Replication Through Removable Media
+Resource Hijacking
+Rogue Domain Controller
+Rootkit
+Scheduled Task/Job
+Scheduled Transfer
+Screen Capture
+Search Closed Sources
+Search Open Technical Databases
+Search Open Websites/Domains
+Search Victim-Owned Websites
+Server Software Component
+Serverless Execution
+Service Stop
+Shared Modules
+Software Deployment Tools
+Software Discovery
+Stage Capabilities
+Steal Application Access Token
+Steal or Forge Authentication Certificates
+Steal or Forge Kerberos Tickets
+Steal Web Session Cookie
+Subvert Trust Controls
+Supply Chain Compromise
+System Binary Proxy Execution
+System Information Discovery
+System Location Discovery
+System Network Configuration Discovery
+System Network Connections Discovery
+System Owner/User Discovery
+System Script Proxy Execution
+System Service Discovery
+System Services
+System Shutdown/Reboot
+System Time Discovery
+Taint Shared Content
+Template Injection
+Traffic Signaling
+Transfer Data to Cloud Account
+Trusted Developer Utilities Proxy Execution
+Trusted Relationship
+Unsecured Credentials
+Unused/Unsupported Cloud Regions
+Use Alternate Authentication Material
+User Execution
+Valid Accounts
+Video Capture
+Virtualization/Sandbox Evasion
+Weaken Encryption
+Web Service
+Windows Management Instrumentation
+XSL Script Processing

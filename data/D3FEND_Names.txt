@@ -1,0 +1,195 @@
+Operational Activity Mapping
+Organization Mapping
+Operational Risk Assessment
+Operational Dependency Mapping
+Access Modeling
+Network Mapping
+Physical Link Mapping
+Passive Physical Link Mapping
+Active Physical Link Mapping
+Network Vulnerability Assessment
+Network Traffic Policy Mapping
+Logical Link Mapping
+Passive Logical Link Mapping
+Active Logical Link Mapping
+Asset Inventory
+Software Inventory
+Network Node Inventory
+Hardware Component Inventory
+Data Inventory
+Configuration Inventory
+Asset Vulnerability Enumeration
+Container Image Analysis
+System Mapping
+System Vulnerability Assessment
+System Dependency Mapping
+Service Dependency Mapping
+Data Exchange Mapping
+Message Hardening
+Transfer Agent Authentication
+Message Encryption
+Message Authentication
+Credential Hardening
+Credential Transmission Scoping
+User Account Permissions
+Certificate-based Authentication
+Certificate Pinning
+Domain Trust Policy
+Biometric Authentication
+One-time Password
+Strong Password Policy
+Credential Rotation
+Multi-factor Authentication
+Platform Hardening
+Disk Encryption
+TPM Boot Integrity
+RF Shielding
+Bootloader Authentication
+System Configuration Permissions
+File Encryption
+Software Update
+Driver Load Integrity Checking
+Local File Permissions
+Application Hardening
+Stack Frame Canary Validation
+Segment Address Offset Randomization
+Process Segment Execution Prevention
+Pointer Authentication
+Exception Handler Pointer Validation
+Dead Code Elimination
+Application Configuration Hardening
+Network Traffic Analysis
+RPC Traffic Analysis
+IPC Traffic Analysis
+Remote Terminal Session Detection
+Relay Pattern Analysis
+Protocol Metadata Anomaly Detection
+Per Host Download-Upload Ratio Analysis
+DNS Traffic Analysis
+File Carving
+Inbound Session Volume Analysis
+Network Traffic Community Deviation
+Client-server Payload Profiling
+Administrative Network Activity Analysis
+Connection Attempt Analysis
+Byte Sequence Emulation
+Certificate Analysis
+Passive Certificate Analysis
+Active Certificate Analysis
+Message Analysis
+Sender Reputation Analysis
+Sender MTA Reputation Analysis
+Process Analysis
+File Access Pattern Analysis
+Database Query String Analysis
+Shadow Stack Comparisons
+Script Execution Analysis
+Process Spawn Analysis
+Process Lineage Analysis
+Indirect Branch Call Analysis
+System Call Analysis
+File Creation Analysis
+Process Self-Modification Detection
+Process Code Segment Verification
+File Analysis
+File Hashing
+File Content Analysis
+File Content Rules
+Emulated File Analysis
+Dynamic Analysis
+User Behavior Analysis
+Domain Account Monitoring
+Session Duration Analysis
+User Geolocation Logon Pattern Analysis
+Web Session Activity Analysis
+Job Function Access Pattern Analysis
+Credential Compromise Scope Analysis
+Authorization Event Thresholding
+Authentication Event Thresholding
+Resource Access Pattern Analysis
+Local Account Monitoring
+User Data Transfer Analysis
+Identifier Analysis
+URL Analysis
+Identifier Reputation Analysis
+URL Reputation Analysis
+IP Reputation Analysis
+File Hash Reputation Analysis
+Domain Name Reputation Analysis
+Identifier Activity Analysis
+Homoglyph Detection
+Platform Monitoring
+Operating System Monitoring
+User Session Init Config Analysis
+System Init Config Analysis
+System File Analysis
+Service Binary Verification
+System Daemon Monitoring
+Scheduled Job Analysis
+Memory Boundary Tracking
+Input Device Analysis
+Endpoint Health Beacon
+Firmware Verification
+System Firmware Verification
+Peripheral Firmware Verification
+Firmware Embedded Monitoring Code
+Firmware Behavior Analysis
+File Integrity Monitoring
+Execution Isolation
+Kernel-based Process Isolation
+System Call Filtering
+Mandatory Access Control
+IO Port Restriction
+Hardware-based Process Isolation
+Executable Denylisting
+Executable Allowlisting
+Network Isolation
+Network Traffic Filtering
+Outbound Traffic Filtering
+Inbound Traffic Filtering
+Email Filtering
+Encrypted Tunnels
+DNS Denylisting
+Reverse Resolution IP Denylisting
+Reverse Resolution Domain Denylisting
+Forward Resolution IP Denylisting
+Forward Resolution Domain Denylisting
+Homoglyph Denylisting
+Hierarchical Domain Denylisting
+DNS Allowlisting
+Broadcast Domain Isolation
+Decoy Object
+Decoy User Credential
+Decoy Session Token
+Decoy Public Release
+Decoy Persona
+Decoy Network Resource
+Decoy File
+Decoy Environment
+Standalone Honeynet
+Integrated Honeynet
+Connected Honeynet
+Process Eviction
+Process Termination
+Process Suspension
+Host Shutdown
+Host Reboot
+File Eviction
+File Removal
+Email Removal
+Credential Eviction
+Credential Revoking
+Authentication Cache Invalidation
+Account Locking
+Restore Access
+Restore Network Access
+Restore User Account Access
+Unlock Account
+Restore Object
+Reissue Credential
+Restore Configuration
+Restore Database
+Restore Disk Image
+Restore File
+Restore Email
+Restore Software
