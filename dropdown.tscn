@@ -40,6 +40,6 @@ popup/item_1/id = 1
 popup/item_2/text = "Rizz"
 popup/item_2/id = 2
 
-[connection signal="item_selected" from="attack_option" to="." method="_on_option_button_item_selected"]
 [connection signal="item_selected" from="attack_option" to="." method="_on_attack_option_item_selected"]
+[connection signal="item_selected" from="attack_option" to="." method="_on_option_button_item_selected"]
 [connection signal="item_selected" from="defend_option" to="." method="_on_defend_option_item_selected"]
