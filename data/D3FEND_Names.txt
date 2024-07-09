@@ -1,195 +1,195 @@
-Operational Activity Mapping
-Organization Mapping
-Operational Risk Assessment
-Operational Dependency Mapping
 Access Modeling
-Network Mapping
-Physical Link Mapping
-Passive Physical Link Mapping
-Active Physical Link Mapping
-Network Vulnerability Assessment
-Network Traffic Policy Mapping
-Logical Link Mapping
-Passive Logical Link Mapping
+Account Locking
+Active Certificate Analysis
 Active Logical Link Mapping
-Asset Inventory
-Software Inventory
-Network Node Inventory
-Hardware Component Inventory
-Data Inventory
-Configuration Inventory
-Asset Vulnerability Enumeration
-Container Image Analysis
-System Mapping
-System Vulnerability Assessment
-System Dependency Mapping
-Service Dependency Mapping
-Data Exchange Mapping
-Message Hardening
-Transfer Agent Authentication
-Message Encryption
-Message Authentication
-Credential Hardening
-Credential Transmission Scoping
-User Account Permissions
-Certificate-based Authentication
-Certificate Pinning
-Domain Trust Policy
-Biometric Authentication
-One-time Password
-Strong Password Policy
-Credential Rotation
-Multi-factor Authentication
-Platform Hardening
-Disk Encryption
-TPM Boot Integrity
-RF Shielding
-Bootloader Authentication
-System Configuration Permissions
-File Encryption
-Software Update
-Driver Load Integrity Checking
-Local File Permissions
-Application Hardening
-Stack Frame Canary Validation
-Segment Address Offset Randomization
-Process Segment Execution Prevention
-Pointer Authentication
-Exception Handler Pointer Validation
-Dead Code Elimination
-Application Configuration Hardening
-Network Traffic Analysis
-RPC Traffic Analysis
-IPC Traffic Analysis
-Remote Terminal Session Detection
-Relay Pattern Analysis
-Protocol Metadata Anomaly Detection
-Per Host Download-Upload Ratio Analysis
-DNS Traffic Analysis
-File Carving
-Inbound Session Volume Analysis
-Network Traffic Community Deviation
-Client-server Payload Profiling
+Active Physical Link Mapping
 Administrative Network Activity Analysis
-Connection Attempt Analysis
+Application Configuration Hardening
+Application Hardening
+Asset Inventory
+Asset Vulnerability Enumeration
+Authentication Cache Invalidation
+Authentication Event Thresholding
+Authorization Event Thresholding
+Biometric Authentication
+Bootloader Authentication
+Broadcast Domain Isolation
 Byte Sequence Emulation
 Certificate Analysis
-Passive Certificate Analysis
-Active Certificate Analysis
-Message Analysis
-Sender Reputation Analysis
-Sender MTA Reputation Analysis
-Process Analysis
-File Access Pattern Analysis
+Certificate Pinning
+Certificate-based Authentication
+Client-server Payload Profiling
+Configuration Inventory
+Connected Honeynet
+Connection Attempt Analysis
+Container Image Analysis
+Credential Compromise Scope Analysis
+Credential Eviction
+Credential Hardening
+Credential Revoking
+Credential Rotation
+Credential Transmission Scoping
+Data Exchange Mapping
+Data Inventory
 Database Query String Analysis
-Shadow Stack Comparisons
-Script Execution Analysis
-Process Spawn Analysis
-Process Lineage Analysis
-Indirect Branch Call Analysis
-System Call Analysis
-File Creation Analysis
-Process Self-Modification Detection
-Process Code Segment Verification
+Dead Code Elimination
+Decoy Environment
+Decoy File
+Decoy Network Resource
+Decoy Object
+Decoy Persona
+Decoy Public Release
+Decoy Session Token
+Decoy User Credential
+Disk Encryption
+DNS Allowlisting
+DNS Denylisting
+DNS Traffic Analysis
+Domain Account Monitoring
+Domain Name Reputation Analysis
+Domain Trust Policy
+Driver Load Integrity Checking
+Dynamic Analysis
+Email Filtering
+Email Removal
+Emulated File Analysis
+Encrypted Tunnels
+Endpoint Health Beacon
+Exception Handler Pointer Validation
+Executable Allowlisting
+Executable Denylisting
+Execution Isolation
+File Access Pattern Analysis
 File Analysis
-File Hashing
+File Carving
 File Content Analysis
 File Content Rules
-Emulated File Analysis
-Dynamic Analysis
-User Behavior Analysis
-Domain Account Monitoring
-Session Duration Analysis
-User Geolocation Logon Pattern Analysis
-Web Session Activity Analysis
-Job Function Access Pattern Analysis
-Credential Compromise Scope Analysis
-Authorization Event Thresholding
-Authentication Event Thresholding
-Resource Access Pattern Analysis
-Local Account Monitoring
-User Data Transfer Analysis
-Identifier Analysis
-URL Analysis
-Identifier Reputation Analysis
-URL Reputation Analysis
-IP Reputation Analysis
-File Hash Reputation Analysis
-Domain Name Reputation Analysis
-Identifier Activity Analysis
-Homoglyph Detection
-Platform Monitoring
-Operating System Monitoring
-User Session Init Config Analysis
-System Init Config Analysis
-System File Analysis
-Service Binary Verification
-System Daemon Monitoring
-Scheduled Job Analysis
-Memory Boundary Tracking
-Input Device Analysis
-Endpoint Health Beacon
-Firmware Verification
-System Firmware Verification
-Peripheral Firmware Verification
-Firmware Embedded Monitoring Code
-Firmware Behavior Analysis
-File Integrity Monitoring
-Execution Isolation
-Kernel-based Process Isolation
-System Call Filtering
-Mandatory Access Control
-IO Port Restriction
-Hardware-based Process Isolation
-Executable Denylisting
-Executable Allowlisting
-Network Isolation
-Network Traffic Filtering
-Outbound Traffic Filtering
-Inbound Traffic Filtering
-Email Filtering
-Encrypted Tunnels
-DNS Denylisting
-Reverse Resolution IP Denylisting
-Reverse Resolution Domain Denylisting
-Forward Resolution IP Denylisting
-Forward Resolution Domain Denylisting
-Homoglyph Denylisting
-Hierarchical Domain Denylisting
-DNS Allowlisting
-Broadcast Domain Isolation
-Decoy Object
-Decoy User Credential
-Decoy Session Token
-Decoy Public Release
-Decoy Persona
-Decoy Network Resource
-Decoy File
-Decoy Environment
-Standalone Honeynet
-Integrated Honeynet
-Connected Honeynet
-Process Eviction
-Process Termination
-Process Suspension
-Host Shutdown
-Host Reboot
+File Creation Analysis
+File Encryption
 File Eviction
+File Hash Reputation Analysis
+File Hashing
+File Integrity Monitoring
 File Removal
-Email Removal
-Credential Eviction
-Credential Revoking
-Authentication Cache Invalidation
-Account Locking
-Restore Access
-Restore Network Access
-Restore User Account Access
-Unlock Account
-Restore Object
+Firmware Behavior Analysis
+Firmware Embedded Monitoring Code
+Firmware Verification
+Forward Resolution Domain Denylisting
+Forward Resolution IP Denylisting
+Hardware Component Inventory
+Hardware-based Process Isolation
+Hierarchical Domain Denylisting
+Homoglyph Denylisting
+Homoglyph Detection
+Host Reboot
+Host Shutdown
+Identifier Activity Analysis
+Identifier Analysis
+Identifier Reputation Analysis
+Inbound Session Volume Analysis
+Inbound Traffic Filtering
+Indirect Branch Call Analysis
+Input Device Analysis
+Integrated Honeynet
+IO Port Restriction
+IP Reputation Analysis
+IPC Traffic Analysis
+Job Function Access Pattern Analysis
+Kernel-based Process Isolation
+Local Account Monitoring
+Local File Permissions
+Logical Link Mapping
+Mandatory Access Control
+Memory Boundary Tracking
+Message Analysis
+Message Authentication
+Message Encryption
+Message Hardening
+Multi-factor Authentication
+Network Isolation
+Network Mapping
+Network Node Inventory
+Network Traffic Analysis
+Network Traffic Community Deviation
+Network Traffic Filtering
+Network Traffic Policy Mapping
+Network Vulnerability Assessment
+One-time Password
+Operating System Monitoring
+Operational Activity Mapping
+Operational Dependency Mapping
+Operational Risk Assessment
+Organization Mapping
+Outbound Traffic Filtering
+Passive Certificate Analysis
+Passive Logical Link Mapping
+Passive Physical Link Mapping
+Per Host Download-Upload Ratio Analysis
+Peripheral Firmware Verification
+Physical Link Mapping
+Platform Hardening
+Platform Monitoring
+Pointer Authentication
+Process Analysis
+Process Code Segment Verification
+Process Eviction
+Process Lineage Analysis
+Process Segment Execution Prevention
+Process Self-Modification Detection
+Process Spawn Analysis
+Process Suspension
+Process Termination
+Protocol Metadata Anomaly Detection
 Reissue Credential
+Relay Pattern Analysis
+Remote Terminal Session Detection
+Resource Access Pattern Analysis
+Restore Access
 Restore Configuration
 Restore Database
 Restore Disk Image
-Restore File
 Restore Email
+Restore File
+Restore Network Access
+Restore Object
 Restore Software
+Restore User Account Access
+Reverse Resolution Domain Denylisting
+Reverse Resolution IP Denylisting
+RF Shielding
+RPC Traffic Analysis
+Scheduled Job Analysis
+Script Execution Analysis
+Segment Address Offset Randomization
+Sender MTA Reputation Analysis
+Sender Reputation Analysis
+Service Binary Verification
+Service Dependency Mapping
+Session Duration Analysis
+Shadow Stack Comparisons
+Software Inventory
+Software Update
+Stack Frame Canary Validation
+Standalone Honeynet
+Strong Password Policy
+System Call Analysis
+System Call Filtering
+System Configuration Permissions
+System Daemon Monitoring
+System Dependency Mapping
+System File Analysis
+System Firmware Verification
+System Init Config Analysis
+System Mapping
+System Vulnerability Assessment
+TPM Boot Integrity
+Transfer Agent Authentication
+Unlock Account
+URL Analysis
+URL Reputation Analysis
+User Account Permissions
+User Behavior Analysis
+User Data Transfer Analysis
+User Geolocation Logon Pattern Analysis
+User Session Init Config Analysis
+Web Session Activity Analysis
