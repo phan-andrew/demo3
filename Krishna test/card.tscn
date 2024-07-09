@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ducg4oqqxsox1"]
 
-[ext_resource type="Script" path="res://CharacterBody2D.gd" id="1_1ndwy"]
-[ext_resource type="Texture2D" uid="uid://eae32ngq3rv8" path="res://pixil-frame-0.png" id="2_7axrr"]
+[ext_resource type="Script" path="res://Krishna test/CharacterBody2D.gd" id="1_1ndwy"]
+[ext_resource type="Texture2D" uid="uid://eae32ngq3rv8" path="res://Krishna test/pixil-frame-0.png" id="2_7axrr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mpsby"]
 size = Vector2(51, 64)

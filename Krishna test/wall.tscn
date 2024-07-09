@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://wmqqkciu7fpy"]
 
-[ext_resource type="Texture2D" uid="uid://c3dxg5wxdtl12" path="res://wall.png" id="1_ps4s3"]
-[ext_resource type="Script" path="res://Wall.gd" id="2_ddea1"]
+[ext_resource type="Texture2D" uid="uid://c3dxg5wxdtl12" path="res://Krishna test/wall.png" id="1_ps4s3"]
+[ext_resource type="Script" path="res://Krishna test/Wall.gd" id="2_ddea1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qj6fg"]
 size = Vector2(17, 611)
