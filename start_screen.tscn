@@ -47,8 +47,8 @@ offset_bottom = 23.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = -1
-position = Vector2(575, 326)
-scale = Vector2(1.146, 0.963964)
+position = Vector2(576, 324)
+scale = Vector2(1.152, 0.972973)
 texture = ExtResource("3_hxk6x")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
