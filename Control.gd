@@ -1,16 +1,18 @@
 extends Control
 
 
-# Called when the node enters the scene tree for the first time.
+var example_dict={}
+
 func _ready():
-	pass # Replace with function body.
+	import_resources_data()
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
-func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://start_screen.tscn")
-	hide()
+func import_resources_data():
+	var file= FileAccess.open("res://data/ATT&CK.txt", FileAccess.READ)
+	while !file.eof_reached():
+		var data_set = Array(file.get_csv_line())
+		example_dict[example_dict.size()] = data_set
+	file.close()
+	var a=0
+	while a<5:
+		print(example_dict[a][0])
+		a+=1

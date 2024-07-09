@@ -1,0 +1,44 @@
+Reconnaissance,Resource Development,Initial Access,Execution,Persistence,Privilege Escalation,Defense Evasion,Credential Access,Discovery,Lateral Movement,Collection,Command and Control,Exfiltration,Impact
+Active Scanning,Acquire Access,Content Injection,Cloud Administration Command,Account Manipulation,Abuse Elevation Control Mechanism,Abuse Elevation Control Mechanism,Adversary-in-the-Middle,Account Discovery,Exploitation of Remote Services,Adversary-in-the-Middle,Application Layer Protocol,Automated Exfiltration,Account Access Removal
+Gather Victim Host Information,Acquire Infrastructure,Drive-by Compromise,Command and Scripting Interpreter,BITS Jobs,Access Token Manipulation,Access Token Manipulation,Brute Force,Application Window Discovery,Internal Spearphishing,Archive Collected Data,Communication Through Removable Media,Data Transfer Size Limits,Data Destruction
+Gather Victim Identity Information,Compromise Accounts,Exploit Public-Facing Application,Container Administration Command,Boot or Logon Autostart Execution,Account Manipulation,BITS Jobs,Credentials from Password Stores,Browser Information Discovery,Lateral Tool Transfer,Audio Capture,Content Injection,Exfiltration Over Alternative Protocol,Data Encrypted for Impact
+Gather Victim Network Information,Compromise Infrastructure,External Remote Services,Deploy Container,Boot or Logon Initialization Scripts,Boot or Logon Autostart Execution,Build Image on Host,Exploitation for Credential Access,Cloud Infrastructure Discovery,Remote Service Session Hijacking,Automated Collection,Data Encoding,Exfiltration Over C2 Channel,Data Manipulation
+Gather Victim Org Information,Develop Capabilities,Hardware Additions,Exploitation for Client Execution,Browser Extensions,Boot or Logon Initialization Scripts,Debugger Evasion,Forced Authentication,Cloud Service Dashboard,Remote Services,Browser Session Hijacking,Data Obfuscation,Exfiltration Over Other Network Medium,Defacement
+Phishing for Information,Establish Accounts,Phishing,Inter-Process Communication,Compromise Host Software Binary,Create or Modify System Process,Deobfuscate/Decode Files or Information,Forge Web Credentials,Cloud Service Discovery,Replication Through Removable Media,Clipboard Data,Dynamic Resolution,Exfiltration Over Physical Medium,Disk Wipe
+Search Closed Sources,Obtain Capabilities,Replication Through Removable Media,Native API,Create Account,Domain or Tenant Policy Modification,Deploy Container,Input Capture,Cloud Storage Object Discovery,Software Deployment Tools,Data from Cloud Storage,Encrypted Channel,Exfiltration Over Web Service,Endpoint Denial of Service
+Search Open Technical Databases,Stage Capabilities,Supply Chain Compromise,Scheduled Task/Job,Create or Modify System Process,Escape to Host,Direct Volume Access,Modify Authentication Process,Container and Resource Discovery,Taint Shared Content,Data from Configuration Repository,Fallback Channels,Scheduled Transfer,Financial Theft
+Search Open Websites/Domains,,Trusted Relationship,Serverless Execution,Event Triggered Execution,Event Triggered Execution,Domain or Tenant Policy Modification,Multi-Factor Authentication Interception,Debugger Evasion,Use Alternate Authentication Material,Data from Information Repositories,Hide Infrastructure,Transfer Data to Cloud Account,Firmware Corruption
+Search Victim-Owned Websites,,Valid Accounts,Shared Modules,External Remote Services,Exploitation for Privilege Escalation,Execution Guardrails,Multi-Factor Authentication Request Generation,Device Driver Discovery,,Data from Local System,Ingress Tool Transfer,,Inhibit System Recovery
+,,,Software Deployment Tools,Hijack Execution Flow,Hijack Execution Flow,Exploitation for Defense Evasion,Network Sniffing,Domain Trust Discovery,,Data from Network Shared Drive,Multi-Stage Channels,,Network Denial of Service
+,,,System Services,Implant Internal Image,Process Injection,File and Directory Permissions Modification,OS Credential Dumping,File and Directory Discovery,,Data from Removable Media,Non-Application Layer Protocol,,Resource Hijacking
+,,,User Execution,Modify Authentication Process,Scheduled Task/Job,Hide Artifacts,Steal Application Access Token,Group Policy Discovery,,Data Staged,Non-Standard Port,,Service Stop
+,,,Windows Management Instrumentation,Office Application Startup,Valid Accounts,Hijack Execution Flow,Steal or Forge Authentication Certificates,Log Enumeration,,Email Collection,Protocol Tunneling,,System Shutdown/Reboot
+,,,,Power Settings,,Impair Defenses,Steal or Forge Kerberos Tickets,Network Service Discovery,,Input Capture,Proxy,,
+,,,,Pre-OS Boot,,Impersonation,Steal Web Session Cookie,Network Share Discovery,,Screen Capture,Remote Access Software,,
+,,,,Scheduled Task/Job,,Indicator Removal,Unsecured Credentials,Network Sniffing,,Video Capture,Traffic Signaling,,
+,,,,Server Software Component,,Indirect Command Execution,,Password Policy Discovery,,,Web Service,,
+,,,,Traffic Signaling,,Masquerading,,Peripheral Device Discovery,,,,,
+,,,,Valid Accounts,,Modify Authentication Process,,Permission Groups Discovery,,,,,
+,,,,,,Modify Cloud Compute Infrastructure,,Process Discovery,,,,,
+,,,,,,Modify Registry,,Query Registry,,,,,
+,,,,,,Modify System Image,,Remote System Discovery,,,,,
+,,,,,,Network Boundary Bridging,,Software Discovery,,,,,
+,,,,,,Obfuscated Files or Information,,System Information Discovery,,,,,
+,,,,,,Plist File Modification,,System Location Discovery,,,,,
+,,,,,,Pre-OS Boot,,System Network Configuration Discovery,,,,,
+,,,,,,Process Injection,,System Network Connections Discovery,,,,,
+,,,,,,Reflective Code Loading,,System Owner/User Discovery,,,,,
+,,,,,,Rogue Domain Controller,,System Service Discovery,,,,,
+,,,,,,Rootkit,,System Time Discovery,,,,,
+,,,,,,Subvert Trust Controls,,Virtualization/Sandbox Evasion,,,,,
+,,,,,,System Binary Proxy Execution,,,,,,,
+,,,,,,System Script Proxy Execution,,,,,,,
+,,,,,,Template Injection,,,,,,,
+,,,,,,Traffic Signaling,,,,,,,
+,,,,,,Trusted Developer Utilities Proxy Execution,,,,,,,
+,,,,,,Unused/Unsupported Cloud Regions,,,,,,,
+,,,,,,Use Alternate Authentication Material,,,,,,,
+,,,,,,Valid Accounts,,,,,,,
+,,,,,,Virtualization/Sandbox Evasion,,,,,,,
+,,,,,,Weaken Encryption,,,,,,,
+,,,,,,XSL Script Processing,,,,,,,
