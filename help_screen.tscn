@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://hpwqdwsycf3r"]
+
+[ext_resource type="Script" path="res://Control.gd" id="1_locrl"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://mid_font_theme.tres" id="2_1ycly"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_locrl")
+
+[node name="back_button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 501.0
+offset_top = 503.0
+offset_right = 651.0
+offset_bottom = 603.0
+theme = ExtResource("2_1ycly")
+text = "BACK"
+
+[node name="Label2" type="Label" parent="."]
+offset_top = 32.0
+offset_right = 1151.0
+offset_bottom = 83.0
+theme = ExtResource("2_1ycly")
+theme_override_font_sizes/font_size = 50
+text = "HELP"
+horizontal_alignment = 1
+
+[node name="Label3" type="Label" parent="."]
+offset_left = 1.0
+offset_top = 84.0
+offset_right = 1153.0
+offset_bottom = 108.0
+theme = ExtResource("2_1ycly")
+theme_override_font_sizes/font_size = 23
+text = "___________"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="back_button" to="." method="_on_back_button_pressed"]

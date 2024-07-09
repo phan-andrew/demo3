@@ -31,11 +31,12 @@ script = ExtResource("2_quooa")
 [node name="Button" type="Button" parent="Timer_Label"]
 texture_filter = 1
 layout_mode = 0
-offset_left = -36.0
-offset_top = -3.0
-offset_right = -20.0
-offset_bottom = 13.0
+offset_left = -99.0
+offset_top = 519.0
+offset_right = 71.0
+offset_bottom = 553.0
 scale = Vector2(2, 2)
+text = "DEBATE"
 icon = ExtResource("3_ydppf")
 
 [node name="cardShadow" parent="." instance=ExtResource("4_u4wtv")]
