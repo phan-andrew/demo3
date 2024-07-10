@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://game_scenes/home_screen/home_screen.gd" id="1_0dgku"]
 [ext_resource type="PackedScene" uid="uid://c0bngicr1p4w0" path="res://game_scenes/prompts_screen/starting_prompts.tscn" id="1_xo1g2"]
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="3_j5dr0"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="3_j5dr0"]
 [ext_resource type="PackedScene" uid="uid://dfncvobr4liih" path="res://game_scenes/game_screen/game_screen.tscn" id="5_v2ldq"]
 
 [node name="HomeScreen" type="Node2D"]

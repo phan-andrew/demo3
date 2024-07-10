@@ -5,10 +5,10 @@ var hovering = false
 var reset_count = 0
 var reset = 50
 var inPlay = false
-var aPics = ["res://images/cards images/attack/Account Manipulation.png","res://images/cards images/attack/BITS Jobs.png","res://images/cards images/attack/Implant Internal Image.png"]
+var aPics = ["res://images/card_images/attack/Account Manipulation.png","res://images/card_images/attack/BITS Jobs.png","res://images/card_images/attack/Implant Internal Image.png"]
 var dPics = []
-var aBack = "res://cards/redcard-back.png"
-var bBack = "res://cards/bluecard-back.png" 
+var aBack = "res://images/card_images/general/redcard-back.png"
+var bBack = "res://images/card_images/general/bluecard-back.png" 
 var cardType
   
 # Called when the node enters the scene tree for the first time.

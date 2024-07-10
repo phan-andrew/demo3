@@ -1,34 +1,22 @@
-[gd_scene load_steps=15 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=12 format=3 uid="uid://dukho3wja08su"]
 
-[ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/cards images/bluecard-back.png" id="1_4eg6w"]
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
-[ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/cards images/bluecard-front.png" id="2_3mnai"]
-[ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/cards images/standardcard-back.png" id="3_jsa7j"]
-[ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/cards images/redcard-back.png" id="4_ovuep"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_nb5n5"]
-atlas = ExtResource("3_jsa7j")
-region = Rect2(0, 0, 825, 1335)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_by0vd"]
-atlas = ExtResource("4_ovuep")
-region = Rect2(0, 0, 825, 1335)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2p8a3"]
-atlas = ExtResource("1_4eg6w")
-region = Rect2(0, 0, 825, 1335)
+[ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/card_images/general/bluecard-front.png" id="2_jfmdk"]
+[ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/card_images/general/standardcard-back.png" id="3_nal1o"]
+[ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/card_images/general/redcard-back.png" id="4_rd7a2"]
+[ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/card_images/general/bluecard-back.png" id="5_ubw2l"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fgt5r"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_nb5n5")
+"texture": ExtResource("3_nal1o")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_by0vd")
+"texture": ExtResource("4_rd7a2")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_2p8a3")
+"texture": ExtResource("5_ubw2l")
 }],
 "loop": true,
 "name": &"default",
@@ -132,7 +120,7 @@ script = ExtResource("1_ocqbr")
 
 [node name="card" type="Sprite2D" parent="."]
 z_index = -1
-texture = ExtResource("2_3mnai")
+texture = ExtResource("2_jfmdk")
 
 [node name="card_back" type="AnimatedSprite2D" parent="card"]
 z_index = -1
