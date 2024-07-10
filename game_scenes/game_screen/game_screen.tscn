@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://dfncvobr4liih"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/game_screen.gd" id="1_2nm7d"]
 [ext_resource type="Script" path="res://game_scenes/home_screen/Timer_Label.gd" id="2_quooa"]
 [ext_resource type="Texture2D" uid="uid://deyg0mophu1js" path="res://images/UI_images/play_button.png" id="4_il6gx"]
