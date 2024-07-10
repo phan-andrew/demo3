@@ -15,7 +15,6 @@ var cardType
 func _ready():
 	$card.z_index = -1
 	$card/card_back.z_index = 0
-	print(Mitre.attack_dict)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

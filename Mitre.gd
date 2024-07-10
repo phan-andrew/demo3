@@ -6,7 +6,6 @@ var defend_dict={}
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	import_resources_data()
-	print(attack_dict)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
