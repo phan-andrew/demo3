@@ -2,7 +2,7 @@ extends Label
 
 var initialTime = 600
 var startTimer = false
-var play = true
+var play = false
 var playIcon = preload("res://images/UI images/play_button.png")
 var pauseIcon = preload("res://images/UI images/pause_button.png")
 
