@@ -32,14 +32,14 @@ var defend_dict={}
 func import_resources_data():
 	var file= FileAccess.open("res://data/ATT&CK_Names.txt", FileAccess.READ)
 	while !file.eof_reached():
-		var data_set = Array(file.get_csv_line())
-		attack_dict[attack_dict.size()] = data_set
+		var attack_data_set = Array(file.get_csv_line())
+		attack_dict[attack_dict.size()] = attack_data_set
 	file.close()
 	
 	var file2= FileAccess.open("res://data/D3FEND_Names.txt", FileAccess.READ)
 	while !file2.eof_reached():
-		var data_set2 = Array(file2.get_csv_line())
-		defend_dict[defend_dict.size()] = data_set2
+		var defense_data_set = Array(file2.get_csv_line())
+		defend_dict[defend_dict.size()] = defense_data_set
 	file2.close()
 	
 func add_attack_options():
