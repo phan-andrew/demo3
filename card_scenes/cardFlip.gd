@@ -15,6 +15,7 @@ var cardType
 func _ready():
 	$card.z_index = -1
 	$card/card_back.z_index = 0
+	print(Mitre.attack_dict)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -39,7 +40,7 @@ func _process(delta):
 func setCard(type, index):
 	cardType = type
 	if type == "a":		
-		$card.texture = load(aPics[index])
+		$card.texture = load(Mitre.attack_dict[index][3])
 	if type == "d":
 		$card.texture = load(dPics[index])
 
