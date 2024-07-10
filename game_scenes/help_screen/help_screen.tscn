@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://game_scenes/help_screen/Control.gd" id="1_0d67t"]
 [ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="2_1ycly"]
-[ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI images/Startscreen.png" id="3_ek7jy"]
+[ext_resource type="Texture2D" path="res://images/UI images/Startscreen.png" id="3_ek7jy"]
 
 [node name="Control" type="Control"]
 layout_mode = 3

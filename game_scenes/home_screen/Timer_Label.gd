@@ -3,8 +3,8 @@ extends Label
 var initialTime = 600
 var startTimer = false
 var play = false
-var playIcon = preload("res://images/UI images/play_button.png")
-var pauseIcon = preload("res://images/UI images/pause_button.png")
+var playIcon = preload("res://images/UI_images/play_button.png")
+var pauseIcon = preload("res://images/UI_images/pause_button.png")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
