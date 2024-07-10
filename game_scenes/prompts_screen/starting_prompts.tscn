@@ -21,4 +21,34 @@ offset_right = 764.0
 offset_bottom = 248.0
 theme = ExtResource("1_2nmyf")
 
+[node name="Button" type="Button" parent="."]
+offset_left = 463.0
+offset_top = 289.0
+offset_right = 666.0
+offset_bottom = 339.0
+text = "Upload OPFOR Profile"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 464.0
+offset_top = 354.0
+offset_right = 666.0
+offset_bottom = 403.0
+text = "Upload System Profile"
+
+[node name="FileDialog" type="FileDialog" parent="."]
+mode = 2
+title = "Open a File"
+size = Vector2i(600, 400)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+
+[node name="FileDialog2" type="FileDialog" parent="."]
+mode = 2
+title = "Open a File"
+size = Vector2i(600, 400)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+
 [connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
