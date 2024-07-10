@@ -1,10 +1,12 @@
-[gd_scene load_steps=12 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=14 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/card_images/general/bluecard-front.png" id="2_jfmdk"]
 [ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/card_images/general/standardcard-back.png" id="3_nal1o"]
 [ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/card_images/general/redcard-back.png" id="4_rd7a2"]
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/card_images/general/bluecard-back.png" id="5_ubw2l"]
+[ext_resource type="Theme" uid="uid://b5n6bvst5x6at" path="res://card_scenes/card_button_theme.tres" id="6_4fe4i"]
+[ext_resource type="Texture2D" uid="uid://bvc6nttjgbhfr" path="res://images/UI_images/expand_button.png" id="6_aj1ct"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fgt5r"]
 animations = [{
@@ -137,5 +139,21 @@ libraries = {
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_7wmbb")
 
+[node name="close_button" type="Button" parent="."]
+offset_left = -200.0
+offset_top = 700.0
+offset_right = -50.0
+offset_bottom = 850.0
+
+[node name="expand_button" type="Button" parent="."]
+offset_left = 50.0
+offset_top = 700.0
+offset_right = 72.0
+offset_bottom = 722.0
+scale = Vector2(6.8, 6.8)
+theme = ExtResource("6_4fe4i")
+icon = ExtResource("6_aj1ct")
+
 [connection signal="mouse_shape_entered" from="Area2D" to="." method="_on_area_2d_mouse_shape_entered"]
 [connection signal="mouse_shape_exited" from="Area2D" to="." method="_on_area_2d_mouse_shape_exited"]
+[connection signal="pressed" from="expand_button" to="." method="_on_expand_button_pressed"]

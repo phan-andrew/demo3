@@ -10,13 +10,20 @@ var numD = 0
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
+	$a_1.cardType = "a"
+	$a_2.cardType = "a"
+	$a_3.cardType = "a"
+	$d_1.cardType = "d"
+	$d_2.cardType = "d"
+	$d_3.cardType = "d"
+	print("yay")
 
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if $dropdown.generateACard && numA < 3:		
-		aCards[numA].setCard("a", $dropdown.attack_choice)
+		aCards[numA].setCard($dropdown.attack_choice)
 		aCards[numA].play()
 		$dropdown.generateACard = false
 		numA += 1
