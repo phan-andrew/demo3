@@ -56,3 +56,7 @@ func _on_defend_file_selected(path):
 		print("File saved to: ", save_path)
 	else:
 		print("error")
+		
+func _on_button_3_pressed():
+	get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
+	hide ()
