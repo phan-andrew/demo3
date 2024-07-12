@@ -112,3 +112,8 @@ func reset_card():
 	$expand_button.hide()
 	$card/card_back.frame = 0
 	$AnimationPlayer.play("card_flip")
+	
+func disable_buttons(state):
+	$close_button.disabled = state
+	#$expand_button.disabled = state
+

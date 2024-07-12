@@ -20,7 +20,7 @@ offset_bottom = 170.0
 theme = ExtResource("1_0jfxs")
 script = ExtResource("3_p0amw")
 
-[node name="Button" type="Button" parent="ProgressBar"]
+[node name="submit_button" type="Button" parent="ProgressBar"]
 layout_mode = 0
 offset_left = 773.0
 offset_top = 447.0
@@ -38,7 +38,7 @@ text = "10:00
 "
 script = ExtResource("2_quooa")
 
-[node name="Button" type="Button" parent="Timer_Label"]
+[node name="debate_button" type="Button" parent="Timer_Label"]
 texture_filter = 1
 layout_mode = 0
 offset_left = -99.0
@@ -85,5 +85,5 @@ z_index = 1
 position = Vector2(1050, 335)
 scale = Vector2(0.2, 0.2)
 
-[connection signal="pressed" from="ProgressBar/Button" to="ProgressBar" method="_on_button_pressed"]
-[connection signal="pressed" from="Timer_Label/Button" to="Timer_Label" method="_on_button_pressed"]
+[connection signal="pressed" from="ProgressBar/submit_button" to="ProgressBar" method="_on_submit_pressed"]
+[connection signal="pressed" from="Timer_Label/debate_button" to="." method="_on_debate_pressed"]

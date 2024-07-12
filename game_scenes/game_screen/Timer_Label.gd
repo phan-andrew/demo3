@@ -14,7 +14,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if startTimer && play:
-		$Button.icon = pauseIcon
+		$debate_button.icon = pauseIcon
 		initialTime -= delta
 		var minutes = int(initialTime) / 60
 		var seconds = int(initialTime) % 60
@@ -23,7 +23,5 @@ func _process(delta):
 		else:
 			text = str(minutes) + ":" + str(seconds)
 	else:
-		$Button.icon = playIcon
+		$debate_button.icon = playIcon
 
-func _on_button_pressed():
-	play = !play

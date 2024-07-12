@@ -16,10 +16,11 @@ func _load():
 	var file = FileAccess.open("res://Test_progressbar2.txt", FileAccess.READ)
 	var content = file.get_as_text()
 	return content
-
-func _on_button_pressed():
+	
+func _on_submit_pressed():
 	_progress()
 
 func _progress():
 	percent = 15
 	value = percent
+
