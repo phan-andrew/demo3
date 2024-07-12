@@ -27,7 +27,7 @@ func import_resources_data():
 		defend_dict[defend_dict.size()] = defense_data_set
 	file2.close()
 	
-	var file3 = FileAccess.open("res://Test_progressbar2.txt", FileAccess.READ)
+	var file3 = FileAccess.open("res://data/Test_progressbar2.txt", FileAccess.READ)
 	while !file3.eof_reached():
 		var timeline_data_set = Array(file3.get_csv_line())
 		timeline_dict[timeline_dict.size()] = timeline_data_set
