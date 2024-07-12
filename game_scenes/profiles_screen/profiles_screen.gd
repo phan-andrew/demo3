@@ -5,7 +5,7 @@ extends Node2D
 @onready var filedialog = $FileDialog
 @onready var filedialog2 = $FileDialog2
 @onready var cont = $Continue
-const data_path = "res://data/ATT&CK_database.txt"
+const data_path = "res://data/ATT&CK_Data_Download.txt"
 const template_path = "res://data/OPFOR_Profile_Template.txt"
 @onready var data_download_label = $Label4
 @onready var template_download_label = $Label5
