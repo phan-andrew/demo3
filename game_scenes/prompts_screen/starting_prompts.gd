@@ -6,8 +6,8 @@ var CTT_title
 @onready var file_dialog2 = $FileDialog2
 @onready var alabel = $attackfilelabel
 @onready var dlabel = $defendfilelabel
-var attackfile = false;
-var defendfile = false;
+var attackfile = true;
+var defendfile = true;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,8 +15,8 @@ func _ready():
 	defend_button.connect("pressed", Callable(self, "_on_defend_button_pressed"))
 	file_dialog.connect("file_selected", Callable(self, "_on_attack_file_selected"))
 	file_dialog2.connect("file_selected", Callable(self, "_on_defend_file_selected"))
-	alabel.text = "File Name"
-	dlabel.text = "File Name"
+	alabel.text = "Not Selected"
+	dlabel.text = "Not Selected"
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
