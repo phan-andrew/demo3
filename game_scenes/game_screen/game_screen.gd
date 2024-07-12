@@ -2,6 +2,7 @@ extends Node2D
 
 var aCards
 var dCards
+var buttons
 var aPics
 var numA = 0
 var numD = 0
@@ -10,6 +11,7 @@ var numD = 0
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
+	buttons = [$ProgressBar/submit_button, $dropdown/attack_option, $dropdown/defend_option]
 	$a_1.cardType = "a"
 	$a_2.cardType = "a"
 	$a_3.cardType = "a"
@@ -22,6 +24,11 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	for card in aCards:
+		if card.reset_dropdown:
+			$dropdown/attack_option.select(-1)
+			card.reset_dropdown = false			
+			
 	if $dropdown.generateACard:		
 		for card in aCards:
 			if $dropdown.generateACard:
@@ -29,10 +36,22 @@ func _process(delta):
 					card.setCard($dropdown.attack_choice)
 					card.play()
 					$dropdown.generateACard = false
-				
-			
 	if $dropdown.generateDCard && numD < 3:		
 		dCards[numD].visible = true
 		$dropdown.generateDCard = false
 		numD += 1
 		
+func disable_buttons(state):
+	for button in buttons:
+		button.disabled = state
+	for card in aCards:
+		card.disable_buttons(state)
+	
+	
+
+func _on_debate_pressed():
+	$Timer_Label.play = !$Timer_Label.play
+	if !$Timer_Label.play:
+		disable_buttons(true)
+	else:
+		disable_buttons(false)

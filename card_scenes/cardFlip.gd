@@ -15,6 +15,7 @@ var original_pos_y
 var expand_pos_x
 var expand_pos_y 
 var expanded = false
+var reset_dropdown = false
 
   
 # Called when the node enters the scene tree for the first time.
@@ -87,6 +88,7 @@ func _on_expand_button_pressed():
 		$expand_button.position.x -= 150
 		expanded = true
 		$close_button.hide()
+		
 	else:
 		scale.x /= 2
 		scale.y /= 2
@@ -102,6 +104,7 @@ func _on_expand_button_pressed():
 
 func _on_close_button_pressed():
 	reset_card()
+	reset_dropdown = true
 
 func reset_card():
 	inPlay = false
@@ -109,3 +112,8 @@ func reset_card():
 	$expand_button.hide()
 	$card/card_back.frame = 0
 	$AnimationPlayer.play("card_flip")
+	
+func disable_buttons(state):
+	$close_button.disabled = state
+	#$expand_button.disabled = state
+

@@ -2,6 +2,7 @@ extends Node
 
 var attack_dict={}
 var defend_dict={}
+var timeline_dict={}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -25,6 +26,9 @@ func import_resources_data():
 		var defense_data_set = Array(file2.get_csv_line())
 		defend_dict[defend_dict.size()] = defense_data_set
 	file2.close()
-
-
 	
+	var file3 = FileAccess.open("res://Test_progressbar2.txt", FileAccess.READ)
+	while !file3.eof_reached():
+		var timeline_data_set = Array(file3.get_csv_line())
+		timeline_dict[timeline_dict.size()] = timeline_data_set
+	file3.close()
