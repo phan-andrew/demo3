@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://ccs2tl83qppy0"
+
+[deps]
+
+files=["res://Krishna test/.Name.translation", "res://Krishna test/.Description.translation"]
+
+source_file="res://Krishna test/.csv"
+dest_files=["res://Krishna test/.Name.translation", "res://Krishna test/.Description.translation"]
+
+[params]
+
+compress=true
+delimiter=0

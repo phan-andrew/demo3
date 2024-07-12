@@ -9,6 +9,7 @@ var aPics = ["res://images/card_images/attack/Account Manipulation.png","res://i
 var dPics = []
 var aBack = "res://images/card_images/general/redcard-back.png"
 var bBack = "res://images/card_images/general/bluecard-back.png" 
+var cost=["res://images/card_images/general/1 Dollar.png", "res://images/card_images/general/2 Dollars.png", "res://images/card_images/general/3 Dollars.png"]
 var cardType
 var original_pos_x
 var original_pos_y
@@ -125,7 +126,11 @@ func disable_buttons(state):
 
 func setText(index):
 	if cardType=="a":
-		print("sigma")
 		$card/definition.text=(Mitre.attack_dict[index][3])
 		$card/definition.hide()
+func setCost(Cost):
+	if cardType=="a":
+		$card/Dollar.texture=load(cost[Cost])
+		$card/Dollar.hide()
+		
 	

@@ -34,6 +34,7 @@ func _process(delta):
 				if !card.inPlay:				
 					card.setCard($dropdown.attack_choice)
 					card.setText($dropdown.attack_choice)
+					card.setCost(0)
 					card.play()
 					$dropdown.generateACard = false
 	if $dropdown.generateDCard && numD < 3:		
