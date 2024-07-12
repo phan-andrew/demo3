@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=16 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/card_images/general/bluecard-front.png" id="2_jfmdk"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dv401rqumemwa" path="res://images/UI_images/close_button.png" id="6_0e2l7"]
 [ext_resource type="Theme" uid="uid://b5n6bvst5x6at" path="res://card_scenes/card_button_theme.tres" id="6_4fe4i"]
 [ext_resource type="Texture2D" uid="uid://bvc6nttjgbhfr" path="res://images/UI_images/expand_button.png" id="6_aj1ct"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="9_x0m77"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fgt5r"]
 animations = [{
@@ -159,6 +160,14 @@ offset_bottom = 722.0
 scale = Vector2(6.8, 6.8)
 theme = ExtResource("6_4fe4i")
 icon = ExtResource("6_aj1ct")
+
+[node name="card_text" type="TextEdit" parent="."]
+offset_left = -282.0
+offset_top = -536.0
+offset_right = 307.0
+offset_bottom = 538.0
+theme = ExtResource("9_x0m77")
+wrap_mode = 1
 
 [connection signal="mouse_shape_entered" from="Area2D" to="." method="_on_area_2d_mouse_shape_entered"]
 [connection signal="mouse_shape_exited" from="Area2D" to="." method="_on_area_2d_mouse_shape_exited"]

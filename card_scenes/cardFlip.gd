@@ -33,6 +33,7 @@ func _process(delta):
 		if !expanded:
 			$close_button.show()
 			$expand_button.show()
+			
 		if hovering:
 			reset_count = 0
 			if !flipped:
@@ -48,6 +49,7 @@ func _process(delta):
 		if reset_count > reset && flipped:
 			$AnimationPlayer.play_backwards("card_flip")
 			flipped = false
+			
 	
 			
 func setCard(index):
@@ -117,3 +119,8 @@ func disable_buttons(state):
 	$close_button.disabled = state
 	#$expand_button.disabled = state
 
+func setText(index):
+	if cardType=="a":
+		print("sigma")
+		$card_text.text=(Mitre.attack_dict[index][2])
+	
