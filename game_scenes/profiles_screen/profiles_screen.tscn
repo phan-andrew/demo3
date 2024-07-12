@@ -7,21 +7,45 @@
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_8wg2s")
 
-[node name="database_download" type="Button" parent="."]
-offset_left = 225.0
-offset_top = 317.0
-offset_right = 464.0
-offset_bottom = 405.0
+[node name="attack_database_download" type="Button" parent="."]
+offset_left = 162.0
+offset_top = 143.0
+offset_right = 553.0
+offset_bottom = 231.0
 theme = ExtResource("2_qb6p7")
-text = "DATABASE"
+text = "ATT&CK DATABASE"
 
-[node name="template_download" type="Button" parent="."]
-offset_left = 681.0
-offset_top = 317.0
-offset_right = 920.0
-offset_bottom = 407.0
+[node name="defend_database_download" type="Button" parent="."]
+offset_left = 162.0
+offset_top = 240.0
+offset_right = 553.0
+offset_bottom = 326.0
 theme = ExtResource("2_qb6p7")
-text = "TEMPLATE"
+text = "D3FEND DATABASE"
+
+[node name="defense_template_download" type="Button" parent="."]
+offset_left = 591.0
+offset_top = 240.0
+offset_right = 983.0
+offset_bottom = 327.0
+theme = ExtResource("2_qb6p7")
+text = "DEFEND TEMPLATE"
+
+[node name="timeline_template_download" type="Button" parent="."]
+offset_left = 355.0
+offset_top = 335.0
+offset_right = 788.0
+offset_bottom = 425.0
+theme = ExtResource("2_qb6p7")
+text = "TIMELINE TEMPLATE"
+
+[node name="opfor_template_download" type="Button" parent="."]
+offset_left = 591.0
+offset_top = 143.0
+offset_right = 980.0
+offset_bottom = 230.0
+theme = ExtResource("2_qb6p7")
+text = "OPFOR TEMPLATE"
 
 [node name="FileDialog" type="FileDialog" parent="."]
 size = Vector2i(600, 400)
@@ -31,11 +55,23 @@ access = 2
 size = Vector2i(600, 400)
 access = 2
 
+[node name="FileDialog3" type="FileDialog" parent="."]
+size = Vector2i(600, 400)
+access = 2
+
+[node name="FileDialog4" type="FileDialog" parent="."]
+size = Vector2i(600, 400)
+access = 2
+
+[node name="FileDialog5" type="FileDialog" parent="."]
+size = Vector2i(600, 400)
+access = 2
+
 [node name="Label" type="Label" parent="."]
 offset_left = 325.0
-offset_top = 40.0
+offset_top = 6.0
 offset_right = 825.0
-offset_bottom = 185.0
+offset_bottom = 68.0
 theme = ExtResource("2_qb6p7")
 text = "Create Your Profiles"
 horizontal_alignment = 1
@@ -43,27 +79,27 @@ vertical_alignment = 1
 
 [node name="Label2" type="Label" parent="."]
 offset_left = 219.0
-offset_top = 169.0
+offset_top = 76.0
 offset_right = 929.0
-offset_bottom = 211.0
+offset_bottom = 118.0
 theme = ExtResource("3_6gpeu")
-text = "Download the database and use the template to create your OPFOR Profile"
+text = "Download the databases and use the template to create your profiles"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Label3" type="Label" parent="."]
 offset_left = 124.0
-offset_top = 210.0
+offset_top = 111.0
 offset_right = 1030.0
-offset_bottom = 233.0
+offset_bottom = 134.0
 theme = ExtResource("3_6gpeu")
 text = "Choose a location and type a name for the files. Then open them in Excel or Google Sheets."
 
 [node name="Label4" type="Label" parent="."]
 offset_left = 99.0
-offset_top = 431.0
+offset_top = 439.0
 offset_right = 152.0
-offset_bottom = 463.0
+offset_bottom = 471.0
 theme = ExtResource("3_6gpeu")
 
 [node name="Label5" type="Label" parent="."]
@@ -73,10 +109,31 @@ offset_right = 151.0
 offset_bottom = 484.0
 theme = ExtResource("3_6gpeu")
 
+[node name="Label6" type="Label" parent="."]
+offset_left = 99.0
+offset_top = 461.0
+offset_right = 151.0
+offset_bottom = 495.0
+theme = ExtResource("3_6gpeu")
+
+[node name="Label7" type="Label" parent="."]
+offset_left = 99.0
+offset_top = 472.0
+offset_right = 151.0
+offset_bottom = 506.0
+theme = ExtResource("3_6gpeu")
+
+[node name="Label8" type="Label" parent="."]
+offset_left = 99.0
+offset_top = 482.0
+offset_right = 151.0
+offset_bottom = 516.0
+theme = ExtResource("3_6gpeu")
+
 [node name="Continue" type="Button" parent="."]
 offset_left = 410.0
-offset_top = 508.0
+offset_top = 559.0
 offset_right = 726.0
-offset_bottom = 620.0
+offset_bottom = 640.0
 theme = ExtResource("2_qb6p7")
 text = "CONTINUE"

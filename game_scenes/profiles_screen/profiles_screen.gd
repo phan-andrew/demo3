@@ -1,25 +1,57 @@
 extends Node2D
 
-@onready var data = $database_download
-@onready var template = $template_download
+@onready var attack_data = $attack_database_download
+@onready var opfor_template = $opfor_template_download
+@onready var defend_data = $defend_database_download
+@onready var defense_template = $defense_template_download
+@onready var timeline_template = $timeline_template_download
+@onready var cont = $Continue
+
 @onready var filedialog = $FileDialog
 @onready var filedialog2 = $FileDialog2
-@onready var cont = $Continue
-const data_path = "res://data/ATT&CK_Data_Download.txt"
-const template_path = "res://data/OPFOR_Profile_Template.txt"
-@onready var data_download_label = $Label4
-@onready var template_download_label = $Label5
+@onready var filedialog3 = $FileDialog3
+@onready var filedialog4 = $FileDialog4
+@onready var filedialog5 = $FileDialog5
+
+const attack_data_path = "res://data/ATT&CK_Data_Download.txt"
+const defend_data_path = "res://data/D3FEND_Data_Download.txt"
+const opfor_template_path = "res://data/OPFOR_Template.txt"
+const defend_template_path = "res://data/Defense_Template.txt"
+const timeline_template_path = "res://data/Timeline_Template.txt"
+
+@onready var attack_data_download_label = $Label4
+@onready var opfor_template_download_label = $Label5
+@onready var defend_data_download_label = $Label6
+@onready var defense_template_download_label = $Label7
+@onready var timeline_template_download_label = $Label8
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	data.pressed.connect(self._on_download_pressed)
-	template.pressed.connect(self._on_template_pressed)
+	attack_data.pressed.connect(self._on_attack_download_pressed)
 	filedialog.mode = FileDialog.FILE_MODE_SAVE_FILE
 	filedialog.file_selected.connect(self._on_file_selected)
 	filedialog.filters = ["*.csv"]
+	
+	opfor_template.pressed.connect(self._on_opfor_template_pressed)
 	filedialog2.mode = FileDialog.FILE_MODE_SAVE_FILE
 	filedialog2.file_selected.connect(self._on_file_2_selected)
 	filedialog2.filters = ["*.csv"]
+	
+	defend_data.pressed.connect(self._on_defend_data_pressed)
+	filedialog3.mode = FileDialog.FILE_MODE_SAVE_FILE
+	filedialog3.file_selected.connect(self._on_file_3_selected)
+	filedialog3.filters = ["*.csv"]
+	
+	defense_template.pressed.connect(self._on_defense_template_pressed)
+	filedialog4.mode = FileDialog.FILE_MODE_SAVE_FILE
+	filedialog4.file_selected.connect(self._on_file_4_selected)
+	filedialog4.filters = ["*.csv"]
+	
+	timeline_template.pressed.connect(self._on_timeline_template_pressed)
+	filedialog5.mode = FileDialog.FILE_MODE_SAVE_FILE
+	filedialog5.file_selected.connect(self._on_file_5_selected)
+	filedialog5.filters = ["*.csv"]
+	
 	cont.pressed.connect(self._on_continue_pressed)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -30,44 +62,107 @@ func _on_continue_pressed():
 	get_tree().change_scene_to_file("res://game_scenes/prompts_screen/starting_prompts.tscn")
 	hide ()
 
-func _on_download_pressed():
+func _on_attack_download_pressed():
 	filedialog.popup_centered()
-	
-func _on_template_pressed():
+
+func _on_opfor_template_pressed():
 	filedialog2.popup_centered()
 
+func _on_defend_data_pressed():
+	filedialog3.popup_centered()
+
+func _on_defense_template_pressed():
+	filedialog4.popup_centered()
+
+func _on_timeline_template_pressed():
+	filedialog5.popup_centered()
+
 func _on_file_selected(path):
-	var src_file = FileAccess.open(data_path, FileAccess.ModeFlags.READ)
+	var src_file = FileAccess.open(attack_data_path, FileAccess.ModeFlags.READ)
 	if src_file == null:
-		data_download_label.text = "Failed to find source"
+		attack_data_download_label.text = "Failed to find source"
 		return
 	
 	var data = src_file.get_buffer(src_file.get_length())
 	src_file.close()
 	var dest_file = FileAccess.open(path, FileAccess.ModeFlags.WRITE)
 	if dest_file == null:
-		data_download_label.text = "Failed to open destination file."
+		attack_data_download_label.text = "Failed to open destination file."
 		return
 
 	# Write the data to the destination file
 	dest_file.store_buffer(data)
 	dest_file.close()
-	data_download_label.text = "File saved successfully at: " + path
+	attack_data_download_label.text = "File saved successfully at: " + path
 
 func _on_file_2_selected(path):
-	var src_file = FileAccess.open(template_path, FileAccess.ModeFlags.READ)
+	var src_file = FileAccess.open(opfor_template_path, FileAccess.ModeFlags.READ)
 	if src_file == null:
-		template_download_label.text = "Failed to find source"
+		opfor_template_download_label.text = "Failed to find source"
 		return
 	
 	var data = src_file.get_buffer(src_file.get_length())
 	src_file.close()
 	var dest_file = FileAccess.open(path, FileAccess.ModeFlags.WRITE)
 	if dest_file == null:
-		template_download_label.text = "Failed to open destination file."
+		opfor_template_download_label.text = "Failed to open destination file."
 		return
 
 	# Write the data to the destination file
 	dest_file.store_buffer(data)
 	dest_file.close()
-	template_download_label.text = "File saved successfully at: " + path
+	opfor_template_download_label.text = "File saved successfully at: " + path
+
+func _on_file_3_selected(path):
+	var src_file = FileAccess.open(defend_data_path, FileAccess.ModeFlags.READ)
+	if src_file == null:
+		defend_data_download_label.text = "Failed to find source"
+		return
+	
+	var data = src_file.get_buffer(src_file.get_length())
+	src_file.close()
+	var dest_file = FileAccess.open(path, FileAccess.ModeFlags.WRITE)
+	if dest_file == null:
+		defend_data_download_label.text = "Failed to open destination file."
+		return
+
+	# Write the data to the destination file
+	dest_file.store_buffer(data)
+	dest_file.close()
+	defend_data_download_label.text = "File saved successfully at: " + path
+
+func _on_file_4_selected(path):
+	var src_file = FileAccess.open(defend_template_path, FileAccess.ModeFlags.READ)
+	if src_file == null:
+		defense_template_download_label.text = "Failed to find source"
+		return
+	
+	var data = src_file.get_buffer(src_file.get_length())
+	src_file.close()
+	var dest_file = FileAccess.open(path, FileAccess.ModeFlags.WRITE)
+	if dest_file == null:
+		defense_template_download_label.text = "Failed to open destination file."
+		return
+
+	# Write the data to the destination file
+	dest_file.store_buffer(data)
+	dest_file.close()
+	defense_template_download_label.text = "File saved successfully at: " + path
+
+func _on_file_5_selected(path):
+	var src_file = FileAccess.open(timeline_template_path, FileAccess.ModeFlags.READ)
+	if src_file == null:
+		timeline_template_download_label.text = "Failed to find source"
+		return
+	
+	var data = src_file.get_buffer(src_file.get_length())
+	src_file.close()
+	var dest_file = FileAccess.open(path, FileAccess.ModeFlags.WRITE)
+	if dest_file == null:
+		timeline_template_download_label.text = "Failed to open destination file."
+		return
+
+	# Write the data to the destination file
+	dest_file.store_buffer(data)
+	dest_file.close()
+	timeline_template_download_label.text = "File saved successfully at: " + path

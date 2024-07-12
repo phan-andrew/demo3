@@ -37,7 +37,15 @@ offset_top = 354.0
 offset_right = 666.0
 offset_bottom = 403.0
 theme = ExtResource("3_mx321")
-text = "Upload System Profile"
+text = "Upload Defend Profile"
+
+[node name="Button4" type="Button" parent="."]
+offset_left = 463.0
+offset_top = 415.0
+offset_right = 681.0
+offset_bottom = 464.0
+theme = ExtResource("3_mx321")
+text = "Upload Timeline"
 
 [node name="FileDialog" type="FileDialog" parent="."]
 mode = 2
@@ -48,6 +56,14 @@ file_mode = 0
 access = 2
 
 [node name="FileDialog2" type="FileDialog" parent="."]
+mode = 2
+title = "Open a File"
+size = Vector2i(600, 400)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+
+[node name="FileDialog3" type="FileDialog" parent="."]
 mode = 2
 title = "Open a File"
 size = Vector2i(600, 400)
@@ -76,6 +92,14 @@ offset_left = 700.0
 offset_top = 353.0
 offset_right = 903.0
 offset_bottom = 403.0
+theme = ExtResource("3_mx321")
+vertical_alignment = 1
+
+[node name="timelinefilelabel" type="Label" parent="."]
+offset_left = 700.0
+offset_top = 415.0
+offset_right = 903.0
+offset_bottom = 465.0
 theme = ExtResource("3_mx321")
 vertical_alignment = 1
 

@@ -1,2 +1,0 @@
-Choose attacks from the database you downloaded that you wish to use in the CTT and write the index number in the first column. Write how much it will cost you to perform in the second column and how long it will take in the third column,,
-Index,Cost,Time
