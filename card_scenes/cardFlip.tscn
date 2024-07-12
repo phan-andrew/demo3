@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=18 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/card_images/general/bluecard-front.png" id="2_jfmdk"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dv401rqumemwa" path="res://images/UI_images/close_button.png" id="6_0e2l7"]
 [ext_resource type="Theme" uid="uid://b5n6bvst5x6at" path="res://card_scenes/card_button_theme.tres" id="6_4fe4i"]
 [ext_resource type="Texture2D" uid="uid://bvc6nttjgbhfr" path="res://images/UI_images/expand_button.png" id="6_aj1ct"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="9_x0m77"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fgt5r"]
 animations = [{
@@ -25,6 +26,9 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p0gi6"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="Animation" id="Animation_2h8i5"]
 length = 0.001
@@ -51,6 +55,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("card/definition:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_noan5"]
@@ -80,6 +96,18 @@ tracks/1/keys = {
 "update": 1,
 "values": [-1, 0]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("card/definition:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.190245, 0.214989, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, false, true, true]
+}
 
 [sub_resource type="Animation" id="Animation_86bif"]
 resource_name = "start_flip"
@@ -108,10 +136,38 @@ tracks/1/keys = {
 "values": [0, -1]
 }
 
+[sub_resource type="Animation" id="Animation_gsarn"]
+resource_name = "end_flip"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("card/card_back:z_index")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [-2, 4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("card:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.07, 1), Vector2(1, 1)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bpgj4"]
 _data = {
 "RESET": SubResource("Animation_2h8i5"),
 "card_flip": SubResource("Animation_noan5"),
+"end_flip": SubResource("Animation_gsarn"),
 "start_flip": SubResource("Animation_86bif")
 }
 
@@ -128,6 +184,17 @@ texture = ExtResource("2_jfmdk")
 [node name="card_back" type="AnimatedSprite2D" parent="card"]
 z_index = -1
 sprite_frames = SubResource("SpriteFrames_fgt5r")
+
+[node name="definition" type="TextEdit" parent="card"]
+offset_left = -268.0
+offset_top = -530.0
+offset_right = 299.0
+offset_bottom = 544.0
+theme = ExtResource("9_x0m77")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_p0gi6")
+wrap_mode = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

@@ -33,6 +33,7 @@ func _process(delta):
 		if !expanded:
 			$close_button.show()
 			$expand_button.show()
+			
 		if hovering:
 			reset_count = 0
 			if !flipped:
@@ -41,6 +42,9 @@ func _process(delta):
 				if cardType == "d":
 					$card/card_back.frame = 2
 				$AnimationPlayer.play("card_flip")
+				print($AnimationPlayer.current_animation_position)
+				#while $AnimationPlayer.current_animation_position < 0.2:
+					#print("hehehaw")
 				flipped = true
 				
 		else: 
@@ -48,11 +52,12 @@ func _process(delta):
 		if reset_count > reset && flipped:
 			$AnimationPlayer.play_backwards("card_flip")
 			flipped = false
+		
 	
 			
 func setCard(index):
 	if cardType == "a":		
-		$card.texture = load(Mitre.attack_dict[index][3])
+		$card.texture = load(Mitre.attack_dict[index][4])
 	if cardType == "d":
 		$card.texture = load(dPics[index])
 
@@ -111,9 +116,16 @@ func reset_card():
 	$close_button.hide()
 	$expand_button.hide()
 	$card/card_back.frame = 0
-	$AnimationPlayer.play("card_flip")
+	$AnimationPlayer.play("end_flip")
+	
 	
 func disable_buttons(state):
 	$close_button.disabled = state
 	#$expand_button.disabled = state
 
+func setText(index):
+	if cardType=="a":
+		print("sigma")
+		$card/definition.text=(Mitre.attack_dict[index][3])
+		$card/definition.hide()
+	

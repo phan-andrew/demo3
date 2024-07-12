@@ -28,7 +28,7 @@ func add_attack_options():
 	var drop = $attack_option
 	var a = 0
 	while a<Mitre.attack_dict.size():
-		drop.add_item(Mitre.attack_dict[a][1])
+		drop.add_item(Mitre.attack_dict[a][2])
 		a+=1
 	drop.select(-1)
 	
