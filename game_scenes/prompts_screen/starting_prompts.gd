@@ -4,6 +4,8 @@ var CTT_title
 @onready var defend_button = $Button2
 @onready var file_dialog = $FileDialog
 @onready var file_dialog2 = $FileDialog2
+var attackfile = false;
+var defendfile = false;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -38,6 +40,7 @@ func _on_attack_file_selected(path):
 		save_file.close()
 		
 		print("File saved to: ", save_path)
+		attackfile = true
 	else:
 		print("error")
 		
@@ -54,9 +57,11 @@ func _on_defend_file_selected(path):
 		save_file.close()
 		
 		print("File saved to: ", save_path)
+		defendfile = true
 	else:
 		print("error")
 		
 func _on_button_3_pressed():
-	get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
-	hide ()
+	if attackfile && defendfile:
+		get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
+		hide ()
