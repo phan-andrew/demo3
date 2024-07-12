@@ -1,8 +1,8 @@
 extends ProgressBar
+var percent = 0
 
 func _ready():
 	pass
-	# print(_load())
 
 func _process(delta):
 	pass
@@ -13,4 +13,9 @@ func _load():
 	return content
 
 func _on_button_pressed():
-	pass # Replace with function body.
+	_progress()
+
+
+func _progress():
+	percent = 15
+	value = percent
