@@ -3,24 +3,23 @@ var percent = 0
 var total_segments = 0
 var total_time = 0
 var current_point = 0
-var curent_time = 0
+var index = 2 
+var current_time = 0
 
 func _ready():
-	pass
-	# print(_load())
+	total_segments = str_to_var(Mitre.timeline_dict[0][0])
+	total_time = str_to_var(Mitre.timeline_dict[0][1])
 
 func _process(delta):
 	pass
 
-func _load():
-	var file = FileAccess.open("res://Test_progressbar2.txt", FileAccess.READ)
-	var content = file.get_as_text()
-	return content
-	
 func _on_submit_pressed():
 	_progress()
 
 func _progress():
-	percent = 15
+	if (current_point < total_segments):
+		current_point + 1
+		index + 1
+		current_time = Mitre.timeline_dict[index][1]
+	percent = (current_time/total_time)*100
 	value = percent
-
