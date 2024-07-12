@@ -58,5 +58,19 @@ offset_right = 713.0
 offset_bottom = 566.0
 text = "CONTINUE"
 
+[node name="attackfilelabel" type="Label" parent="."]
+offset_left = 675.0
+offset_top = 288.0
+offset_right = 879.0
+offset_bottom = 338.0
+vertical_alignment = 1
+
+[node name="defendfilelabel" type="Label" parent="."]
+offset_left = 675.0
+offset_top = 354.0
+offset_right = 878.0
+offset_bottom = 404.0
+vertical_alignment = 1
+
 [connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]

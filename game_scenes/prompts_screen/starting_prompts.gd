@@ -4,6 +4,8 @@ var CTT_title
 @onready var defend_button = $Button2
 @onready var file_dialog = $FileDialog
 @onready var file_dialog2 = $FileDialog2
+@onready var alabel = $attackfilelabel
+@onready var dlabel = $defendfilelabel
 var attackfile = false;
 var defendfile = false;
 
@@ -13,6 +15,8 @@ func _ready():
 	defend_button.connect("pressed", Callable(self, "_on_defend_button_pressed"))
 	file_dialog.connect("file_selected", Callable(self, "_on_attack_file_selected"))
 	file_dialog2.connect("file_selected", Callable(self, "_on_defend_file_selected"))
+	alabel.text = "File Name"
+	dlabel.text = "File Name"
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -41,6 +45,7 @@ func _on_attack_file_selected(path):
 		
 		print("File saved to: ", save_path)
 		attackfile = true
+		alabel.text = path.get_file()
 	else:
 		print("error")
 		
@@ -58,6 +63,7 @@ func _on_defend_file_selected(path):
 		
 		print("File saved to: ", save_path)
 		defendfile = true
+		dlabel.text = path.get_file()
 	else:
 		print("error")
 		
