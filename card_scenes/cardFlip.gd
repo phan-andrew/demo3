@@ -42,6 +42,9 @@ func _process(delta):
 				if cardType == "d":
 					$card/card_back.frame = 2
 				$AnimationPlayer.play("card_flip")
+				print($AnimationPlayer.current_animation_position)
+				#while $AnimationPlayer.current_animation_position < 0.2:
+					#print("hehehaw")
 				flipped = true
 				
 		else: 
@@ -49,12 +52,12 @@ func _process(delta):
 		if reset_count > reset && flipped:
 			$AnimationPlayer.play_backwards("card_flip")
 			flipped = false
-			
+		
 	
 			
 func setCard(index):
 	if cardType == "a":		
-		$card.texture = load(Mitre.attack_dict[index][3])
+		$card.texture = load(Mitre.attack_dict[index][4])
 	if cardType == "d":
 		$card.texture = load(dPics[index])
 
@@ -122,5 +125,6 @@ func disable_buttons(state):
 func setText(index):
 	if cardType=="a":
 		print("sigma")
-		$card_text.text=(Mitre.attack_dict[index][2])
+		$card/definition.text=(Mitre.attack_dict[index][3])
+		$card/definition.hide()
 	
