@@ -29,8 +29,9 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if inPlay:
-		$close_button.show()
-		$expand_button.show()
+		if !expanded:
+			$close_button.show()
+			$expand_button.show()
 		if hovering:
 			reset_count = 0
 			if !flipped:
@@ -83,6 +84,7 @@ func _on_expand_button_pressed():
 		scale.y *= 2
 		z_index = 5
 		$expand_button.icon = load("res://images/UI_images/shrink_button.png")
+		$expand_button.position.x -= 150
 		expanded = true
 		$close_button.hide()
 	else:
@@ -92,6 +94,7 @@ func _on_expand_button_pressed():
 		position.y = original_pos_y
 		z_index = 1
 		$expand_button.icon = load("res://images/UI_images/expand_button.png")
+		$expand_button.position.x += 150
 		expanded = false
 		$close_button.show()
 		print("skibisidi")
