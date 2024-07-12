@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://c0bngicr1p4w0"]
+[gd_scene load_steps=4 format=3 uid="uid://c0bngicr1p4w0"]
 
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
 [ext_resource type="Script" path="res://game_scenes/prompts_screen/starting_prompts.gd" id="1_jomlb"]
+[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_jomlb")
@@ -24,8 +25,9 @@ theme = ExtResource("1_2nmyf")
 [node name="Button" type="Button" parent="."]
 offset_left = 463.0
 offset_top = 289.0
-offset_right = 666.0
+offset_right = 681.0
 offset_bottom = 339.0
+theme = ExtResource("3_mx321")
 text = "Upload OPFOR Profile"
 
 [node name="Button2" type="Button" parent="."]
@@ -33,6 +35,7 @@ offset_left = 464.0
 offset_top = 354.0
 offset_right = 666.0
 offset_bottom = 403.0
+theme = ExtResource("3_mx321")
 text = "Upload System Profile"
 
 [node name="FileDialog" type="FileDialog" parent="."]
@@ -56,20 +59,23 @@ offset_left = 420.0
 offset_top = 491.0
 offset_right = 713.0
 offset_bottom = 566.0
+theme = ExtResource("1_2nmyf")
 text = "CONTINUE"
 
 [node name="attackfilelabel" type="Label" parent="."]
-offset_left = 675.0
-offset_top = 288.0
-offset_right = 879.0
-offset_bottom = 338.0
+offset_left = 690.0
+offset_top = 289.0
+offset_right = 894.0
+offset_bottom = 339.0
+theme = ExtResource("3_mx321")
 vertical_alignment = 1
 
 [node name="defendfilelabel" type="Label" parent="."]
-offset_left = 675.0
-offset_top = 354.0
-offset_right = 878.0
-offset_bottom = 404.0
+offset_left = 690.0
+offset_top = 353.0
+offset_right = 893.0
+offset_bottom = 403.0
+theme = ExtResource("3_mx321")
 vertical_alignment = 1
 
 [connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
