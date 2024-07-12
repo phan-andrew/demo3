@@ -29,6 +29,8 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if inPlay:
+		$close_button.show()
+		$expand_button.show()
 		if hovering:
 			reset_count = 0
 			if !flipped:
@@ -44,6 +46,7 @@ func _process(delta):
 		if reset_count > reset && flipped:
 			$AnimationPlayer.play_backwards("card_flip")
 			flipped = false
+	
 			
 func setCard(index):
 	if cardType == "a":		
@@ -92,3 +95,14 @@ func _on_expand_button_pressed():
 		expanded = false
 		$close_button.show()
 		print("skibisidi")
+
+
+func _on_close_button_pressed():
+	reset_card()
+
+func reset_card():
+	inPlay = false
+	$close_button.hide()
+	$expand_button.hide()
+	$card/card_back.frame = 0
+	$AnimationPlayer.play("card_flip")

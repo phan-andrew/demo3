@@ -22,12 +22,15 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if $dropdown.generateACard && numA < 3:		
-		aCards[numA].setCard($dropdown.attack_choice)
-		aCards[numA].play()
-		$dropdown.generateACard = false
-		numA += 1
-		
+	if $dropdown.generateACard:		
+		for card in aCards:
+			if $dropdown.generateACard:
+				if !card.inPlay:				
+					card.setCard($dropdown.attack_choice)
+					card.play()
+					$dropdown.generateACard = false
+				
+			
 	if $dropdown.generateDCard && numD < 3:		
 		dCards[numD].visible = true
 		$dropdown.generateDCard = false
