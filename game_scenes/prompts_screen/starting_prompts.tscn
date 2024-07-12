@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://c0bngicr1p4w0"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
 [ext_resource type="Script" path="res://game_scenes/prompts_screen/starting_prompts.gd" id="1_jomlb"]
-[ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
+[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_jomlb")

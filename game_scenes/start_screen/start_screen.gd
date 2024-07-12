@@ -13,7 +13,7 @@ func _process(delta):
 
 func _on_button_3_pressed():
 	#get_tree().get_root().add_child(preload("res://home_screen.tscn").instantiate())
-	get_tree().change_scene_to_file("res://game_scenes/prompts_screen/starting_prompts.tscn")
+	get_tree().change_scene_to_file("res://game_scenes/profiles_screen/profiles_screen.tscn")
 	hide ()
 
 
