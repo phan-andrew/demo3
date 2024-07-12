@@ -18,7 +18,6 @@ func _ready():
 	$d_1.cardType = "d"
 	$d_2.cardType = "d"
 	$d_3.cardType = "d"
-	print("yay")
 
 
 
