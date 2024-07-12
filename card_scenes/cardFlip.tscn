@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=18 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/card_images/general/bluecard-front.png" id="2_jfmdk"]
@@ -136,10 +136,38 @@ tracks/1/keys = {
 "values": [0, -1]
 }
 
+[sub_resource type="Animation" id="Animation_gsarn"]
+resource_name = "end_flip"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("card/card_back:z_index")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [-2, 4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("card:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.07, 1), Vector2(1, 1)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bpgj4"]
 _data = {
 "RESET": SubResource("Animation_2h8i5"),
 "card_flip": SubResource("Animation_noan5"),
+"end_flip": SubResource("Animation_gsarn"),
 "start_flip": SubResource("Animation_86bif")
 }
 
