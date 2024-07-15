@@ -132,8 +132,8 @@ theme = ExtResource("3_6gpeu")
 
 [node name="Continue" type="Button" parent="."]
 offset_left = 410.0
-offset_top = 559.0
+offset_top = 524.0
 offset_right = 726.0
-offset_bottom = 640.0
+offset_bottom = 605.0
 theme = ExtResource("2_qb6p7")
 text = "CONTINUE"
