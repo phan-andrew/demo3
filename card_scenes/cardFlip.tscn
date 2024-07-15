@@ -221,7 +221,8 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_p0gi6")
 wrap_mode = 1
 
 [node name="Dollar" type="Sprite2D" parent="card"]
-position = Vector2(-152, 133)
+position = Vector2(-178.847, 273)
+scale = Vector2(0.804751, 1.03238)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -231,7 +232,7 @@ libraries = {
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0, -2)
+position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_7wmbb")
 
 [node name="close_button" type="Button" parent="."]
