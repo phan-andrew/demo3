@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://game_scenes/prompts_screen/starting_prompts.gd" id="1_jomlb"]
 [ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D2" type="Node2D"]
 script = ExtResource("1_jomlb")
 
 [node name="Label" type="Label" parent="."]
