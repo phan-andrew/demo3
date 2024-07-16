@@ -19,17 +19,13 @@ func _ready():
 	$d_1.cardType = "d"
 	$d_2.cardType = "d"
 	$d_3.cardType = "d"
-	var file = FileAccess.open(save_path, FileAccess.WRITE) 
-	file.close()
-
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	for card in aCards:
 		if card.reset_dropdown:
 			$dropdown/attack_option.select(-1)
-			card.reset_dropdown = false			
+			card.reset_dropdown = false
 			
 	if $dropdown.generateACard:
 		for card in aCards:
