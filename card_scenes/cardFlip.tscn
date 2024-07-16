@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=18 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/card_images/general/bluecard-front.png" id="2_jfmdk"]
@@ -6,9 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/card_images/general/redcard-back.png" id="4_rd7a2"]
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/card_images/general/bluecard-back.png" id="5_ubw2l"]
 [ext_resource type="Texture2D" uid="uid://dv401rqumemwa" path="res://images/UI_images/close_button.png" id="6_0e2l7"]
-[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="6_3juvv"]
 [ext_resource type="Theme" uid="uid://b5n6bvst5x6at" path="res://card_scenes/card_button_theme.tres" id="6_4fe4i"]
 [ext_resource type="Texture2D" uid="uid://bvc6nttjgbhfr" path="res://images/UI_images/expand_button.png" id="6_aj1ct"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="9_x0m77"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fgt5r"]
 animations = [{
@@ -26,14 +26,6 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aphlv"]
-
-[sub_resource type="Theme" id="Theme_u32eo"]
-default_font = ExtResource("6_3juvv")
-default_font_size = 25
-RichTextLabel/colors/default_color = Color(1, 1, 1, 0)
-RichTextLabel/styles/normal = SubResource("StyleBoxEmpty_aphlv")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p0gi6"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -153,7 +145,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [-2, 2]
+"values": [-2, 4]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -166,18 +158,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(0.07, 1), Vector2(1, 1)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("card/Dollar:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.293158, 0.310288),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [true, true, false]
 }
 
 [sub_resource type="Animation" id="Animation_86bif"]
@@ -206,18 +186,6 @@ tracks/1/keys = {
 "update": 1,
 "values": [0, -1]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("card/Dollar:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.294678, 0.309528),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [false, false, true]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bpgj4"]
 _data = {
@@ -241,20 +209,13 @@ texture = ExtResource("2_jfmdk")
 z_index = -1
 sprite_frames = SubResource("SpriteFrames_fgt5r")
 
-[node name="definition" type="TextEdit" parent="card"]
+[node name="definition" type="RichTextLabel" parent="card"]
 offset_left = -268.0
 offset_top = -530.0
 offset_right = 299.0
 offset_bottom = 544.0
-theme = SubResource("Theme_u32eo")
-theme_override_colors/background_color = Color(0, 0, 0, 0)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_selected_color = Color(0, 0, 0, 0)
-theme_override_colors/caret_background_color = Color(0, 0, 0, 0)
-theme_override_colors/word_highlighted_color = Color(0, 0, 0, 0)
-theme_override_font_sizes/font_size = 35
+theme = ExtResource("9_x0m77")
 theme_override_styles/normal = SubResource("StyleBoxFlat_p0gi6")
-wrap_mode = 1
 
 [node name="Dollar" type="Sprite2D" parent="card"]
 position = Vector2(-178.847, 273)
