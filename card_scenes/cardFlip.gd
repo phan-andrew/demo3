@@ -17,6 +17,7 @@ var expand_pos_x
 var expand_pos_y 
 var expanded = false
 var reset_dropdown = false
+var card_index = -1
 
   
 # Called when the node enters the scene tree for the first time.
@@ -61,7 +62,7 @@ func setCard(index):
 		$card.texture = load(Mitre.attack_dict[index][4])
 	if cardType == "d":
 		$card.texture = load(dPics[index])
-
+	card_index = index
 
 
 
@@ -118,6 +119,7 @@ func reset_card():
 	$expand_button.hide()
 	$card/card_back.frame = 0
 	$AnimationPlayer.play("end_flip")
+	card_index = -1
 	
 	
 func disable_buttons(state):

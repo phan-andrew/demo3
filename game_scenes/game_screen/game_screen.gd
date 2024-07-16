@@ -6,6 +6,7 @@ var buttons
 var aPics
 var numA = 0
 var numD = 0
+var save_path ="res://data/info.txt"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -18,6 +19,8 @@ func _ready():
 	$d_1.cardType = "d"
 	$d_2.cardType = "d"
 	$d_3.cardType = "d"
+	var file = FileAccess.open(save_path, FileAccess.WRITE) 
+	file.close()
 
 
 
@@ -28,13 +31,13 @@ func _process(delta):
 			$dropdown/attack_option.select(-1)
 			card.reset_dropdown = false			
 			
-	if $dropdown.generateACard:		
+	if $dropdown.generateACard:
 		for card in aCards:
 			if $dropdown.generateACard:
-				if !card.inPlay:				
+				if !card.inPlay:
 					card.setCard($dropdown.attack_choice)
 					card.setText($dropdown.attack_choice)
-					card.setCost(2)
+					card.setCost(1)
 					card.play()
 					$dropdown.generateACard = false
 	if $dropdown.generateDCard && numD < 3:		
@@ -56,3 +59,16 @@ func _on_debate_pressed():
 		disable_buttons(true)
 	else:
 		disable_buttons(false)
+		
+
+func _on_submit_button_pressed():
+	var row=[Time.get_time_string_from_system()]
+	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+	for card in aCards:
+		if card.card_index != -1:
+			row += [Mitre.attack_dict[card.card_index][2]]
+	file.seek_end()
+	file.store_csv_line(row)
+	file.close()
+	
+		
