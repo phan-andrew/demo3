@@ -5,7 +5,6 @@ var hovering = false
 var reset_count = 0
 var reset = 50
 var inPlay = false
-var aPics = ["res://images/card_images/attack/Account Manipulation.png","res://images/card_images/attack/BITS Jobs.png","res://images/card_images/attack/Implant Internal Image.png"]
 var dPics = []
 var aBack = "res://images/card_images/general/redcard-back.png"
 var bBack = "res://images/card_images/general/bluecard-back.png" 
@@ -130,9 +129,11 @@ func setText(index):
 	if cardType=="a":
 		$card/definition.text=(Mitre.attack_dict[index][3])
 		$card/definition.hide()
+		
 func setCost(Cost):
 	if cardType=="a":
 		$card/Dollar.texture=load(cost[Cost])
+		$card/Dollar.z_index = 2
 		$card/Dollar.hide()
 		
 	

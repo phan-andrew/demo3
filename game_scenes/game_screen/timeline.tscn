@@ -56,4 +56,4 @@ region_rect = Rect2(0, 0, 50, 10)
 position = Vector2(153, 185)
 scale = Vector2(5.71, 5.71)
 sprite_frames = SubResource("SpriteFrames_amj5b")
-frame_progress = 0.0399209
+frame_progress = 0.689435
