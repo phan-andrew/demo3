@@ -99,3 +99,9 @@ func _on_button_3_pressed():
 	if attackfile == true && defendfile == true && timelinefile == true:
 		get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
 		hide ()
+
+
+
+func _on_button_5_pressed():
+	get_tree().change_scene_to_file("res://game_scenes/profiles_screen/profiles_screen.tscn")
+	hide()

@@ -166,3 +166,10 @@ func _on_file_5_selected(path):
 	dest_file.store_buffer(data)
 	dest_file.close()
 	timeline_template_download_label.text = "File saved successfully at: " + path
+	
+
+
+
+func _on_button_pressed():
+	get_tree().change_scene_to_file("res://game_scenes/start_screen/start_screen.tscn")
+	hide()
