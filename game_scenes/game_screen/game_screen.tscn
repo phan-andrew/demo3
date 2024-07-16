@@ -107,6 +107,7 @@ position = Vector2(576, 324)
 scale = Vector2(1.44, 1.08)
 texture = ExtResource("9_cb041")
 
+[connection signal="pressed" from="ProgressBar/submit_button" to="." method="_on_submit_button_pressed"]
 [connection signal="pressed" from="ProgressBar/submit_button" to="ProgressBar" method="_on_submit_pressed"]
 [connection signal="pressed" from="ProgressBar/submit_button" to="ProgressBar/timeline_label" method="_on_submit_button_pressed"]
 [connection signal="pressed" from="Timer_Label/debate_button" to="." method="_on_debate_pressed"]

@@ -1,0 +1,59 @@
+[gd_scene load_steps=10 format=3 uid="uid://bl2iprvunslcr"]
+
+[ext_resource type="Script" path="res://game_scenes/game_screen/ParallaxLayer.gd" id="1_dnhea"]
+[ext_resource type="Texture2D" uid="uid://cbxy5iqvcmnil" path="res://images/UI_images/progress_bar/underwater/Left Seaweed.png" id="2_8d8la"]
+[ext_resource type="Texture2D" uid="uid://sqrbufposvrb" path="res://images/UI_images/progress_bar/underwater/Underwater Progress Bar.png" id="2_aeoal"]
+[ext_resource type="Texture2D" uid="uid://bp28eq7ykh7bp" path="res://images/UI_images/progress_bar/underwater/Mid Seaweed.png" id="3_yihho"]
+[ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="4_ar3ec"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
+atlas = ExtResource("2_8d8la")
+region = Rect2(0, 0, 15, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bvrdc"]
+atlas = ExtResource("3_yihho")
+region = Rect2(0, 0, 15, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxlwp"]
+atlas = ExtResource("4_ar3ec")
+region = Rect2(0, 0, 15, 50)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_amj5b"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x4vnv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bvrdc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rxlwp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bvrdc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(1149, 0)
+script = ExtResource("1_dnhea")
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(577.25, 149.5)
+scale = Vector2(1.1495, 1.15)
+texture = ExtResource("2_aeoal")
+region_rect = Rect2(0, 0, 50, 10)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(153, 185)
+scale = Vector2(5.71, 5.71)
+sprite_frames = SubResource("SpriteFrames_amj5b")
+frame_progress = 0.0399209
