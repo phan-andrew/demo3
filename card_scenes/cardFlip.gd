@@ -135,5 +135,3 @@ func setCost(Cost):
 		$card/Dollar.texture=load(cost[Cost])
 		$card/Dollar.z_index = 2
 		$card/Dollar.hide()
-		
-	

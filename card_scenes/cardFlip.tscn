@@ -1,7 +1,8 @@
-[gd_scene load_steps=18 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=19 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/card_images/general/bluecard-front.png" id="2_jfmdk"]
+[ext_resource type="Texture2D" uid="uid://c1jce2nhkjuxi" path="res://images/card_images/general/Clock.png" id="3_3ol8i"]
 [ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/card_images/general/standardcard-back.png" id="3_nal1o"]
 [ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/card_images/general/redcard-back.png" id="4_rd7a2"]
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/card_images/general/bluecard-back.png" id="5_ubw2l"]
@@ -80,6 +81,18 @@ tracks/3/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("card/Clock:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="Animation" id="Animation_noan5"]
 resource_name = "card_flip"
@@ -128,6 +141,18 @@ tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1902, 0.215, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, true, false, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("card/Clock:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1902, 0.215, 0.399892),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [true, true, false, false]
@@ -205,6 +230,10 @@ script = ExtResource("1_ocqbr")
 z_index = -1
 texture = ExtResource("2_jfmdk")
 
+[node name="Clock" type="Sprite2D" parent="card"]
+position = Vector2(176, 236)
+texture = ExtResource("3_3ol8i")
+
 [node name="card_back" type="AnimatedSprite2D" parent="card"]
 z_index = -1
 sprite_frames = SubResource("SpriteFrames_fgt5r")
@@ -232,16 +261,6 @@ libraries = {
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_7wmbb")
 
-[node name="close_button" type="Button" parent="."]
-visible = false
-offset_left = -200.0
-offset_top = 700.0
-offset_right = -178.0
-offset_bottom = 722.0
-scale = Vector2(6.8, 6.8)
-theme = ExtResource("6_4fe4i")
-icon = ExtResource("6_0e2l7")
-
 [node name="expand_button" type="Button" parent="."]
 visible = false
 offset_left = 50.0
@@ -252,7 +271,17 @@ scale = Vector2(6.8, 6.8)
 theme = ExtResource("6_4fe4i")
 icon = ExtResource("6_aj1ct")
 
+[node name="close_button" type="Button" parent="."]
+visible = false
+offset_left = -200.0
+offset_top = 700.0
+offset_right = -178.0
+offset_bottom = 722.0
+scale = Vector2(6.8, 6.8)
+theme = ExtResource("6_4fe4i")
+icon = ExtResource("6_0e2l7")
+
 [connection signal="mouse_shape_entered" from="Area2D" to="." method="_on_area_2d_mouse_shape_entered"]
 [connection signal="mouse_shape_exited" from="Area2D" to="." method="_on_area_2d_mouse_shape_exited"]
-[connection signal="pressed" from="close_button" to="." method="_on_close_button_pressed"]
 [connection signal="pressed" from="expand_button" to="." method="_on_expand_button_pressed"]
+[connection signal="pressed" from="close_button" to="." method="_on_close_button_pressed"]
