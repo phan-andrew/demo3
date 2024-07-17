@@ -1,5 +1,5 @@
 extends Label
-
+var speed = 13
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -8,4 +8,5 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	var velocity = Vector2(0, -speed)
+	position += velocity * delta
