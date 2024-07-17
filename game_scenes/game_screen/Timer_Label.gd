@@ -15,6 +15,7 @@ func _ready():
 func _process(delta):
 	if startTimer && play:
 		$debate_button.icon = pauseIcon
+		$debate_button2.icon = pauseIcon
 		initialTime -= delta
 		var minutes = int(initialTime) / 60
 		var seconds = int(initialTime) % 60
@@ -24,4 +25,5 @@ func _process(delta):
 			text = str(minutes) + ":" + str(seconds)
 	else:
 		$debate_button.icon = playIcon
+		$debate_button2.icon = playIcon
 
