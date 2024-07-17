@@ -99,7 +99,7 @@ scale = Vector2(0.2, 0.2)
 [node name="temp_background" type="Sprite2D" parent="."]
 modulate = Color(0.431393, 0.629335, 0.577402, 1)
 z_index = -2
-position = Vector2(623, 997)
+position = Vector2(576, 324)
 texture = ExtResource("9_cb041")
 
 [node name="timeline" parent="." instance=ExtResource("11_i0t33")]
