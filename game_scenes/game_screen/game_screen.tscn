@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dhg0ohpps2lt8" path="res://game_scenes/game_screen/dropdown.tscn" id="5_c2rya"]
 [ext_resource type="PackedScene" uid="uid://dukho3wja08su" path="res://card_scenes/cardFlip.tscn" id="6_2l2jm"]
 [ext_resource type="Texture2D" uid="uid://pepeo7wynq5d" path="res://images/UI_images/temp_background.png" id="9_cb041"]
-[ext_resource type="PackedScene" uid="uid://bl2iprvunslcr" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
+[ext_resource type="PackedScene" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
 
 [sub_resource type="Theme" id="Theme_takis"]
 

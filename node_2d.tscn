@@ -1,3 +1,18 @@
 [gd_scene format=3 uid="uid://cy6qdae7lgetf"]
 
 [node name="Node2D" type="Node2D"]
+
+[node name="Label" type="Label" parent="."]
+offset_left = 181.0
+offset_top = 415.0
+offset_right = 962.0
+offset_bottom = 646.0
+text = "r
+r
+r
+r
+r
+r
+r
+"
+horizontal_alignment = 1
