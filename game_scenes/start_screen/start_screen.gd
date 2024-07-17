@@ -1,10 +1,9 @@
 extends Node2D
-var scene_path = "res://audio/audio.tscn" 
-var scene = load(scene_path)
-var child_node_path := NodePath("res://audio/audio.tscn")
+var simultaneous_scene = preload("res://audio/audio.tscn").instantiate()
 
 func _ready():
-	var child_node = get_node(child_node_path)
+	#get_tree().root.add_child("res://audio/audio.tscn").$AudioStreamPlayer2.playing = true
+	pass
 
 func _process(delta):
 	pass

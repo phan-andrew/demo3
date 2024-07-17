@@ -19,6 +19,5 @@ func _on_h_slider_value_changed(value):
 	Settings.audio_value = value
 	AudioServer.set_bus_volume_db(bus_index, linear_to_db(value))
 
-
 func _on_theme_select_item_selected(index):
 	Settings.theme = index
