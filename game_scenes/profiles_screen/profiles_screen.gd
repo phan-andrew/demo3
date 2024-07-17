@@ -27,6 +27,10 @@ const timeline_template_path = "res://data/Timeline_Template.txt"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if Settings.changed_scene == 1:
+		$mouse_click.playing = true
+		Settings.changed_scene = 0
+	
 	attack_data.pressed.connect(self._on_attack_download_pressed)
 	filedialog.mode = FileDialog.FILE_MODE_SAVE_FILE
 	filedialog.file_selected.connect(self._on_file_selected)
@@ -171,5 +175,6 @@ func _on_file_5_selected(path):
 
 
 func _on_button_pressed():
+	Settings.changed_scene = 1
 	get_tree().change_scene_to_file("res://game_scenes/start_screen/start_screen.tscn")
 	hide()
