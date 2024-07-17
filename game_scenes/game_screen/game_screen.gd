@@ -8,6 +8,7 @@ var numA = 0
 var numD = 0
 var save_path ="res://data/info.txt"
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
@@ -19,6 +20,8 @@ func _ready():
 	$d_1.cardType = "d"
 	$d_2.cardType = "d"
 	$d_3.cardType = "d"
+	var file = FileAccess.open(save_path,FileAccess.WRITE)
+	file.close()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
