@@ -95,6 +95,8 @@ func _on_attack_submit_pressed():
 func _on_defense_submit_pressed():
 	$Timer_Label2.play = false
 	disable_defend_buttons(true)
+	$Window/OptionButton.select(-1)
+	$Window/SpinBox.value = 0
 	$Window.visible = true
 
 func _on_button_pressed():
