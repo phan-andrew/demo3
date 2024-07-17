@@ -1,52 +1,25 @@
-[gd_scene load_steps=12 format=3 uid="uid://dfncvobr4liih"]
+[gd_scene load_steps=11 format=3 uid="uid://dfncvobr4liih"]
 
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/game_screen.gd" id="1_2nm7d"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/Timer_Label.gd" id="2_quooa"]
-[ext_resource type="Script" path="res://game_scenes/game_screen/ProgressBar.gd" id="3_p0amw"]
 [ext_resource type="Texture2D" uid="uid://deyg0mophu1js" path="res://images/UI_images/play_button.png" id="4_il6gx"]
 [ext_resource type="PackedScene" uid="uid://dif6nj4pejdsw" path="res://card_scenes/card_shadowBackgrounds.tscn" id="4_u4wtv"]
 [ext_resource type="PackedScene" uid="uid://dhg0ohpps2lt8" path="res://game_scenes/game_screen/dropdown.tscn" id="5_c2rya"]
-[ext_resource type="Script" path="res://game_scenes/game_screen/timeline_label.gd" id="5_linu5"]
 [ext_resource type="PackedScene" uid="uid://dukho3wja08su" path="res://card_scenes/cardFlip.tscn" id="6_2l2jm"]
 [ext_resource type="Texture2D" uid="uid://pepeo7wynq5d" path="res://images/UI_images/temp_background.png" id="9_cb041"]
+[ext_resource type="PackedScene" uid="uid://bl2iprvunslcr" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
 
 [sub_resource type="Theme" id="Theme_takis"]
 
 [node name="game_screen" type="Node2D"]
 script = ExtResource("1_2nm7d")
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
-offset_left = 76.0
-offset_top = 140.0
-offset_right = 1076.0
-offset_bottom = 170.0
-theme = ExtResource("1_0jfxs")
-script = ExtResource("3_p0amw")
-
-[node name="submit_button" type="Button" parent="ProgressBar"]
-layout_mode = 0
-offset_left = 773.0
-offset_top = 447.0
-offset_right = 940.0
-offset_bottom = 481.0
-text = "submit"
-
-[node name="timeline_label" type="Label" parent="ProgressBar"]
-layout_mode = 0
-offset_left = 3.0
-offset_top = -102.0
-offset_right = 128.0
-offset_bottom = -76.0
-theme = ExtResource("1_0jfxs")
-text = "lllll"
-script = ExtResource("5_linu5")
-
 [node name="Timer_Label" type="Label" parent="."]
-offset_left = 513.0
-offset_top = 38.0
-offset_right = 639.0
-offset_bottom = 64.0
+offset_left = 517.0
+offset_top = 27.0
+offset_right = 643.0
+offset_bottom = 53.0
 theme = ExtResource("1_0jfxs")
 text = "10:00
 "
@@ -55,10 +28,10 @@ script = ExtResource("2_quooa")
 [node name="debate_button" type="Button" parent="Timer_Label"]
 texture_filter = 1
 layout_mode = 0
-offset_left = -99.0
-offset_top = 525.0
-offset_right = 71.0
-offset_bottom = 559.0
+offset_left = -92.0
+offset_top = 544.0
+offset_right = 78.0
+offset_bottom = 578.0
 scale = Vector2(2, 2)
 theme = SubResource("Theme_takis")
 text = "DEBATE"
@@ -115,11 +88,10 @@ scale = Vector2(0.2, 0.2)
 modulate = Color(0.431393, 0.629335, 0.577402, 1)
 z_index = -2
 position = Vector2(576, 324)
-scale = Vector2(1.44, 1.08)
 texture = ExtResource("9_cb041")
 
-[connection signal="pressed" from="ProgressBar/submit_button" to="." method="_on_submit_button_pressed"]
-[connection signal="pressed" from="ProgressBar/submit_button" to="ProgressBar" method="_on_submit_pressed"]
-[connection signal="pressed" from="ProgressBar/submit_button" to="ProgressBar/timeline_label" method="_on_submit_button_pressed"]
+[node name="timeline" parent="." instance=ExtResource("11_i0t33")]
+position = Vector2(0, -7.28)
+
 [connection signal="pressed" from="Timer_Label/debate_button" to="." method="_on_debate_pressed"]
 [connection signal="pressed" from="Timer_Label/debate_button2" to="." method="_on_debate_pressed"]

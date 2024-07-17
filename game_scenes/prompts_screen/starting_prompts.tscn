@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://c0bngicr1p4w0"]
+[gd_scene load_steps=4 format=3 uid="uid://c0bngicr1p4w0"]
 
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
 [ext_resource type="Script" path="res://game_scenes/prompts_screen/starting_prompts.gd" id="1_jomlb"]
-[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
-[ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="4_e3ols"]
+[ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 
 [node name="Node2D2" type="Node2D"]
 script = ExtResource("1_jomlb")
@@ -105,19 +104,14 @@ theme = ExtResource("3_mx321")
 vertical_alignment = 1
 
 [node name="Button5" type="Button" parent="."]
+z_index = 1
 offset_left = 251.0
 offset_top = 491.0
 offset_right = 401.0
-offset_bottom = 566.0
+offset_bottom = 567.0
 theme = ExtResource("1_2nmyf")
 button_mask = 3
 text = "BACK"
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-z_index = -1
-position = Vector2(576, 324)
-scale = Vector2(1.152, 0.972973)
-texture = ExtResource("4_e3ols")
 
 [connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]

@@ -13,7 +13,7 @@ var save_path ="res://data/info.txt"
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
-	buttons = [$ProgressBar/submit_button, $dropdown/attack_option, $dropdown/defend_option]
+	buttons = [$timeline/submit_button, $dropdown/attack_option, $dropdown/defend_option]
 	$a_1.cardType = "a"
 	$a_2.cardType = "a"
 	$a_3.cardType = "a"
@@ -23,6 +23,10 @@ func _ready():
 	var file = FileAccess.open(save_path,FileAccess.WRITE)
 	file.close()
 	disable_buttons(true)
+
+	
+
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -40,10 +44,23 @@ func _process(delta):
 					card.setCost(1)
 					card.play()
 					$dropdown.generateACard = false
+					
 	if $dropdown.generateDCard && numD < 3:		
 		dCards[numD].visible = true
 		$dropdown.generateDCard = false
 		numD += 1
+		
+	if $timeline.submitted == true:
+		var row=[Time.get_time_string_from_system()]
+		for card in aCards:
+			if card.card_index != -1:
+				row += [Mitre.attack_dict[card.card_index][2]]
+		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+		file.seek_end()
+		file.store_csv_line(row)
+		file.close()
+		$timeline.submitted = false
+		print("hehehaw")
 		
 func disable_buttons(state):
 	for button in buttons:
@@ -61,14 +78,6 @@ func _on_debate_pressed():
 		disable_buttons(false)
 		
 
-func _on_submit_button_pressed():
-	var row=[Time.get_time_string_from_system()]
-	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
-	for card in aCards:
-		if card.card_index != -1:
-			row += [Mitre.attack_dict[card.card_index][2]]
-	file.seek_end()
-	file.store_csv_line(row)
-	file.close()
+
 	
 		
