@@ -22,6 +22,7 @@ func _ready():
 	$d_3.cardType = "d"
 	var file = FileAccess.open(save_path,FileAccess.WRITE)
 	file.close()
+	disable_buttons(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
