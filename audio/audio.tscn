@@ -9,6 +9,6 @@
 process_mode = 3
 stream = ExtResource("1_u4d87")
 
-[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+[node name="mouse_click" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_c6lea")
 volume_db = 1.0
