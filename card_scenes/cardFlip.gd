@@ -139,6 +139,7 @@ func setCost(Cost):
 func setTimeImage():
 	if cardType=="a":
 		$card/Clock.texture=load("res://images/card_images/general/Clock.png")
+		$card/Clock.hide()
 func setTimeValue(value):
 	if cardType=="a":
 		$card/Time.text=value
