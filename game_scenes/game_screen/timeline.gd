@@ -12,7 +12,11 @@ func _ready():
 	total_time = str_to_var(Mitre.timeline_dict[0][1])
 
 func _process(delta):
-	pass
+	if $ParallaxBackground/ParallaxLayer.progressing:
+		$sub.play("move")
+	else:
+		$sub.play("hover")
+		
 
 
 

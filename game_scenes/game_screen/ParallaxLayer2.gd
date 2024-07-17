@@ -11,7 +11,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if progressing && timer < move_time:
-		motion_offset.x -= 40 * delta
+		motion_offset.x -= 200 * delta
 		timer += delta
 	else:
 		progressing = false
