@@ -77,7 +77,7 @@ func disable_defend_buttons(state):
 	for card in dCards:
 		card.disable_buttons(state)
 
-func _on_debate_pressed():
+func _on_pause_pressed():
 	$Timer_Label.play = !$Timer_Label.play
 	if !$Timer_Label.play:
 		disable_attack_buttons(true)
@@ -95,3 +95,9 @@ func _on_attack_submit_pressed():
 func _on_defense_submit_pressed():
 	$Timer_Label2.play = false
 	disable_defend_buttons(true)
+	$Window.visible = true
+
+func _on_button_pressed():
+	$Window.visible = false
+	disable_attack_buttons(false)
+	$Timer_Label.play = true
