@@ -1,15 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://cy6qdae7lgetf"]
+[gd_scene load_steps=3 format=3 uid="uid://cy6qdae7lgetf"]
 
-[ext_resource type="Script" path="res://node_2d.gd" id="1_kqq2e"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_7je7x"]
+[ext_resource type="Script" path="res://Label.gd" id="2_1xj6c"]
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_kqq2e")
 
 [node name="Label" type="Label" parent="."]
-offset_left = 181.0
-offset_top = 415.0
-offset_right = 962.0
-offset_bottom = 646.0
+offset_left = 182.0
+offset_top = 645.0
+offset_right = 963.0
+offset_bottom = 876.0
+theme = ExtResource("1_7je7x")
 text = "r
 r
 r
@@ -19,3 +20,4 @@ r
 r
 "
 horizontal_alignment = 1
+script = ExtResource("2_1xj6c")
