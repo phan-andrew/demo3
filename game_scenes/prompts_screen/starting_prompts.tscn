@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://c0bngicr1p4w0"]
+[gd_scene load_steps=6 format=3 uid="uid://c0bngicr1p4w0"]
 
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
 [ext_resource type="Script" path="res://game_scenes/prompts_screen/starting_prompts.gd" id="1_jomlb"]
 [ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="4_e3ols"]
+[ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="5_ncscu"]
 
 [node name="Node2D2" type="Node2D"]
 script = ExtResource("1_jomlb")
@@ -118,6 +119,10 @@ z_index = -1
 position = Vector2(576, 324)
 scale = Vector2(1.152, 0.973)
 texture = ExtResource("4_e3ols")
+
+[node name="mouse_click" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_ncscu")
+volume_db = 1.0
 
 [connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]

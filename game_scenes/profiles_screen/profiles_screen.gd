@@ -63,6 +63,7 @@ func _process(delta):
 	pass
 
 func _on_continue_pressed():
+	Settings.changed_scene = 1
 	get_tree().change_scene_to_file("res://game_scenes/prompts_screen/starting_prompts.tscn")
 	hide ()
 
