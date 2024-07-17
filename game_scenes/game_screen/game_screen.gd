@@ -21,7 +21,6 @@ func _ready():
 	
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
-	buttons = [$timeline/submit_button]
 	attackbuttons = [$dropdown/attack_option, $AttackSubmit]
 	defendbuttons = [$dropdown/defend_option, $DefenseSubmit]
 	$a_1.cardType = "a"
