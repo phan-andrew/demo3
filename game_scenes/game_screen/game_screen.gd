@@ -41,7 +41,9 @@ func _process(delta):
 				if !card.inPlay:
 					card.setCard($dropdown.attack_choice)
 					card.setText($dropdown.attack_choice)
-					card.setCost(1)
+					card.setTimeImage()
+					card.setTimeValue("10 minutes")
+					card.setCost(2)
 					card.play()
 					$dropdown.generateACard = false
 					
@@ -67,7 +69,6 @@ func disable_buttons(state):
 		button.disabled = state
 	for card in aCards:
 		card.disable_buttons(state)
-	
 	
 
 func _on_debate_pressed():
