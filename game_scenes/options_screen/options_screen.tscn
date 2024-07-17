@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dos6dbexd3txx"]
 
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_h8dew"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_h8dew"]
 [ext_resource type="Script" path="res://game_scenes/options_screen/options_screen.gd" id="1_wqi3x"]
 [ext_resource type="Script" path="res://game_scenes/options_screen/HSlider.gd" id="2_05idc"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="3_183mr"]
@@ -93,5 +93,21 @@ position = Vector2(576, 324)
 scale = Vector2(1.152, 0.972973)
 texture = ExtResource("3_183mr")
 
+[node name="Theme_select" type="OptionButton" parent="."]
+layout_mode = 0
+offset_left = 493.0
+offset_top = 361.0
+offset_right = 662.0
+offset_bottom = 395.0
+theme = ExtResource("1_h8dew")
+item_count = 3
+popup/item_0/text = "SEA"
+popup/item_0/id = 0
+popup/item_1/text = "AIR"
+popup/item_1/id = 1
+popup/item_2/text = "LAND"
+popup/item_2/id = 2
+
 [connection signal="value_changed" from="HSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="item_selected" from="Theme_select" to="." method="_on_theme_select_item_selected"]

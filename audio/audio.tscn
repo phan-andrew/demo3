@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1alilv1t8b1y"]
+
+[ext_resource type="AudioStream" uid="uid://bd5u4ye323kfo" path="res://audio/audio.mp3" id="1_u4d87"]
+[ext_resource type="AudioStream" uid="uid://crt3hd5r7m5na" path="res://audio/Mouse Click Sound Effect.mp3" id="2_c6lea"]
+
+[node name="Audio" type="Node2D"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("1_u4d87")
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_c6lea")
+volume_db = 1.0
