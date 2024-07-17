@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cxr6p540cv54l"
+path="res://.godot/imported/Mouse Click Sound Effect edited.mp3-6b03de6416c442c43ef277a49a3d9446.mp3str"
+
+[deps]
+
+source_file="res://audio/Mouse Click Sound Effect edited.mp3"
+dest_files=["res://.godot/imported/Mouse Click Sound Effect edited.mp3-6b03de6416c442c43ef277a49a3d9446.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
