@@ -6,17 +6,28 @@ var current_point = 0
 var index = 2 
 var current_time = 1
 var submitted = false
+var vehicle
 
 func _ready():
 	total_segments = str_to_var(Mitre.timeline_dict[0][0])
 	total_time = str_to_var(Mitre.timeline_dict[0][1])
+	vehicle = $sub
 
 func _process(delta):
 	if $ParallaxBackground/ParallaxLayer.progressing:
-		$sub.play("move")
+		vehicle.play("move")
 	else:
-		$sub.play("hover")
-		
+		vehicle.play("hover")
+	if Settings.theme == 0:
+		$sub.show()
+		$plane.hide()
+		vehicle = $sub
+		$ParallaxBackground/ParallaxLayer/background.texture = load("res://images/UI_images/progress_bar/underwater/Underwater Progress Bar.png")
+	if Settings.theme == 1:
+		$sub.hide()
+		$plane.show()
+		vehicle = $plane
+		$ParallaxBackground/ParallaxLayer/background.texture = load("res://images/UI_images/progress_bar/air/Cloud Bar.png")
 
 
 

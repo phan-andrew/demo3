@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://bl2iprvunslcr"]
+[gd_scene load_steps=35 format=3 uid="uid://bl2iprvunslcr"]
 
 [ext_resource type="Script" path="res://game_scenes/game_screen/ParallaxLayer.gd" id="1_dnhea"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/timeline.gd" id="1_qm1ha"]
@@ -11,6 +11,7 @@
 [ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="7_unjkg"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/timeline_label.gd" id="8_du3h6"]
 [ext_resource type="Texture2D" uid="uid://dn1wao6cxa3kt" path="res://images/UI_images/progress_bar/underwater/Submarine.png" id="11_ksuuw"]
+[ext_resource type="Texture2D" uid="uid://c6uuio6befmmi" path="res://images/UI_images/progress_bar/air/airplane.png" id="12_y2538"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
 atlas = ExtResource("2_8d8la")
@@ -113,6 +114,75 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_3406i"]
+atlas = ExtResource("12_y2538")
+region = Rect2(0, 0, 40, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_go4hr"]
+atlas = ExtResource("12_y2538")
+region = Rect2(40, 0, 40, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3tjlp"]
+atlas = ExtResource("12_y2538")
+region = Rect2(80, 0, 40, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bg1vi"]
+atlas = ExtResource("12_y2538")
+region = Rect2(120, 0, 40, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_of4al"]
+atlas = ExtResource("12_y2538")
+region = Rect2(0, 25, 40, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w0dfq"]
+atlas = ExtResource("12_y2538")
+region = Rect2(40, 25, 40, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7p0tv"]
+atlas = ExtResource("12_y2538")
+region = Rect2(80, 25, 40, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0vyji"]
+atlas = ExtResource("12_y2538")
+region = Rect2(120, 25, 40, 25)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w7k1s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3406i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_go4hr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3tjlp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bg1vi")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_of4al")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w0dfq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7p0tv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0vyji")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
 [node name="timeline" type="Node2D"]
 script = ExtResource("1_qm1ha")
 
@@ -123,7 +193,7 @@ script = ExtResource("2_nyj2y")
 motion_mirroring = Vector2(1149, 0)
 script = ExtResource("1_dnhea")
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+[node name="background" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 position = Vector2(575, 125)
 scale = Vector2(1.1495, 1.15)
 texture = ExtResource("2_aeoal")
@@ -162,6 +232,15 @@ scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_ki2sm")
 animation = &"move"
 autoplay = "hover"
-frame_progress = 0.941852
+frame_progress = 0.320669
+
+[node name="plane" type="AnimatedSprite2D" parent="."]
+modulate = Color(0.439216, 0.517647, 0.329412, 1)
+position = Vector2(396, 138)
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_w7k1s")
+animation = &"move"
+autoplay = "hover"
+frame_progress = 0.774695
 
 [connection signal="pressed" from="submit_button" to="." method="_on_submit_button_pressed"]
