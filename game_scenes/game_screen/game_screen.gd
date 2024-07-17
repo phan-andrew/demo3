@@ -30,6 +30,7 @@ func _ready():
 	file.close()
 	disable_attack_buttons(true)
 	disable_defend_buttons(true)
+	$Window.visible = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
