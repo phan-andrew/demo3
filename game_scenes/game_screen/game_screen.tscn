@@ -1,14 +1,16 @@
-[gd_scene load_steps=11 format=3 uid="uid://dfncvobr4liih"]
+[gd_scene load_steps=13 format=3 uid="uid://dfncvobr4liih"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/game_screen.gd" id="1_2nm7d"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/Timer_Label.gd" id="2_quooa"]
 [ext_resource type="Texture2D" uid="uid://deyg0mophu1js" path="res://images/UI_images/play_button.png" id="4_il6gx"]
 [ext_resource type="PackedScene" uid="uid://dif6nj4pejdsw" path="res://card_scenes/card_shadowBackgrounds.tscn" id="4_u4wtv"]
 [ext_resource type="PackedScene" uid="uid://dhg0ohpps2lt8" path="res://game_scenes/game_screen/dropdown.tscn" id="5_c2rya"]
+[ext_resource type="Script" path="res://game_scenes/game_screen/Timer_Label2.gd" id="5_i01nf"]
 [ext_resource type="PackedScene" uid="uid://dukho3wja08su" path="res://card_scenes/cardFlip.tscn" id="6_2l2jm"]
 [ext_resource type="Texture2D" uid="uid://pepeo7wynq5d" path="res://images/UI_images/temp_background.png" id="9_cb041"]
-[ext_resource type="PackedScene" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
+[ext_resource type="PackedScene" uid="uid://bl2iprvunslcr" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
+[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
 
 [sub_resource type="Theme" id="Theme_takis"]
 
@@ -16,9 +18,9 @@
 script = ExtResource("1_2nm7d")
 
 [node name="Timer_Label" type="Label" parent="."]
-offset_left = 517.0
+offset_left = 412.0
 offset_top = 27.0
-offset_right = 643.0
+offset_right = 538.0
 offset_bottom = 53.0
 theme = ExtResource("1_0jfxs")
 text = "10:00
@@ -40,13 +42,23 @@ icon = ExtResource("4_il6gx")
 [node name="debate_button2" type="Button" parent="Timer_Label"]
 texture_filter = 1
 layout_mode = 0
-offset_left = -50.0
+offset_left = 148.0
 offset_top = -3.0
-offset_right = -34.0
+offset_right = 164.0
 offset_bottom = 13.0
 scale = Vector2(2, 2)
 theme = SubResource("Theme_takis")
 icon = ExtResource("4_il6gx")
+
+[node name="Timer_Label2" type="Label" parent="."]
+offset_left = 611.0
+offset_top = 27.0
+offset_right = 737.0
+offset_bottom = 53.0
+theme = ExtResource("1_0jfxs")
+text = "10:00
+"
+script = ExtResource("5_i01nf")
 
 [node name="cardShadow" parent="." instance=ExtResource("4_u4wtv")]
 position = Vector2(0, -40)
@@ -87,11 +99,29 @@ scale = Vector2(0.2, 0.2)
 [node name="temp_background" type="Sprite2D" parent="."]
 modulate = Color(0.431393, 0.629335, 0.577402, 1)
 z_index = -2
-position = Vector2(576, 324)
+position = Vector2(623, 997)
 texture = ExtResource("9_cb041")
 
 [node name="timeline" parent="." instance=ExtResource("11_i0t33")]
 position = Vector2(0, -7.28)
 
+[node name="AttackSubmit" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 560.0
+offset_right = 184.0
+offset_bottom = 591.0
+theme = ExtResource("11_qde7s")
+text = "Submit Attack"
+
+[node name="DefenseSubmit" type="Button" parent="."]
+offset_left = 670.0
+offset_top = 560.0
+offset_right = 834.0
+offset_bottom = 591.0
+theme = ExtResource("11_qde7s")
+text = "Submit Defense"
+
 [connection signal="pressed" from="Timer_Label/debate_button" to="." method="_on_debate_pressed"]
 [connection signal="pressed" from="Timer_Label/debate_button2" to="." method="_on_debate_pressed"]
+[connection signal="pressed" from="AttackSubmit" to="." method="_on_attack_submit_pressed"]
+[connection signal="pressed" from="DefenseSubmit" to="." method="_on_defense_submit_pressed"]

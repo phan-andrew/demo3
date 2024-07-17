@@ -3,6 +3,8 @@ extends Node2D
 var aCards
 var dCards
 var buttons
+var attackbuttons
+var defendbuttons
 var aPics
 var numA = 0
 var numD = 0
@@ -13,7 +15,9 @@ var save_path ="res://data/info.txt"
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
-	buttons = [$timeline/submit_button, $dropdown/attack_option, $dropdown/defend_option]
+	buttons = [$timeline/submit_button]
+	attackbuttons = [$dropdown/attack_option, $AttackSubmit]
+	defendbuttons = [$dropdown/defend_option, $DefenseSubmit]
 	$a_1.cardType = "a"
 	$a_2.cardType = "a"
 	$a_3.cardType = "a"
@@ -22,11 +26,8 @@ func _ready():
 	$d_3.cardType = "d"
 	var file = FileAccess.open(save_path,FileAccess.WRITE)
 	file.close()
-	disable_buttons(true)
-
-	
-
-
+	disable_attack_buttons(true)
+	disable_defend_buttons(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -64,21 +65,33 @@ func _process(delta):
 		$timeline.submitted = false
 		print("hehehaw")
 		
-func disable_buttons(state):
-	for button in buttons:
+func disable_attack_buttons(state):
+	for button in attackbuttons:
 		button.disabled = state
 	for card in aCards:
 		card.disable_buttons(state)
-	
+
+func disable_defend_buttons(state):
+	for button in defendbuttons:
+		button.disabled = state
+	for card in dCards:
+		card.disable_buttons(state)
 
 func _on_debate_pressed():
 	$Timer_Label.play = !$Timer_Label.play
 	if !$Timer_Label.play:
-		disable_buttons(true)
+		disable_attack_buttons(true)
+		disable_defend_buttons(true)
 	else:
-		disable_buttons(false)
-		
+		disable_attack_buttons(false)
 
+func _on_attack_submit_pressed():
+	$Timer_Label.play = false
+	$Timer_Label2.play = true
+	disable_attack_buttons(true)
+	disable_defend_buttons(false)
+	$DefenseSubmit.disabled = false
 
-	
-		
+func _on_defense_submit_pressed():
+	$Timer_Label2.play = false
+	disable_defend_buttons(true)
