@@ -9,6 +9,8 @@ var aPics
 var numA = 0
 var numD = 0
 var save_path ="res://data/info.txt"
+var successornah
+var likelihood
 
 
 # Called when the node enters the scene tree for the first time.
@@ -53,18 +55,7 @@ func _process(delta):
 		$dropdown.generateDCard = false
 		numD += 1
 		
-	if $timeline.submitted == true:
-		var row=[Time.get_time_string_from_system()]
-		for card in aCards:
-			if card.card_index != -1:
-				row += [Mitre.attack_dict[card.card_index][2]]
-		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
-		file.seek_end()
-		file.store_csv_line(row)
-		file.close()
-		$timeline.submitted = false
-		print("hehehaw")
-		
+	
 func disable_attack_buttons(state):
 	for button in attackbuttons:
 		button.disabled = state
@@ -99,7 +90,29 @@ func _on_defense_submit_pressed():
 	$Window/SpinBox.value = 0
 	$Window.visible = true
 
+func _on_option_button_item_selected(index):
+	if index==0:
+		successornah="Success"
+	else:
+		successornah="Failure"
+
+func _on_spin_box_value_changed(value):
+	likelihood=value
+
 func _on_button_pressed():
+	var row=[Time.get_time_string_from_system()]
+	for card in aCards:
+		if card.card_index != -1:
+			row += [Mitre.attack_dict[card.card_index][2]]
+	row += [successornah]
+	row += [likelihood]
+	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+	file.seek_end()
+	file.store_csv_line(row)
+	file.close()
+	$timeline.submitted = false
+	print("hehehaw")
 	$Window.visible = false
 	disable_attack_buttons(false)
 	$Timer_Label.play = true
+	$timeline._progress()

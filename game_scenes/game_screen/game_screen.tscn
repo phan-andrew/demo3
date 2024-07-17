@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://dfncvobr4liih"]
 
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/game_screen.gd" id="1_2nm7d"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/Timer_Label.gd" id="2_quooa"]
 [ext_resource type="Texture2D" uid="uid://deyg0mophu1js" path="res://images/UI_images/play_button.png" id="4_il6gx"]
@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dukho3wja08su" path="res://card_scenes/cardFlip.tscn" id="6_2l2jm"]
 [ext_resource type="Texture2D" uid="uid://pepeo7wynq5d" path="res://images/UI_images/temp_background.png" id="9_cb041"]
 [ext_resource type="PackedScene" uid="uid://bl2iprvunslcr" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
-[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
+[ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
 
 [sub_resource type="Theme" id="Theme_takis"]
 
@@ -158,3 +158,5 @@ alignment = 1
 [connection signal="pressed" from="AttackSubmit" to="." method="_on_attack_submit_pressed"]
 [connection signal="pressed" from="DefenseSubmit" to="." method="_on_defense_submit_pressed"]
 [connection signal="pressed" from="Window/Button" to="." method="_on_button_pressed"]
+[connection signal="item_selected" from="Window/OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="value_changed" from="Window/SpinBox" to="." method="_on_spin_box_value_changed"]
