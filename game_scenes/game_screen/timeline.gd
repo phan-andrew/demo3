@@ -22,7 +22,7 @@ func _progress():
 		index = index + 1
 		current_time = str_to_var(Mitre.timeline_dict[index][1])
 	percent = percent + ((float(current_time)/total_time)*100)
-	$ParallaxBackground/ParallaxLayer.progress()
+	$ParallaxBackground.progress()
 
 
 func _on_submit_button_pressed():

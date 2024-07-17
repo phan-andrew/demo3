@@ -241,20 +241,14 @@ texture = ExtResource("2_jfmdk")
 z_index = -1
 sprite_frames = SubResource("SpriteFrames_fgt5r")
 
-[node name="definition" type="TextEdit" parent="card"]
+[node name="definition" type="Label" parent="card"]
 offset_left = -268.0
 offset_top = -530.0
 offset_right = 299.0
 offset_bottom = 544.0
 theme = SubResource("Theme_u32eo")
-theme_override_colors/background_color = Color(0, 0, 0, 0)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_selected_color = Color(0, 0, 0, 0)
-theme_override_colors/caret_background_color = Color(0, 0, 0, 0)
-theme_override_colors/word_highlighted_color = Color(0, 0, 0, 0)
-theme_override_font_sizes/font_size = 35
 theme_override_styles/normal = SubResource("StyleBoxFlat_p0gi6")
-wrap_mode = 1
+autowrap_mode = 3
 
 [node name="Dollar" type="Sprite2D" parent="card"]
 position = Vector2(-178.847, 273)
