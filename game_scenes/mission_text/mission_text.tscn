@@ -1,11 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://cy6qdae7lgetf"]
+[gd_scene load_steps=7 format=3 uid="uid://cy6qdae7lgetf"]
 
 [ext_resource type="Script" path="res://game_scenes/mission_text/mission_text.gd" id="1_1tnxl"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2s7nj"]
-[ext_resource type="Script" path="res://game_scenes/mission_text/Label.gd" id="2_cs6ck"]
 [ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="3_7bdvt"]
+[ext_resource type="Texture2D" uid="uid://b50lklisctxhu" path="res://images/UI_images/pause_button.png" id="5_5tyjb"]
+[ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="6_1pw74"]
+[ext_resource type="Texture2D" uid="uid://b36qech8qekm7" path="res://images/UI_images/fast_forward_button.png" id="6_sl2nd"]
 
 [node name="node" type="Node2D"]
+position = Vector2(4, 0)
 script = ExtResource("1_1tnxl")
 
 [node name="Label" type="Label" parent="."]
@@ -23,21 +26,20 @@ r
 r
 "
 horizontal_alignment = 1
-script = ExtResource("2_cs6ck")
 
 [node name="back" type="Button" parent="."]
-offset_left = 35.0
-offset_top = 541.0
-offset_right = 185.0
-offset_bottom = 616.0
+offset_left = 76.0
+offset_top = 503.0
+offset_right = 226.0
+offset_bottom = 578.0
 theme = ExtResource("1_2s7nj")
 text = "BACK"
 
 [node name="skip" type="Button" parent="."]
-offset_left = 974.0
-offset_top = 543.0
-offset_right = 1124.0
-offset_bottom = 618.0
+offset_left = 921.0
+offset_top = 503.0
+offset_right = 1071.0
+offset_bottom = 578.0
 theme = ExtResource("1_2s7nj")
 text = "SKIP"
 
@@ -45,5 +47,32 @@ text = "SKIP"
 stream = ExtResource("3_7bdvt")
 volume_db = 1.0
 
-[connection signal="pressed" from="back" to="Label" method="_on_back_pressed"]
-[connection signal="pressed" from="skip" to="Label" method="_on_skip_pressed"]
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(572, 324)
+scale = Vector2(1.152, 0.972973)
+texture = ExtResource("6_1pw74")
+
+[node name="pause" type="Button" parent="."]
+offset_left = 922.0
+offset_top = 434.0
+offset_right = 938.0
+offset_bottom = 450.0
+scale = Vector2(3.5, 3.5)
+theme = ExtResource("1_2s7nj")
+icon = ExtResource("5_5tyjb")
+icon_alignment = 1
+
+[node name="speed_button" type="Button" parent="."]
+offset_left = 986.0
+offset_top = 434.0
+offset_right = 1010.0
+offset_bottom = 450.0
+scale = Vector2(3.5, 3.5)
+icon = ExtResource("6_sl2nd")
+icon_alignment = 1
+
+[connection signal="pressed" from="back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="skip" to="." method="_on_skip_pressed"]
+[connection signal="pressed" from="pause" to="." method="_on_pause_pressed"]
+[connection signal="pressed" from="speed_button" to="." method="_on_speed_button_pressed"]

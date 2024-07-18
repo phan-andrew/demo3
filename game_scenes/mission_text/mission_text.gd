@@ -1,13 +1,55 @@
 extends Node2D
+var speed = 13
+var playIcon = preload("res://images/UI_images/play_button.png")
+var pauseIcon = preload("res://images/UI_images/pause_button.png")
+var fastIcon = preload("res://images/UI_images/fast_forward_button.png")
+var pauseB = false
+var speedB = 1
 
-
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	if Settings.changed_scene == 1:
 		$mouse_click.playing = true
 		Settings.changed_scene = 0
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	var velocity = Vector2(0, -speed)
+	$Label.position += velocity * delta
+
+func _on_back_pressed():
+	Settings.changed_scene = 1
+	get_tree().change_scene_to_file("res://game_scenes/prompts_screen/starting_prompts.tscn")
+	hide ()
+	
+func _on_skip_pressed():
+	Settings.changed_scene = 1
+	get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
+	hide ()
+
+func _on_pause_pressed():
+	if pauseB == false:
+		pauseB = true
+		$pause.icon = playIcon
+		speed = 0
+	else:
+		if speedB == 1:
+			pauseB = false
+			$pause.icon = pauseIcon
+			speed = 13
+		if speedB == 2:
+			pauseB = false
+			$pause.icon = pauseIcon
+			speed = 26
+
+func _on_speed_button_pressed():
+	if speedB == 1:
+		if pauseB == false:
+			speed = 26
+			speedB = 2
+		else:
+			speedB = 2
+	else:
+		if pauseB == false:
+			speed = 13
+			speedB = 1
+		else:
+			speedB = 1
