@@ -9,12 +9,13 @@ var checkpoint = preload ("res://game_scenes/game_screen/checkpoint.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	initial_time = Mitre.timeline_dict[0][0]
+	initial_time = Mitre.timeline_dict[2][0]
 	for row in Mitre.timeline_dict:
-		var new_checkpoint = checkpoint.instantiate()
-		add_child(new_checkpoint)
-		new_checkpoint.position.x = 500 + (int(Mitre.timeline_dict[row][0]) - int(initial_time)) * 300
-		print(Mitre.timeline_dict[row][0])
+		if row > 1:
+			var new_checkpoint = checkpoint.instantiate()
+			add_child(new_checkpoint)
+			new_checkpoint.position.x = 500 + (int(Mitre.timeline_dict[row][0]) - int(initial_time)) * 300
+		
 		 
 
 func _process(delta):

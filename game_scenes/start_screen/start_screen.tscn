@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c3lhlwrt3ceu4"]
 
 [ext_resource type="Script" path="res://game_scenes/start_screen/start_screen.gd" id="1_ugavs"]
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="2_8iye3"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="2_8iye3"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="3_6unbj"]
 [ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="4_pnd8t"]
 
