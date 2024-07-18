@@ -39,33 +39,51 @@ text = "Enter Mission Statements"
 horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="."]
-offset_left = 112.0
+offset_left = 80.0
 offset_top = 196.0
-offset_right = 512.0
+offset_right = 505.0
 offset_bottom = 222.0
 theme = ExtResource("2_tn4v7")
 text = "Red Team Mission:"
 
 [node name="Label3" type="Label" parent="."]
-offset_left = 112.0
+offset_left = 80.0
 offset_top = 337.0
-offset_right = 537.0
+offset_right = 530.0
 offset_bottom = 363.0
 theme = ExtResource("2_tn4v7")
 text = "Blue Team Mission:"
 
 [node name="TextEdit" type="TextEdit" parent="."]
-offset_left = 585.0
+offset_left = 530.0
 offset_top = 146.0
-offset_right = 1063.0
-offset_bottom = 292.0
+offset_right = 910.0
+offset_bottom = 296.0
 
 [node name="TextEdit2" type="TextEdit" parent="."]
-offset_left = 585.0
+offset_left = 530.0
 offset_top = 313.0
-offset_right = 1063.0
-offset_bottom = 459.0
+offset_right = 910.0
+offset_bottom = 463.0
 virtual_keyboard_enabled = false
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 940.0
+offset_top = 201.0
+offset_right = 1050.0
+offset_bottom = 241.0
+theme = ExtResource("2_tn4v7")
+text = "Save"
+
+[node name="Button3" type="Button" parent="."]
+offset_left = 940.0
+offset_top = 370.0
+offset_right = 1050.0
+offset_bottom = 410.0
+theme = ExtResource("2_tn4v7")
+text = "Save"
 
 [connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
