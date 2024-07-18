@@ -203,6 +203,7 @@ region_rect = Rect2(0, 0, 50, 10)
 script = ExtResource("5_5y0d6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ParallaxBackground/ParallaxLayer2"]
+visible = false
 position = Vector2(618, 133)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_amj5b")

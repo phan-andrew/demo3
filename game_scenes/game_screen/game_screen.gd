@@ -15,6 +15,8 @@ var likelihood
 var currenttimer
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
+var round = 1
+var starting_time = int(Mitre.timeline_dict[0][0])
 
 
 # Called when the node enters the scene tree for the first time.
@@ -152,6 +154,9 @@ func _on_button_pressed():
 	disable_attack_buttons(false)
 	$Timer_Label/pause.disabled = false
 	$Timer_Label.play = true
-	$timeline._progress()
+	$timeline._progress((int(Mitre.timeline_dict[round][0]) - starting_time)*150)
+	starting_time = (int(Mitre.timeline_dict[round][0]))
 	$dropdown/attack_option.select(-1)
 	$dropdown/defend_option.select(-1)
+	
+	round += 1

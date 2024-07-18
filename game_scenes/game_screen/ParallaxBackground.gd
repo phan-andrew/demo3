@@ -10,6 +10,6 @@ func _ready():
 func _process(delta):
 	pass
 
-func progress():
-	$ParallaxLayer.progress()
-	$ParallaxLayer2.progress()
+func progress(speed):
+	$ParallaxLayer.progress(speed)
+	$ParallaxLayer2.progress(speed)
