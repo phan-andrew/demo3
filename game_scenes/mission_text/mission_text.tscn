@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://cy6qdae7lgetf"]
+
+[ext_resource type="Script" path="res://game_scenes/mission_text/mission_text.gd" id="1_1tnxl"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2s7nj"]
+[ext_resource type="Script" path="res://game_scenes/mission_text/Label.gd" id="2_cs6ck"]
+[ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="3_7bdvt"]
+
+[node name="node" type="Node2D"]
+script = ExtResource("1_1tnxl")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 182.0
+offset_top = 645.0
+offset_right = 963.0
+offset_bottom = 876.0
+theme = ExtResource("1_2s7nj")
+text = "r
+r
+r
+r
+r
+r
+r
+"
+horizontal_alignment = 1
+script = ExtResource("2_cs6ck")
+
+[node name="back" type="Button" parent="."]
+offset_left = 35.0
+offset_top = 541.0
+offset_right = 185.0
+offset_bottom = 616.0
+theme = ExtResource("1_2s7nj")
+text = "BACK"
+
+[node name="skip" type="Button" parent="."]
+offset_left = 974.0
+offset_top = 543.0
+offset_right = 1124.0
+offset_bottom = 618.0
+theme = ExtResource("1_2s7nj")
+text = "SKIP"
+
+[node name="mouse_click" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_7bdvt")
+volume_db = 1.0
+
+[connection signal="pressed" from="back" to="Label" method="_on_back_pressed"]
+[connection signal="pressed" from="skip" to="Label" method="_on_skip_pressed"]

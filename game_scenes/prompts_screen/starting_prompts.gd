@@ -102,10 +102,8 @@ func _on_timeline_file_selected(path):
 func _on_button_3_pressed():
 	if attackfile == true && defendfile == true && timelinefile == true:
 		Settings.changed_scene = 1
-		get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
+		get_tree().change_scene_to_file("res://game_scenes/mission_text/mission_text.tscn")
 		hide ()
-
-
 
 func _on_button_5_pressed():
 	Settings.changed_scene = 1
