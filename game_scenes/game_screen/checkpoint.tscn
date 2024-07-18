@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://ckro7775k25rt"]
+[gd_scene load_steps=19 format=3 uid="uid://ckro7775k25rt"]
 
+[ext_resource type="Script" path="res://game_scenes/game_screen/checkpoint.gd" id="1_a0ifi"]
 [ext_resource type="Texture2D" uid="uid://cbxy5iqvcmnil" path="res://images/UI_images/progress_bar/underwater/Left Seaweed.png" id="1_bkggd"]
 [ext_resource type="Texture2D" uid="uid://bp28eq7ykh7bp" path="res://images/UI_images/progress_bar/underwater/Mid Seaweed.png" id="2_b42bn"]
 [ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="3_34dha"]
+[ext_resource type="Texture2D" uid="uid://cigqyagm26e1i" path="res://images/UI_images/progress_bar/air/hotair baloom.png" id="4_xq277"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
 atlas = ExtResource("1_bkggd")
@@ -36,10 +38,83 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Node2D" type="Node2D"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_pth3g"]
+atlas = ExtResource("4_xq277")
+region = Rect2(0, 0, 10, 20)
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[sub_resource type="AtlasTexture" id="AtlasTexture_aaeq8"]
+atlas = ExtResource("4_xq277")
+region = Rect2(10, 0, 10, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wo6n6"]
+atlas = ExtResource("4_xq277")
+region = Rect2(20, 0, 10, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qfuna"]
+atlas = ExtResource("4_xq277")
+region = Rect2(30, 0, 10, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxihh"]
+atlas = ExtResource("4_xq277")
+region = Rect2(0, 20, 10, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cphdh"]
+atlas = ExtResource("4_xq277")
+region = Rect2(10, 20, 10, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ycj0b"]
+atlas = ExtResource("4_xq277")
+region = Rect2(20, 20, 10, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rh41s"]
+atlas = ExtResource("4_xq277")
+region = Rect2(30, 20, 10, 20)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5uoi7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pth3g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aaeq8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wo6n6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfuna")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rxihh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cphdh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ycj0b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rh41s")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_a0ifi")
+
+[node name="weed" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 133)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_km8h6")
 autoplay = "default"
+
+[node name="loon" type="AnimatedSprite2D" parent="."]
+position = Vector2(1, 121)
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_5uoi7")
+animation = &"hover"
+autoplay = "hover"
+frame_progress = 0.294785
