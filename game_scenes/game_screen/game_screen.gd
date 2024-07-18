@@ -5,12 +5,16 @@ var dCards
 var buttons
 var attackbuttons
 var defendbuttons
+var timers
 var aPics
 var numA = 0
 var numD = 0
 var save_path ="res://data/info.txt"
 var successornah
 var likelihood
+var currenttimer
+var playIcon = preload("res://images/UI_images/play_button.png")
+var pauseIcon = preload("res://images/UI_images/pause_button.png")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -23,16 +27,19 @@ func _ready():
 	dCards = [$d_1, $d_2, $d_3]
 	attackbuttons = [$dropdown/attack_option, $AttackSubmit]
 	defendbuttons = [$dropdown/defend_option, $DefenseSubmit]
+	timers = [$Timer_Label, $Timer_Label2]
 	$a_1.cardType = "a"
 	$a_2.cardType = "a"
 	$a_3.cardType = "a"
 	$d_1.cardType = "d"
 	$d_2.cardType = "d"
 	$d_3.cardType = "d"
+	currenttimer = 0
 	var file = FileAccess.open(save_path,FileAccess.WRITE)
 	file.close()
 	disable_attack_buttons(true)
 	disable_defend_buttons(true)
+	$Timer_Label/pause.disabled = true
 	$Window.visible = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -58,8 +65,17 @@ func _process(delta):
 		dCards[numD].visible = true
 		$dropdown.generateDCard = false
 		numD += 1
-		
 	
+	if $Timer_Label.play == true:
+		currenttimer = 0
+	elif $Timer_Label2.play == true:
+		currenttimer = 1
+	
+	if $Timer_Label.play == true || $Timer_Label2.play == true:
+		$Timer_Label/pause.icon = pauseIcon
+	else:
+		$Timer_Label/pause.icon = playIcon
+
 func disable_attack_buttons(state):
 	for button in attackbuttons:
 		button.disabled = state
@@ -73,12 +89,26 @@ func disable_defend_buttons(state):
 		card.disable_buttons(state)
 
 func _on_pause_pressed():
-	$Timer_Label.play = !$Timer_Label.play
-	if !$Timer_Label.play:
-		disable_attack_buttons(true)
-		disable_defend_buttons(true)
-	else:
-		disable_attack_buttons(false)
+	if currenttimer == 0:
+		$Timer_Label.play = !$Timer_Label.play
+		if !$Timer_Label.play:
+			disable_attack_buttons(true)
+			disable_defend_buttons(true)
+		else:
+			disable_attack_buttons(false)
+	elif currenttimer == 1:
+		$Timer_Label2.play = !$Timer_Label2.play
+		if !$Timer_Label2.play:
+			disable_attack_buttons(true)
+			disable_defend_buttons(true)
+		else:
+			disable_defend_buttons(false)
+
+func _on_start_game_pressed():
+	$Timer_Label.play = true
+	disable_attack_buttons(false)
+	$Timer_Label/pause.disabled = false
+	$StartGame.visible = false
 
 func _on_attack_submit_pressed():
 	$Timer_Label.play = false
@@ -90,6 +120,7 @@ func _on_attack_submit_pressed():
 func _on_defense_submit_pressed():
 	$Timer_Label2.play = false
 	disable_defend_buttons(true)
+	$Timer_Label/pause.disabled = true
 	$Window/OptionButton.select(-1)
 	$Window/SpinBox.value = 0
 	$Window.visible = true
@@ -118,5 +149,6 @@ func _on_button_pressed():
 	print("hehehaw")
 	$Window.visible = false
 	disable_attack_buttons(false)
+	$Timer_Label/pause.disabled = false
 	$Timer_Label.play = true
 	$timeline._progress()

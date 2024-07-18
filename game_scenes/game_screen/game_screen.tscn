@@ -172,9 +172,18 @@ text = "Success Likelihood:"
 stream = ExtResource("12_c4m53")
 volume_db = 1.0
 
+[node name="StartGame" type="Button" parent="."]
+offset_left = 493.0
+offset_top = 589.0
+offset_right = 660.0
+offset_bottom = 639.0
+theme = ExtResource("11_qde7s")
+text = "Start Game"
+
 [connection signal="pressed" from="Timer_Label/pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="AttackSubmit" to="." method="_on_attack_submit_pressed"]
 [connection signal="pressed" from="DefenseSubmit" to="." method="_on_defense_submit_pressed"]
 [connection signal="pressed" from="Window/Button" to="." method="_on_button_pressed"]
 [connection signal="item_selected" from="Window/OptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="value_changed" from="Window/SpinBox" to="." method="_on_spin_box_value_changed"]
+[connection signal="pressed" from="StartGame" to="." method="_on_start_game_pressed"]
