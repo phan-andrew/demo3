@@ -2,9 +2,14 @@ extends Node2D
 
 var submitted = false
 var vehicle
+var timeline = {}
+var timelabel
 
 func _ready():
 	vehicle = $sub
+	_on_start_timeline()
+	timelabel = int(timeline[2][0])
+	$Label.text = "T" + str(timelabel)
 
 func _process(delta):
 	if $ParallaxBackground/ParallaxLayer.progressing:
@@ -24,3 +29,10 @@ func _process(delta):
 
 func _progress(speed):
 	$ParallaxBackground.progress(speed)
+
+func _on_start_timeline():
+	var file= FileAccess.open("res://data/example_mission_timeline.txt", FileAccess.READ)
+	while !file.eof_reached():
+		var mission = Array(file.get_csv_line())
+		timeline[timeline.size()] = mission
+	file.close()
