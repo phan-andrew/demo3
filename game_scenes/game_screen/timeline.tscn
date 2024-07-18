@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bp28eq7ykh7bp" path="res://images/UI_images/progress_bar/underwater/Mid Seaweed.png" id="3_yihho"]
 [ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="4_ar3ec"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/ParallaxLayer2.gd" id="5_5y0d6"]
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="7_unjkg"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="7_unjkg"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/timeline_label.gd" id="8_du3h6"]
 [ext_resource type="Texture2D" uid="uid://dn1wao6cxa3kt" path="res://images/UI_images/progress_bar/underwater/Submarine.png" id="11_ksuuw"]
 [ext_resource type="Texture2D" uid="uid://c6uuio6befmmi" path="res://images/UI_images/progress_bar/air/airplane.png" id="12_y2538"]
@@ -211,9 +211,9 @@ autoplay = "default"
 frame_progress = 0.402242
 
 [node name="timeline_label" type="Label" parent="."]
-offset_left = 875.0
+offset_left = 24.0
 offset_top = 28.0
-offset_right = 1000.0
+offset_right = 149.0
 offset_bottom = 54.0
 theme = ExtResource("7_unjkg")
 text = "lllll"
@@ -235,11 +235,3 @@ sprite_frames = SubResource("SpriteFrames_w7k1s")
 animation = &"move"
 autoplay = "hover"
 frame_progress = 0.774695
-
-[node name="Label" type="Label" parent="."]
-offset_left = 18.0
-offset_top = 28.0
-offset_right = 93.0
-offset_bottom = 54.0
-theme = ExtResource("7_unjkg")
-text = "T-0"
