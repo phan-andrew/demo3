@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://bl2iprvunslcr"]
+[gd_scene load_steps=41 format=3 uid="uid://bl2iprvunslcr"]
 
 [ext_resource type="Script" path="res://game_scenes/game_screen/ParallaxLayer.gd" id="1_dnhea"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/timeline.gd" id="1_qm1ha"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://game_scenes/game_screen/timeline_label.gd" id="8_du3h6"]
 [ext_resource type="Texture2D" uid="uid://dn1wao6cxa3kt" path="res://images/UI_images/progress_bar/underwater/Submarine.png" id="11_ksuuw"]
 [ext_resource type="Texture2D" uid="uid://c6uuio6befmmi" path="res://images/UI_images/progress_bar/air/airplane.png" id="12_y2538"]
+[ext_resource type="Texture2D" uid="uid://dy01jwumvewn6" path="res://images/UI_images/progress_bar/land/Tanks.png" id="13_cc3wj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
 atlas = ExtResource("2_8d8la")
@@ -183,6 +184,42 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_5uwik"]
+atlas = ExtResource("13_cc3wj")
+region = Rect2(0, 0, 25, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ffpqr"]
+atlas = ExtResource("13_cc3wj")
+region = Rect2(25, 0, 25, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v814y"]
+atlas = ExtResource("13_cc3wj")
+region = Rect2(0, 40, 25, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pik3p"]
+atlas = ExtResource("13_cc3wj")
+region = Rect2(25, 40, 25, 40)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_j0nb0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5uwik")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ffpqr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v814y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pik3p")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
 [node name="timeline" type="Node2D"]
 script = ExtResource("1_qm1ha")
 
@@ -243,3 +280,9 @@ offset_right = 135.0
 offset_bottom = 74.0
 theme = ExtResource("7_unjkg")
 text = "edfdf"
+
+[node name="tank" type="AnimatedSprite2D" parent="."]
+position = Vector2(411, 33)
+scale = Vector2(7, 7)
+sprite_frames = SubResource("SpriteFrames_j0nb0")
+frame_progress = 0.836708
