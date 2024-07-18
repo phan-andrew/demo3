@@ -1,5 +1,5 @@
 extends Node2D
-var speed = 13
+var speed = 20
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var fastIcon = preload("res://images/UI_images/fast_forward_button.png")
@@ -10,7 +10,7 @@ func _ready():
 	if Settings.changed_scene == 1:
 		$mouse_click.playing = true
 		Settings.changed_scene = 0
-	$Label.text = Mitre.red_objective
+	$Label.text = "Mission Statement\n\n" + Mitre.blue_objective + "\n\n\n\nOPFOR Mission Statement\n\n" + Mitre.red_objective
 
 func _process(delta):
 	var velocity = Vector2(0, -speed)
@@ -35,22 +35,22 @@ func _on_pause_pressed():
 		if speedB == 1:
 			pauseB = false
 			$pause.icon = pauseIcon
-			speed = 13
+			speed = 20
 		if speedB == 2:
 			pauseB = false
 			$pause.icon = pauseIcon
-			speed = 26
+			speed = 40
 
 func _on_speed_button_pressed():
 	if speedB == 1:
 		if pauseB == false:
-			speed = 26
+			speed = 40
 			speedB = 2
 		else:
 			speedB = 2
 	else:
 		if pauseB == false:
-			speed = 13
+			speed = 20
 			speedB = 1
 		else:
 			speedB = 1
