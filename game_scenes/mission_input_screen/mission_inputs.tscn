@@ -1,0 +1,71 @@
+[gd_scene load_steps=4 format=3 uid="uid://de7ex1vqcxmq"]
+
+[ext_resource type="Script" path="res://game_scenes/mission_input_screen/mission_inputs.gd" id="1_2da3q"]
+[ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_dq41l"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="2_tn4v7"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_2da3q")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(576, 324)
+scale = Vector2(1.152, 0.973)
+texture = ExtResource("1_dq41l")
+
+[node name="Continue" type="Button" parent="."]
+offset_left = 420.0
+offset_top = 491.0
+offset_right = 713.0
+offset_bottom = 566.0
+theme = ExtResource("2_tn4v7")
+text = "CONTINUE"
+
+[node name="Button" type="Button" parent="."]
+offset_left = 251.0
+offset_top = 491.0
+offset_right = 401.0
+offset_bottom = 566.0
+theme = ExtResource("2_tn4v7")
+text = "BACK"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 278.0
+offset_top = 95.0
+offset_right = 878.0
+offset_bottom = 121.0
+theme = ExtResource("2_tn4v7")
+text = "Enter Mission Statements"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 112.0
+offset_top = 196.0
+offset_right = 512.0
+offset_bottom = 222.0
+theme = ExtResource("2_tn4v7")
+text = "Red Team Mission:"
+
+[node name="Label3" type="Label" parent="."]
+offset_left = 112.0
+offset_top = 337.0
+offset_right = 537.0
+offset_bottom = 363.0
+theme = ExtResource("2_tn4v7")
+text = "Blue Team Mission:"
+
+[node name="TextEdit" type="TextEdit" parent="."]
+offset_left = 585.0
+offset_top = 146.0
+offset_right = 1063.0
+offset_bottom = 292.0
+
+[node name="TextEdit2" type="TextEdit" parent="."]
+offset_left = 585.0
+offset_top = 313.0
+offset_right = 1063.0
+offset_bottom = 459.0
+virtual_keyboard_enabled = false
+
+[connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

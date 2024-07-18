@@ -10,7 +10,7 @@ func _process(delta):
 
 func _on_button_3_pressed():
 	Settings.changed_scene = 1
-	get_tree().change_scene_to_file("res://game_scenes/profiles_screen/profiles_screen.tscn")
+	get_tree().change_scene_to_file("res://game_scenes/mission_input_screen/mission_inputs.tscn")
 	hide ()
 
 func _on_button_pressed():
