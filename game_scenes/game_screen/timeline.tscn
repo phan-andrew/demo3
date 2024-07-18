@@ -200,7 +200,6 @@ texture = ExtResource("2_aeoal")
 region_rect = Rect2(0, 0, 50, 10)
 
 [node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(900, 0)
 script = ExtResource("5_5y0d6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ParallaxBackground/ParallaxLayer2"]

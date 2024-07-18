@@ -9,8 +9,6 @@ var submitted = false
 var vehicle
 
 func _ready():
-	total_segments = str_to_var(Mitre.timeline_dict[0][0])
-	total_time = str_to_var(Mitre.timeline_dict[0][1])
 	vehicle = $sub
 
 func _process(delta):
@@ -32,9 +30,4 @@ func _process(delta):
 
 
 func _progress():
-	if (current_point < total_segments):
-		current_point = current_point + 1
-		index = index + 1
-		current_time = str_to_var(Mitre.timeline_dict[index][1])
-	percent = percent + ((float(current_time)/total_time)*100)
 	$ParallaxBackground.progress()
