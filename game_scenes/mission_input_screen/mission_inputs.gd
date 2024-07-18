@@ -1,6 +1,4 @@
 extends Node2D
-var red_mission
-var blue_mission
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,9 +20,9 @@ func _on_button_pressed():
 	hide ()
 
 func _on_button_2_pressed():
-	red_mission = $TextEdit.text
+	Mitre.red_objective = $TextEdit.text
 	$TextEdit.clear()
 
 func _on_button_3_pressed():
-	blue_mission = $TextEdit2.text
+	Mitre.blue_objective = $TextEdit2.text
 	$TextEdit2.clear()

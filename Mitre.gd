@@ -3,6 +3,8 @@ extends Node
 var attack_dict={}
 var defend_dict={}
 var timeline_dict={}
+var red_objective=""
+var blue_objective=""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

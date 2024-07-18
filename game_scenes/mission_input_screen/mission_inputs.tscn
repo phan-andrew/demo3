@@ -59,6 +59,7 @@ offset_left = 530.0
 offset_top = 146.0
 offset_right = 910.0
 offset_bottom = 296.0
+wrap_mode = 1
 
 [node name="TextEdit2" type="TextEdit" parent="."]
 offset_left = 530.0

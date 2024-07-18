@@ -12,9 +12,9 @@ position = Vector2(4, 0)
 script = ExtResource("1_1tnxl")
 
 [node name="Label" type="Label" parent="."]
-offset_left = 182.0
+offset_left = 148.0
 offset_top = 645.0
-offset_right = 963.0
+offset_right = 999.0
 offset_bottom = 876.0
 theme = ExtResource("1_2s7nj")
 text = "r
@@ -26,6 +26,7 @@ r
 r
 "
 horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="back" type="Button" parent="."]
 offset_left = 76.0

@@ -10,6 +10,7 @@ func _ready():
 	if Settings.changed_scene == 1:
 		$mouse_click.playing = true
 		Settings.changed_scene = 0
+	$Label.text = Mitre.red_objective
 
 func _process(delta):
 	var velocity = Vector2(0, -speed)
