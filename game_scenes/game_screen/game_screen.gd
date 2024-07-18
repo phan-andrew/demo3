@@ -139,6 +139,7 @@ func _on_button_pressed():
 	for card in aCards:
 		if card.card_index != -1:
 			row += [Mitre.attack_dict[card.card_index][2]]
+			card.reset_card()
 	row += [successornah]
 	row += [likelihood]
 	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
@@ -152,3 +153,5 @@ func _on_button_pressed():
 	$Timer_Label/pause.disabled = false
 	$Timer_Label.play = true
 	$timeline._progress()
+	$dropdown/attack_option.select(-1)
+	$dropdown/defend_option.select(-1)
