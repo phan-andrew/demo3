@@ -18,13 +18,11 @@ var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var round = 1
 var starting_time = int(Mitre.timeline_dict[0][0])
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if Settings.changed_scene == 1:
 		$mouse_click.playing = true
 		Settings.changed_scene = 0
-	
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
 	attackbuttons = [$dropdown/attack_option, $AttackSubmit]
