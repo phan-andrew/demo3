@@ -48,14 +48,14 @@ func _ready():
 	if seconds < 10:
 		$Timer_Label.text = str(minutes) + ":0" + str(seconds)
 	else:
-		$Timmer_Label.text = str(minutes) + ":" + str(seconds)
+		$Timer_Label.text = str(minutes) + ":" + str(seconds)
 	initialTime = $Timer_Label2.initialTime
 	minutes = int(initialTime) / 60
 	seconds = int(initialTime) % 60
 	if seconds < 10:
 		$Timer_Label2.text = str(minutes) + ":0" + str(seconds)
 	else:
-		$Timmer_Label2.text = str(minutes) + ":" + str(seconds)
+		$Tmmer_Label2.text = str(minutes) + ":" + str(seconds)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
