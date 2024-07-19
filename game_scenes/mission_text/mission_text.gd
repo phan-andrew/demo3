@@ -11,6 +11,7 @@ func _ready():
 		$mouse_click.playing = true
 		Settings.changed_scene = 0
 	$Label.text = "Mission Statement\n\n" + Mitre.blue_objective + "\n\n\n\nOPFOR Mission Statement\n\n" + Mitre.red_objective
+	Music.scroll_music(1)
 
 func _process(delta):
 	var velocity = Vector2(0, -speed)
@@ -31,26 +32,31 @@ func _on_pause_pressed():
 		pauseB = true
 		$pause.icon = playIcon
 		speed = 0
+		Music.scroll_music(0)
 	else:
 		if speedB == 1:
 			pauseB = false
 			$pause.icon = pauseIcon
 			speed = 30
+			Music.scroll_music(1)
 		if speedB == 2:
 			pauseB = false
 			$pause.icon = pauseIcon
 			speed = 60
+			Music.scroll_music(1.5)
 
 func _on_speed_button_pressed():
 	if speedB == 1:
 		if pauseB == false:
 			speed = 60
 			speedB = 2
+			Music.scroll_music(1.5)
 		else:
 			speedB = 2
 	else:
 		if pauseB == false:
 			speed = 30
 			speedB = 1
+			Music.scroll_music(1)
 		else:
 			speedB = 1

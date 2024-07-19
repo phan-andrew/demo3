@@ -4,6 +4,7 @@ func _ready():
 	if Settings.changed_scene == 1:
 		$mouse_click.playing = true
 		Settings.changed_scene = 0
+	Music.start_music()
 
 func _process(delta):
 	pass

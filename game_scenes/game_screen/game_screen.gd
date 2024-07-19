@@ -55,7 +55,7 @@ func _ready():
 		$Timer_Label2.text = str(minutes) + ":0" + str(seconds)
 	else:
 		$Timer_Label2.text = str(minutes) + ":" + str(seconds)
-
+	Music.play_music()
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	for card in aCards:

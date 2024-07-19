@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://b0i5bpsq8pxhn"]
+
+[ext_resource type="Script" path="res://audio/music.gd" id="1_3q8f2"]
+[ext_resource type="AudioStream" uid="uid://wslku24es6lj" path="res://audio/starting_music.mp3" id="2_v01dd"]
+[ext_resource type="AudioStream" uid="uid://cyfiajco4jdu6" path="res://audio/scroll_music.mp3" id="3_u55nl"]
+[ext_resource type="AudioStream" uid="uid://der2cyay0loxc" path="res://audio/playing_music.mp3" id="4_gck3t"]
+
+[node name="SoundFx" type="Node2D"]
+script = ExtResource("1_3q8f2")
+
+[node name="start_music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_v01dd")
+autoplay = true
+
+[node name="scroll_music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_u55nl")
+
+[node name="play_music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_gck3t")

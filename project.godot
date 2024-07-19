@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Mitre="*res://Mitre.gd"
 Settings="*res://settings.gd"
+Music="*res://audio/music.tscn"
 
 [display]
 
