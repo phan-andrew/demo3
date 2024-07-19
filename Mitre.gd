@@ -5,7 +5,7 @@ var defend_dict={}
 var timeline_dict={}
 var red_objective=""
 var blue_objective=""
-var time_limit
+var time_limit = 300
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
