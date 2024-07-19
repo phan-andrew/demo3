@@ -321,4 +321,4 @@ scale = Vector2(7, 7)
 sprite_frames = SubResource("SpriteFrames_j0nb0")
 animation = &"move"
 autoplay = "hover"
-frame_progress = 0.886625
+frame_progress = 0.324634
