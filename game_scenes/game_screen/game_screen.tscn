@@ -24,7 +24,7 @@ offset_top = 27.0
 offset_right = 538.0
 offset_bottom = 53.0
 theme = ExtResource("1_0jfxs")
-text = "10:00
+text = "
 "
 script = ExtResource("2_quooa")
 
@@ -45,8 +45,6 @@ offset_top = 27.0
 offset_right = 737.0
 offset_bottom = 53.0
 theme = ExtResource("1_0jfxs")
-text = "10:00
-"
 script = ExtResource("5_i01nf")
 
 [node name="cardShadow" parent="." instance=ExtResource("4_u4wtv")]
@@ -113,6 +111,7 @@ text = "Submit Defense"
 [node name="Window" type="Window" parent="."]
 initial_position = 2
 size = Vector2i(300, 200)
+visible = false
 exclusive = true
 unresizable = true
 content_scale_mode = 2
