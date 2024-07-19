@@ -133,9 +133,15 @@ func _on_start_game_pressed():
 	$EndGame.visible = true
 
 func _on_end_game_pressed():
-	Settings.changed_scene = 1
-	get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
-	hide ()
+	$Window2.visible=true
+	
+func _on_quit_button_pressed():
+		Settings.changed_scene = 1
+		get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
+		hide()
+
+func _on_continue_button_pressed():
+	$Window2.visible=false
 
 func _on_attack_submit_pressed():
 	$Timer_Label.play = false
@@ -185,3 +191,6 @@ func _on_button_pressed():
 	$dropdown/defend_option.select(-1)	
 	round += 1
 	$timeline.timelabel += Mitre.attack_time_cost
+
+
+
