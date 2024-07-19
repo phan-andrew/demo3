@@ -142,4 +142,5 @@ func setTimeImage():
 		$card/Clock.hide()
 func setTimeValue(value):
 	if cardType=="a":
-		$card/Time.text=value
+		$card/Time.text=str(value) + " minutes"
+	Mitre.attack_time_cost = value

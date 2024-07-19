@@ -7,7 +7,6 @@ var timelabel
 func _ready():
 	vehicle = $sub
 	timelabel = int(Mitre.timeline_dict[2][0])
-	$Label.text = "T" + str(timelabel)
 
 func _process(delta):
 	if $ParallaxBackground/ParallaxLayer.progressing:
@@ -32,6 +31,8 @@ func _process(delta):
 		$tank.show()
 		vehicle = $tank
 		$ParallaxBackground/ParallaxLayer/background.texture = load("res://images/UI_images/progress_bar/land/Surface.png")
+	$Label.text = "T" + str(timelabel)
+
 func _progress(speed):
 	$ParallaxBackground.progress(speed)
 	

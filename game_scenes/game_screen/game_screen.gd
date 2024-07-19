@@ -71,7 +71,7 @@ func _process(delta):
 					card.setCard($dropdown.attack_choice)
 					card.setText($dropdown.attack_choice)
 					card.setTimeImage()
-					card.setTimeValue("10 minutes")
+					card.setTimeValue(1)
 					card.setCost(2)
 					card.play()
 					$dropdown.generateACard = false
@@ -92,7 +92,7 @@ func _process(delta):
 	else:
 		$Timer_Label/pause.icon = playIcon
 	
-	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.timelabel > int(Mitre.timeline_dict[Mitre.timeline_dict.size()-1][0]):
+	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.timelabel > int(Mitre.timeline_dict[Mitre.timeline_dict.size()-2][0]):
 		_on_end_game_pressed()
 		
 	if Settings.theme == 0:
@@ -186,4 +186,4 @@ func _on_button_pressed():
 	$dropdown/attack_option.select(-1)
 	$dropdown/defend_option.select(-1)	
 	round += 1
-	
+	$timeline.timelabel += Mitre.attack_time_cost
