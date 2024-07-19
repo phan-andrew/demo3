@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bp28eq7ykh7bp" path="res://images/UI_images/progress_bar/underwater/Mid Seaweed.png" id="2_b42bn"]
 [ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="3_34dha"]
 [ext_resource type="Texture2D" uid="uid://cigqyagm26e1i" path="res://images/UI_images/progress_bar/air/hotair baloom.png" id="4_xq277"]
-[ext_resource type="Texture2D" path="res://images/UI_images/progress_bar/checkpoint/checkpoint_text.png" id="6_exw0o"]
+[ext_resource type="Texture2D" uid="uid://celvd4fdujsng" path="res://images/UI_images/progress_bar/checkpoint/checkpoint_text.png" id="6_6a4fq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
 atlas = ExtResource("1_bkggd")
@@ -126,4 +126,4 @@ frame_progress = 0.294785
 z_index = -1
 position = Vector2(100, 135)
 scale = Vector2(10, 10)
-texture = ExtResource("6_exw0o")
+texture = ExtResource("6_6a4fq")
