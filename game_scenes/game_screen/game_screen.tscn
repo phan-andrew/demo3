@@ -85,7 +85,7 @@ scale = Vector2(0.2, 0.2)
 
 [node name="background" type="Sprite2D" parent="."]
 z_index = -2
-position = Vector2(576, 324)
+position = Vector2(585, 325)
 scale = Vector2(10, 10)
 texture = ExtResource("9_1lp2d")
 
@@ -187,6 +187,40 @@ offset_bottom = 639.0
 theme = ExtResource("11_qde7s")
 text = "End Game"
 
+[node name="Window2" type="Window" parent="."]
+position = Vector2i(400, 300)
+size = Vector2i(400, 200)
+visible = false
+
+[node name="quit_button" type="Button" parent="Window2"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -52.0
+offset_top = -60.0
+offset_right = 52.0
+offset_bottom = -29.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Finish Game"
+
+[node name="quit_text" type="Label" parent="Window2"]
+offset_left = 10.0
+offset_top = 15.0
+offset_right = 373.0
+offset_bottom = 1208.0
+text = "     Are you sure you want finish the game now?"
+horizontal_alignment = 1
+
+[node name="continue_button" type="Button" parent="Window2"]
+offset_left = 135.0
+offset_top = 90.0
+offset_right = 263.0
+offset_bottom = 121.0
+text = "Continue Game"
+
 [connection signal="pressed" from="Timer_Label/pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="AttackSubmit" to="." method="_on_attack_submit_pressed"]
 [connection signal="pressed" from="DefenseSubmit" to="." method="_on_defense_submit_pressed"]
@@ -195,3 +229,5 @@ text = "End Game"
 [connection signal="value_changed" from="Window/SpinBox" to="." method="_on_spin_box_value_changed"]
 [connection signal="pressed" from="StartGame" to="." method="_on_start_game_pressed"]
 [connection signal="pressed" from="EndGame" to="." method="_on_end_game_pressed"]
+[connection signal="pressed" from="Window2/quit_button" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="Window2/continue_button" to="." method="_on_continue_button_pressed"]
