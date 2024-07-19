@@ -55,7 +55,7 @@ func _ready():
 	if seconds < 10:
 		$Timer_Label2.text = str(minutes) + ":0" + str(seconds)
 	else:
-		$Tmmer_Label2.text = str(minutes) + ":" + str(seconds)
+		$Timer_Label2.text = str(minutes) + ":" + str(seconds)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
