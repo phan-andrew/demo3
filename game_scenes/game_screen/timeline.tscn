@@ -291,7 +291,7 @@ text = "lllll"
 script = ExtResource("8_du3h6")
 
 [node name="sub" type="AnimatedSprite2D" parent="."]
-position = Vector2(418, 133)
+position = Vector2(419, 138)
 scale = Vector2(4.5, 4.5)
 sprite_frames = SubResource("SpriteFrames_ki2sm")
 animation = &"move"
@@ -299,8 +299,9 @@ autoplay = "hover"
 frame_progress = 0.320669
 
 [node name="plane" type="AnimatedSprite2D" parent="."]
+visible = false
 modulate = Color(0.439216, 0.517647, 0.329412, 1)
-position = Vector2(407, 137)
+position = Vector2(407, 141)
 scale = Vector2(4.5, 4.5)
 sprite_frames = SubResource("SpriteFrames_w7k1s")
 animation = &"move"
@@ -316,6 +317,7 @@ theme = ExtResource("7_unjkg")
 text = "edfdf"
 
 [node name="tank" type="AnimatedSprite2D" parent="."]
+visible = false
 position = Vector2(411, 38)
 scale = Vector2(7.22, 7.22)
 sprite_frames = SubResource("SpriteFrames_j0nb0")
