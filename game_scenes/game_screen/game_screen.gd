@@ -92,7 +92,7 @@ func _process(delta):
 		$Timer_Label/pause.icon = playIcon
 	
 	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.timelabel > int(Mitre.timeline_dict[Mitre.timeline_dict.size()-2][0]):
-		_on_end_game_pressed()
+		_on_quit_button_pressed()
 		
 	if Settings.theme == 0:
 		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png"	)
