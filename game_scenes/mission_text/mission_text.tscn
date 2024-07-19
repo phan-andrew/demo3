@@ -14,9 +14,9 @@ script = ExtResource("1_1tnxl")
 
 [node name="Label" type="Label" parent="."]
 offset_left = 228.0
-offset_top = 651.0
+offset_top = 618.0
 offset_right = 920.0
-offset_bottom = 882.0
+offset_bottom = 849.0
 theme = ExtResource("1_2s7nj")
 text = "r
 r
