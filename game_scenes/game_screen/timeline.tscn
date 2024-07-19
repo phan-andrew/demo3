@@ -291,8 +291,8 @@ text = "lllll"
 script = ExtResource("8_du3h6")
 
 [node name="sub" type="AnimatedSprite2D" parent="."]
-position = Vector2(404, 135)
-scale = Vector2(5, 5)
+position = Vector2(418, 133)
+scale = Vector2(4.5, 4.5)
 sprite_frames = SubResource("SpriteFrames_ki2sm")
 animation = &"move"
 autoplay = "hover"
@@ -300,8 +300,8 @@ frame_progress = 0.320669
 
 [node name="plane" type="AnimatedSprite2D" parent="."]
 modulate = Color(0.439216, 0.517647, 0.329412, 1)
-position = Vector2(396, 138)
-scale = Vector2(5, 5)
+position = Vector2(407, 137)
+scale = Vector2(4.5, 4.5)
 sprite_frames = SubResource("SpriteFrames_w7k1s")
 animation = &"move"
 autoplay = "hover"

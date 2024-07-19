@@ -94,6 +94,9 @@ func _process(delta):
 	
 	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.timelabel > int(Mitre.timeline_dict[Mitre.timeline_dict.size()-1][0]):
 		_on_end_game_pressed()
+		
+	if Settings.theme == 0:
+		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png"	)
 
 func disable_attack_buttons(state):
 	for button in attackbuttons:
