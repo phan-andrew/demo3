@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://c0bngicr1p4w0"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
 [ext_resource type="Script" path="res://game_scenes/prompts_screen/starting_prompts.gd" id="1_jomlb"]
-[ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
+[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="4_e3ols"]
 [ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="5_ncscu"]
 
@@ -122,7 +122,7 @@ offset_left = 788.0
 offset_top = 212.0
 offset_right = 888.0
 offset_bottom = 252.0
-max_value = 3600.0
+max_value = 99.0
 rounded = true
 alignment = 1
 
@@ -133,7 +133,7 @@ offset_right = 657.0
 offset_bottom = 248.0
 scale = Vector2(1.3, 1.3)
 theme = ExtResource("3_mx321")
-text = "Enter a Time Limit for Each Team (seconds): "
+text = "Enter a Time Limit for Each Team (minutes): "
 
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
 [connection signal="pressed" from="Button5" to="." method="_on_button_5_pressed"]

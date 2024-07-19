@@ -111,4 +111,4 @@ func _on_button_5_pressed():
 	hide()
 
 func _on_spin_box_value_changed(value):
-	Mitre.time_limit = int(value)
+	Mitre.time_limit = int(value*60)
