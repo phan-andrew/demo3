@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0qd0epqdp3ht"]
+
+[ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_60llc"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(576, 324)
+scale = Vector2(1.152, 0.972973)
+texture = ExtResource("1_60llc")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(609.5, 279)
+scale = Vector2(0.566667, 0.605691)

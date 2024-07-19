@@ -1,5 +1,5 @@
 extends Node2D
-var speed = 20
+var speed = 30
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var fastIcon = preload("res://images/UI_images/fast_forward_button.png")
@@ -35,22 +35,22 @@ func _on_pause_pressed():
 		if speedB == 1:
 			pauseB = false
 			$pause.icon = pauseIcon
-			speed = 20
+			speed = 30
 		if speedB == 2:
 			pauseB = false
 			$pause.icon = pauseIcon
-			speed = 40
+			speed = 60
 
 func _on_speed_button_pressed():
 	if speedB == 1:
 		if pauseB == false:
-			speed = 40
+			speed = 60
 			speedB = 2
 		else:
 			speedB = 2
 	else:
 		if pauseB == false:
-			speed = 20
+			speed = 30
 			speedB = 1
 		else:
 			speedB = 1
