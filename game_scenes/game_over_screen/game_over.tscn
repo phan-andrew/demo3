@@ -1,0 +1,86 @@
+[gd_scene load_steps=5 format=3 uid="uid://ci53c14qviefc"]
+
+[ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_2kjs7"]
+[ext_resource type="Script" path="res://game_scenes/game_over_screen/game_over.gd" id="1_8esix"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="2_ywmh1"]
+[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="3_gk1su"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_8esix")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(576, 324)
+scale = Vector2(1.152, 0.973)
+texture = ExtResource("1_2kjs7")
+
+[node name="Title" type="Label" parent="."]
+offset_left = 350.0
+offset_top = 100.0
+offset_right = 575.0
+offset_bottom = 126.0
+scale = Vector2(2, 2)
+theme = ExtResource("2_ywmh1")
+text = "GAME OVER"
+
+[node name="Question" type="Label" parent="."]
+offset_left = 212.0
+offset_top = 300.0
+offset_right = 937.0
+offset_bottom = 326.0
+theme = ExtResource("2_ywmh1")
+text = "Would You Like to Play Again?"
+
+[node name="SaveResults" type="FileDialog" parent="."]
+size = Vector2i(600, 400)
+access = 2
+
+[node name="EndGame" type="Button" parent="."]
+offset_left = 80.0
+offset_top = 400.0
+offset_right = 480.0
+offset_bottom = 500.0
+scale = Vector2(0.8, 0.8)
+theme = ExtResource("2_ywmh1")
+text = "Quit"
+
+[node name="SameProfile" type="Button" parent="."]
+offset_left = 415.0
+offset_top = 400.0
+offset_right = 815.0
+offset_bottom = 500.0
+scale = Vector2(0.8, 0.8)
+theme = ExtResource("2_ywmh1")
+text = "Play Again
+Same Profiles"
+
+[node name="ChangeProfile" type="Button" parent="."]
+offset_left = 750.0
+offset_top = 400.0
+offset_right = 1150.0
+offset_bottom = 500.0
+scale = Vector2(0.8, 0.8)
+theme = ExtResource("2_ywmh1")
+text = "Play Again
+Change Profiles"
+
+[node name="SaveButton" type="Button" parent="."]
+offset_left = 412.0
+offset_top = 205.0
+offset_right = 737.0
+offset_bottom = 245.0
+theme = ExtResource("2_ywmh1")
+text = "Save Results"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 100.0
+offset_top = 260.0
+offset_right = 140.0
+offset_bottom = 283.0
+theme = ExtResource("3_gk1su")
+
+[connection signal="file_selected" from="SaveResults" to="." method="_on_file_location_selected"]
+[connection signal="pressed" from="EndGame" to="." method="_on_end_game_pressed"]
+[connection signal="pressed" from="SameProfile" to="." method="_on_same_profile_pressed"]
+[connection signal="pressed" from="ChangeProfile" to="." method="_on_change_profile_pressed"]
+[connection signal="pressed" from="SaveButton" to="." method="_on_save_button_pressed"]
