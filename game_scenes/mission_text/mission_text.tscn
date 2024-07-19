@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cy6qdae7lgetf"]
+[gd_scene load_steps=8 format=3 uid="uid://cy6qdae7lgetf"]
 
 [ext_resource type="Script" path="res://game_scenes/mission_text/mission_text.gd" id="1_1tnxl"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2s7nj"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b50lklisctxhu" path="res://images/UI_images/pause_button.png" id="5_5tyjb"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="6_1pw74"]
 [ext_resource type="Texture2D" uid="uid://b36qech8qekm7" path="res://images/UI_images/fast_forward_button.png" id="6_sl2nd"]
+[ext_resource type="Texture2D" uid="uid://oesjqrlw4wry" path="res://images/UI_images/Startscreen1.png" id="7_dqs4x"]
 
 [node name="node" type="Node2D"]
 position = Vector2(4, 0)
@@ -50,8 +51,8 @@ volume_db = 1.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = -1
-position = Vector2(572, 324)
-scale = Vector2(1.152, 0.972973)
+position = Vector2(573, 324)
+scale = Vector2(1.154, 0.972973)
 texture = ExtResource("6_1pw74")
 
 [node name="pause" type="Button" parent="."]
@@ -72,6 +73,12 @@ offset_bottom = 450.0
 scale = Vector2(3.5, 3.5)
 icon = ExtResource("6_sl2nd")
 icon_alignment = 1
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+z_index = 5
+position = Vector2(573, 324)
+scale = Vector2(1.154, 0.972973)
+texture = ExtResource("7_dqs4x")
 
 [connection signal="pressed" from="back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="skip" to="." method="_on_skip_pressed"]
