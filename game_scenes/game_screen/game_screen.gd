@@ -76,7 +76,6 @@ func _process(delta):
 					card.play()
 					$dropdown.generateACard = false
 	if Input.is_action_just_pressed("exit"):
-		print("bye byeeee")
 		get_tree().quit()
 	if $dropdown.generateDCard && numD < 3:		
 		dCards[numD].visible = true
