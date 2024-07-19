@@ -1,6 +1,6 @@
 extends Label
 
-var initialTime = 600
+var initialTime = Mitre.time_limit
 var startTimer = true
 var play = false
 

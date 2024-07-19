@@ -109,3 +109,6 @@ func _on_button_5_pressed():
 	Settings.changed_scene = 1
 	get_tree().change_scene_to_file("res://game_scenes/profiles_screen/profiles_screen.tscn")
 	hide()
+
+func _on_spin_box_value_changed(value):
+	Mitre.time_limit = int(value)

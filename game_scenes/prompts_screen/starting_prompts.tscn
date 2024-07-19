@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://c0bngicr1p4w0"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
 [ext_resource type="Script" path="res://game_scenes/prompts_screen/starting_prompts.gd" id="1_jomlb"]
-[ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
+[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="4_e3ols"]
 [ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="5_ncscu"]
 
@@ -10,20 +10,13 @@
 script = ExtResource("1_jomlb")
 
 [node name="Label" type="Label" parent="."]
-offset_left = 281.0
+offset_left = 190.0
 offset_top = 130.0
-offset_right = 881.0
+offset_right = 965.0
 offset_bottom = 189.0
 theme = ExtResource("1_2nmyf")
-text = "Upload Files to Continue"
+text = "Complete All Fields to Continue"
 horizontal_alignment = 1
-
-[node name="LineEdit" type="LineEdit" parent="."]
-offset_left = 364.0
-offset_top = 208.0
-offset_right = 764.0
-offset_bottom = 248.0
-theme = ExtResource("1_2nmyf")
 
 [node name="Button" type="Button" parent="."]
 offset_left = 463.0
@@ -124,6 +117,24 @@ texture = ExtResource("4_e3ols")
 stream = ExtResource("5_ncscu")
 volume_db = 1.0
 
-[connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
+[node name="SpinBox" type="SpinBox" parent="."]
+offset_left = 788.0
+offset_top = 212.0
+offset_right = 888.0
+offset_bottom = 252.0
+max_value = 3600.0
+rounded = true
+alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 217.0
+offset_top = 225.0
+offset_right = 657.0
+offset_bottom = 248.0
+scale = Vector2(1.3, 1.3)
+theme = ExtResource("3_mx321")
+text = "Enter a Time Limit for Each Team (seconds): "
+
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
 [connection signal="pressed" from="Button5" to="." method="_on_button_5_pressed"]
+[connection signal="value_changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]
