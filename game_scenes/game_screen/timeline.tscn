@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://bl2iprvunslcr"]
+[gd_scene load_steps=46 format=3 uid="uid://bl2iprvunslcr"]
 
 [ext_resource type="Script" path="res://game_scenes/game_screen/ParallaxLayer.gd" id="1_dnhea"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/timeline.gd" id="1_qm1ha"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dn1wao6cxa3kt" path="res://images/UI_images/progress_bar/underwater/Submarine.png" id="11_ksuuw"]
 [ext_resource type="Texture2D" uid="uid://c6uuio6befmmi" path="res://images/UI_images/progress_bar/air/airplane.png" id="12_y2538"]
 [ext_resource type="Texture2D" uid="uid://dy01jwumvewn6" path="res://images/UI_images/progress_bar/land/Tanks.png" id="13_cc3wj"]
+[ext_resource type="Texture2D" uid="uid://do6j80xtbrp1b" path="res://images/UI_images/progress_bar/land/Tanks-Stationary.png" id="14_ns7pl"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
 atlas = ExtResource("2_8d8la")
@@ -184,6 +185,22 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_33inh"]
+atlas = ExtResource("14_ns7pl")
+region = Rect2(0, 0, 25, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fnvy6"]
+atlas = ExtResource("14_ns7pl")
+region = Rect2(25, 0, 25, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ww6jh"]
+atlas = ExtResource("14_ns7pl")
+region = Rect2(0, 40, 25, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yooqb"]
+atlas = ExtResource("14_ns7pl")
+region = Rect2(25, 40, 25, 40)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_5uwik"]
 atlas = ExtResource("13_cc3wj")
 region = Rect2(0, 0, 25, 40)
@@ -204,6 +221,23 @@ region = Rect2(25, 40, 25, 40)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_33inh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fnvy6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ww6jh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yooqb")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_5uwik")
 }, {
 "duration": 1.0,
@@ -216,7 +250,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_pik3p")
 }],
 "loop": true,
-"name": &"default",
+"name": &"move",
 "speed": 3.0
 }]
 
@@ -282,7 +316,9 @@ theme = ExtResource("7_unjkg")
 text = "edfdf"
 
 [node name="tank" type="AnimatedSprite2D" parent="."]
-position = Vector2(411, 33)
+position = Vector2(413, 40)
 scale = Vector2(7, 7)
 sprite_frames = SubResource("SpriteFrames_j0nb0")
-frame_progress = 0.836708
+animation = &"move"
+autoplay = "hover"
+frame_progress = 0.886625

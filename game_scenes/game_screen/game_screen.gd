@@ -60,7 +60,9 @@ func _process(delta):
 					card.setCost(2)
 					card.play()
 					$dropdown.generateACard = false
-					
+	if Input.is_action_just_pressed("exit"):
+		print("bye byeeee")
+		get_tree().quit()
 	if $dropdown.generateDCard && numD < 3:		
 		dCards[numD].visible = true
 		$dropdown.generateDCard = false
@@ -156,6 +158,6 @@ func _on_button_pressed():
 	print((int(Mitre.timeline_dict[round+2][0]) - starting_time)*150)
 	starting_time = (int(Mitre.timeline_dict[round+2][0]))
 	$dropdown/attack_option.select(-1)
-	$dropdown/defend_option.select(-1)
-	
+	$dropdown/defend_option.select(-1)	
 	round += 1
+	
