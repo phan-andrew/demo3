@@ -133,6 +133,9 @@ func _on_start_game_pressed():
 	$EndGame.visible = true
 
 func _on_end_game_pressed():
+	_on_pause_pressed()
+	$EndGame.disabled = true
+	$Timer_Label/pause.disabled = true
 	$Window2.visible=true
 	
 func _on_quit_button_pressed():
@@ -141,6 +144,9 @@ func _on_quit_button_pressed():
 		hide()
 
 func _on_continue_button_pressed():
+	_on_pause_pressed()
+	$EndGame.disabled = false
+	$Timer_Label/pause.disabled = false
 	$Window2.visible=false
 
 func _on_attack_submit_pressed():
