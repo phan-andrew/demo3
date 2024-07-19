@@ -41,6 +41,7 @@ func _ready():
 	disable_defend_buttons(true)
 	$Timer_Label/pause.disabled = true
 	$Window.visible = false
+	$EndGame.visible = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -111,6 +112,12 @@ func _on_start_game_pressed():
 	disable_attack_buttons(false)
 	$Timer_Label/pause.disabled = false
 	$StartGame.visible = false
+	$EndGame.visible = true
+
+func _on_end_game_pressed():
+	Settings.changed_scene = 1
+	get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
+	hide ()
 
 func _on_attack_submit_pressed():
 	$Timer_Label.play = false
