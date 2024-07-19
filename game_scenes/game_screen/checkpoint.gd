@@ -11,6 +11,12 @@ func _process(delta):
 	if Settings.theme == 0:
 		$weed.show()
 		$loon.hide()
+		$tree.hide()
 	if Settings.theme == 1:
 		$weed.hide()
 		$loon.show()
+		$tree.hide()
+	if Settings.theme == 2:
+		$weed.hide()
+		$loon.hide()
+		$tree.show()
