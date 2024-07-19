@@ -42,6 +42,20 @@ func _ready():
 	$Timer_Label/pause.disabled = true
 	$Window.visible = false
 	$EndGame.visible = false
+	var initialTime = $Timer_Label.initialTime
+	var minutes = int(initialTime) / 60
+	var seconds = int(initialTime) % 60
+	if seconds < 10:
+		$Timer_Label.text = str(minutes) + ":0" + str(seconds)
+	else:
+		$Timer_Label.text = str(minutes) + ":" + str(seconds)
+	initialTime = $Timer_Label2.initialTime
+	minutes = int(initialTime) / 60
+	seconds = int(initialTime) % 60
+	if seconds < 10:
+		$Timer_Label2.text = str(minutes) + ":0" + str(seconds)
+	else:
+		$Timer_Label2.text = str(minutes) + ":" + str(seconds)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -77,6 +91,9 @@ func _process(delta):
 		$Timer_Label/pause.icon = pauseIcon
 	else:
 		$Timer_Label/pause.icon = playIcon
+	
+	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.timelabel > int(Mitre.timeline_dict[Mitre.timeline_dict.size()-1][0]):
+		_on_end_game_pressed()
 
 func disable_attack_buttons(state):
 	for button in attackbuttons:
