@@ -1,12 +1,12 @@
 [gd_scene load_steps=6 format=3 uid="uid://dos6dbexd3txx"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_h8dew"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_h8dew"]
 [ext_resource type="Script" path="res://game_scenes/options_screen/options_screen.gd" id="1_wqi3x"]
 [ext_resource type="Script" path="res://game_scenes/options_screen/HSlider.gd" id="2_05idc"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="3_183mr"]
 [ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="5_m1uhy"]
 
-[node name="Control" type="Control"]
+[node name="Control2" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
