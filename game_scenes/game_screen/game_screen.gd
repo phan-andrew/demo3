@@ -93,7 +93,7 @@ func _process(delta):
 	else:
 		$Timer_Label/pause.icon = playIcon
 	
-	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0:
+	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.timelabel > int(Mitre.timeline_dict[Mitre.timeline_dict.size()-1][0]):
 		_on_end_game_pressed()
 
 func disable_attack_buttons(state):
