@@ -1,10 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://dos6dbexd3txx"]
+[gd_scene load_steps=4 format=3 uid="uid://dos6dbexd3txx"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_h8dew"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_h8dew"]
 [ext_resource type="Script" path="res://game_scenes/options_screen/options_screen.gd" id="1_wqi3x"]
-[ext_resource type="Script" path="res://game_scenes/options_screen/HSlider.gd" id="2_05idc"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="3_183mr"]
-[ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="5_m1uhy"]
 
 [node name="Control2" type="Control"]
 layout_mode = 3
@@ -14,41 +12,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_wqi3x")
-
-[node name="HSlider" type="HSlider" parent="."]
-z_index = 1
-layout_mode = 1
-anchors_preset = -1
-offset_left = 388.0
-offset_top = 287.0
-offset_right = 762.0
-offset_bottom = 303.0
-max_value = 1.0
-step = 0.05
-value = 1.0
-script = ExtResource("2_05idc")
-
-[node name="Label" type="Label" parent="."]
-z_index = 1
-layout_mode = 0
-offset_top = 172.0
-offset_right = 1152.0
-offset_bottom = 212.0
-theme = ExtResource("1_h8dew")
-theme_override_font_sizes/font_size = 40
-text = "AUDIO"
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="Label"]
-z_index = 1
-layout_mode = 0
-offset_top = 203.0
-offset_right = 1152.0
-offset_bottom = 243.0
-theme = ExtResource("1_h8dew")
-theme_override_font_sizes/font_size = 40
-text = "THEME"
-horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="."]
 z_index = 1
@@ -71,6 +34,63 @@ offset_bottom = 145.0
 theme = ExtResource("1_h8dew")
 theme_override_font_sizes/font_size = 23
 text = "___________________"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="."]
+z_index = 1
+layout_mode = 0
+offset_top = 172.0
+offset_right = 1152.0
+offset_bottom = 212.0
+theme = ExtResource("1_h8dew")
+theme_override_font_sizes/font_size = 40
+text = "MUSIC"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+offset_left = 388.0
+offset_top = 230.0
+offset_right = 762.0
+offset_bottom = 246.0
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Label5" type="Label" parent="."]
+z_index = 1
+layout_mode = 0
+offset_top = 266.0
+offset_right = 1152.0
+offset_bottom = 306.0
+theme = ExtResource("1_h8dew")
+theme_override_font_sizes/font_size = 40
+text = "SOUND EFFECTS"
+horizontal_alignment = 1
+
+[node name="HSlider2" type="HSlider" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+offset_left = 388.0
+offset_top = 331.0
+offset_right = 762.0
+offset_bottom = 347.0
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Label4" type="Label" parent="."]
+z_index = 1
+layout_mode = 0
+offset_top = 375.0
+offset_right = 1152.0
+offset_bottom = 415.0
+theme = ExtResource("1_h8dew")
+theme_override_font_sizes/font_size = 40
+text = "THEME"
 horizontal_alignment = 1
 
 [node name="Button" type="Button" parent="."]
@@ -110,10 +130,7 @@ popup/item_1/id = 1
 popup/item_2/text = "LAND"
 popup/item_2/id = 2
 
-[node name="mouse_click" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_m1uhy")
-volume_db = 1.0
-
 [connection signal="value_changed" from="HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="HSlider2" to="." method="_on_h_slider_2_value_changed"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 [connection signal="item_selected" from="Theme_select" to="." method="_on_theme_select_item_selected"]

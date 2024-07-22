@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b0i5bpsq8pxhn"]
+[gd_scene load_steps=6 format=3 uid="uid://bxfd77vekx7r1"]
 
 [ext_resource type="Script" path="res://audio/music.gd" id="1_3q8f2"]
 [ext_resource type="AudioStream" uid="uid://wslku24es6lj" path="res://audio/starting_music.mp3" id="2_v01dd"]
 [ext_resource type="AudioStream" uid="uid://cyfiajco4jdu6" path="res://audio/scroll_music.mp3" id="3_u55nl"]
 [ext_resource type="AudioStream" uid="uid://der2cyay0loxc" path="res://audio/playing_music.mp3" id="4_gck3t"]
+[ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="5_ynbpn"]
 
 [node name="SoundFx" type="Node2D"]
 script = ExtResource("1_3q8f2")
@@ -11,9 +12,16 @@ script = ExtResource("1_3q8f2")
 [node name="start_music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_v01dd")
 autoplay = true
+bus = &"music"
 
 [node name="scroll_music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_u55nl")
+bus = &"music"
 
 [node name="play_music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_gck3t")
+bus = &"music"
+
+[node name="mouse_click" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_ynbpn")
+volume_db = 1.0
