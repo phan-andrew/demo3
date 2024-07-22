@@ -25,3 +25,6 @@ func play_music():
 	if !$play_music.playing:
 		$scroll_music.playing = false
 		$play_music.playing = true
+
+func mouse_click():
+	$mouse_click.playing = true

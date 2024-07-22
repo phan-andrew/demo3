@@ -7,9 +7,6 @@ var pauseB = false
 var speedB = 1
 
 func _ready():
-	if Settings.changed_scene == 1:
-		$mouse_click.playing = true
-		Settings.changed_scene = 0
 	$Label.text = "Mission Statement\n\n" + Mitre.blue_objective + "\n\n\n\nOPFOR Mission Statement\n\n" + Mitre.red_objective
 	Music.scroll_music(1)
 
@@ -18,12 +15,12 @@ func _process(delta):
 	$Label.position += velocity * delta
 
 func _on_back_pressed():
-	Settings.changed_scene = 1
+	Music.mouse_click()
 	get_tree().change_scene_to_file("res://game_scenes/prompts_screen/starting_prompts.tscn")
 	hide ()
 	
 func _on_skip_pressed():
-	Settings.changed_scene = 1
+	Music.mouse_click()
 	get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
 	hide ()
 

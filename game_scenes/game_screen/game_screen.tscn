@@ -1,6 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://dfncvobr4liih"]
+[gd_scene load_steps=13 format=3 uid="uid://dfncvobr4liih"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/game_screen.gd" id="1_2nm7d"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/Timer_Label.gd" id="2_quooa"]
 [ext_resource type="Texture2D" uid="uid://deyg0mophu1js" path="res://images/UI_images/play_button.png" id="4_il6gx"]
@@ -10,8 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dukho3wja08su" path="res://card_scenes/cardFlip.tscn" id="6_2l2jm"]
 [ext_resource type="Texture2D" uid="uid://drbg5jbdtxa1x" path="res://images/UI_images/progress_bar/underwater/water_background.png" id="9_1lp2d"]
 [ext_resource type="PackedScene" uid="uid://bl2iprvunslcr" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
-[ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
-[ext_resource type="AudioStream" uid="uid://br8ab0ylrobbw" path="res://audio/Mouse Click Sound Effect edited 2.mp3" id="12_c4m53"]
+[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
 
 [sub_resource type="Theme" id="Theme_takis"]
 
@@ -166,10 +165,6 @@ offset_top = 110.0
 offset_right = 265.0
 offset_bottom = 121.0
 text = "Success Likelihood:"
-
-[node name="mouse_click" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("12_c4m53")
-volume_db = 1.0
 
 [node name="StartGame" type="Button" parent="."]
 offset_left = 493.0

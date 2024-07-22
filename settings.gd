@@ -1,7 +1,7 @@
 extends Node
-var audio_value = 1
+var music_value = 1
+var sound_effects = 1
 var theme = 0
-var changed_scene = 0
 
 func _ready():
 	pass
