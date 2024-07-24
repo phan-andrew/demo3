@@ -25,6 +25,12 @@ Music="*res://audio/music.tscn"
 
 window/stretch/mode="canvas_items"
 
+[file_customization]
+
+folder_colors={
+"res://images/card_images/attack/Completed Cards/": "red"
+}
+
 [input]
 
 move_right={
