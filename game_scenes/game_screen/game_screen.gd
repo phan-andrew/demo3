@@ -106,6 +106,7 @@ func disable_defend_buttons(state):
 		card.disable_buttons(state)
 
 func _on_pause_pressed():
+	Music.mouse_click()
 	if currenttimer == 0:
 		$Timer_Label.play = !$Timer_Label.play
 		if !$Timer_Label.play:
@@ -122,6 +123,7 @@ func _on_pause_pressed():
 			disable_defend_buttons(false)
 
 func _on_start_game_pressed():
+	Music.mouse_click()
 	$Timer_Label.play = true
 	disable_attack_buttons(false)
 	$Timer_Label/pause.disabled = false
@@ -129,6 +131,7 @@ func _on_start_game_pressed():
 	$EndGame.visible = true
 
 func _on_end_game_pressed():
+	Music.mouse_click()
 	_on_pause_pressed()
 	$EndGame.disabled = true
 	$Timer_Label/pause.disabled = true
@@ -140,12 +143,14 @@ func _on_quit_button_pressed():
 		hide()
 
 func _on_continue_button_pressed():
+	Music.mouse_click()
 	_on_pause_pressed()
 	$EndGame.disabled = false
 	$Timer_Label/pause.disabled = false
 	$Window2.visible=false
 
 func _on_attack_submit_pressed():
+	Music.mouse_click()
 	$Timer_Label.play = false
 	$Timer_Label2.play = true
 	disable_attack_buttons(true)
@@ -153,6 +158,7 @@ func _on_attack_submit_pressed():
 	$DefenseSubmit.disabled = false
 
 func _on_defense_submit_pressed():
+	Music.mouse_click()
 	$Timer_Label2.play = false
 	disable_defend_buttons(true)
 	$Timer_Label/pause.disabled = true
@@ -170,6 +176,7 @@ func _on_spin_box_value_changed(value):
 	likelihood=value
 
 func _on_button_pressed():
+	Music.mouse_click()
 	var row=[Time.get_time_string_from_system()]
 	for card in aCards:
 		if card.card_index != -1:
