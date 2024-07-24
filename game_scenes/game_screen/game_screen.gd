@@ -17,7 +17,6 @@ var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var round = 1
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
@@ -136,7 +135,7 @@ func _on_end_game_pressed():
 	$Window2.visible=true
 	
 func _on_quit_button_pressed():
-		Settings.changed_scene = 1
+		Music.mouse_click()
 		get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
 		hide()
 

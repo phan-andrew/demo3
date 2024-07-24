@@ -17,12 +17,12 @@ func _on_end_game_pressed():
 	get_tree().quit()
 
 func _on_same_profile_pressed():
-	Settings.changed_scene = 1
+	Music.mouse_click()
 	get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
 	hide ()
 
 func _on_change_profile_pressed():
-	Settings.changed_scene = 1
+	Music.mouse_click()
 	get_tree().change_scene_to_file("res://game_scenes/prompts_screen/starting_prompts.tscn")
 	hide ()
 
