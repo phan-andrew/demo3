@@ -11,9 +11,11 @@ func _process(delta):
 	pass
 
 func _on_save_button_pressed():
+	Music.mouse_click()
 	$SaveResults.popup_centered()
 
 func _on_end_game_pressed():
+	Music.mouse_click()
 	get_tree().quit()
 
 func _on_same_profile_pressed():
