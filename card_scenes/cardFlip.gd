@@ -17,6 +17,7 @@ var expand_pos_y
 var expanded = false
 var reset_dropdown = false
 var card_index = -1
+var time_value = 0
 
   
 # Called when the node enters the scene tree for the first time.
@@ -118,6 +119,7 @@ func reset_card():
 	$expand_button.hide()
 	$card/card_back.frame = 0
 	$AnimationPlayer.play("end_flip")
+	time_value = 0
 	card_index = -1
 	
 	
@@ -143,4 +145,7 @@ func setTimeImage():
 func setTimeValue(value):
 	if cardType=="a":
 		$card/Time.text=str(value) + " minutes"
-	Mitre.attack_time_cost = value
+	time_value = value
+
+func getTimeValue():
+	return time_value

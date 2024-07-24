@@ -170,6 +170,11 @@ func _on_spin_box_value_changed(value):
 	likelihood=value
 
 func _on_button_pressed():
+	var biggest = 0
+	for card in aCards:
+		if card.getTimeValue() > biggest:
+			biggest = card.getTimeValue()
+	
 	var row=[Time.get_time_string_from_system()]
 	for card in aCards:
 		if card.card_index != -1:
@@ -187,12 +192,12 @@ func _on_button_pressed():
 	disable_attack_buttons(false)
 	$Timer_Label/pause.disabled = false
 	$Timer_Label.play = true
-	$timeline._progress(Mitre.attack_time_cost * 150)
+	$timeline._progress(biggest * 150)
 
 	$dropdown/attack_option.select(-1)
 	$dropdown/defend_option.select(-1)	
 	round += 1
-	$timeline.timelabel += Mitre.attack_time_cost
+	$timeline.timelabel += biggest
 
 
 
