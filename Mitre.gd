@@ -3,6 +3,7 @@ extends Node
 var attack_dict={}
 var defend_dict={}
 var timeline_dict={}
+var opforprof_dict={}
 var red_objective=""
 var blue_objective=""
 var time_limit = 300
@@ -35,3 +36,9 @@ func import_resources_data():
 		var timeline_data_set = Array(file3.get_csv_line())
 		timeline_dict[timeline_dict.size()] = timeline_data_set
 	file3.close()
+	
+	var file4 = FileAccess.open("res://data/testing_profile_DELETE_LATER.txt", FileAccess.READ)
+	while !file4.eof_reached():
+		var opfor_data_set = Array(file4.get_csv_line())
+		opforprof_dict[opforprof_dict.size()] = opfor_data_set
+	file4.close()

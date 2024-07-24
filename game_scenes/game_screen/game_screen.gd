@@ -11,7 +11,9 @@ var numA = 0
 var numD = 0
 var save_path ="res://data/info.txt"
 var successornah
+var sucornah = false
 var likelihood
+var chance = false
 var currenttimer
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
@@ -66,8 +68,8 @@ func _process(delta):
 					card.setCard($dropdown.attack_choice)
 					card.setText($dropdown.attack_choice)
 					card.setTimeImage()
-					card.setTimeValue(1)
-					card.setCost(2)
+					card.setTimeValue(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][2]))
+					card.setCost(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][1]))
 					card.play()
 					$dropdown.generateACard = false
 	if Input.is_action_just_pressed("exit"):
@@ -146,58 +148,70 @@ func _on_continue_button_pressed():
 	$Window2.visible=false
 
 func _on_attack_submit_pressed():
-	$Timer_Label.play = false
-	$Timer_Label2.play = true
-	disable_attack_buttons(true)
-	disable_defend_buttons(false)
-	$DefenseSubmit.disabled = false
+	var attackpresent = false
+	for card in aCards:
+		if card.card_index != -1:
+			attackpresent = true
+	if attackpresent:
+		$Timer_Label.play = false
+		$Timer_Label2.play = true
+		disable_attack_buttons(true)
+		disable_defend_buttons(false)
+		$DefenseSubmit.disabled = false
 
 func _on_defense_submit_pressed():
-	$Timer_Label2.play = false
-	disable_defend_buttons(true)
-	$Timer_Label/pause.disabled = true
-	$Window/OptionButton.select(-1)
-	$Window/SpinBox.value = 0
-	$Window.visible = true
+	var defensepresent = false
+	for card in dCards:
+		if card.card_index != -1:
+			defensepresent = true
+	#if defensepresent:
+		$Timer_Label2.play = false
+		disable_defend_buttons(true)
+		$Timer_Label/pause.disabled = true
+		$Window/OptionButton.select(-1)
+		$Window/SpinBox.value = 0
+		$Window.visible = true
 
 func _on_option_button_item_selected(index):
 	if index==0:
 		successornah="Success"
 	else:
 		successornah="Failure"
+	sucornah = true
 
 func _on_spin_box_value_changed(value):
 	likelihood=value
+	chance = true
 
 func _on_button_pressed():
-	var biggest = 0
-	for card in aCards:
-		if card.getTimeValue() > biggest:
-			biggest = card.getTimeValue()
-	
-	var row=[Time.get_time_string_from_system()]
-	for card in aCards:
-		if card.card_index != -1:
-			row += [Mitre.attack_dict[card.card_index][2]]
-			card.reset_card()
-	row += [successornah]
-	row += [likelihood]
-	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
-	file.seek_end()
-	file.store_csv_line(row)
-	file.close()
-	$timeline.submitted = false
-	print("hehehaw")
-	$Window.visible = false
-	disable_attack_buttons(false)
-	$Timer_Label/pause.disabled = false
-	$Timer_Label.play = true
-	$timeline._progress(biggest * 150)
+	if sucornah && chance:
+		var biggest = 0
+		for card in aCards:
+			if card.getTimeValue() > biggest:
+				biggest = card.getTimeValue()
+		
+		var row=[Time.get_time_string_from_system()]
+		for card in aCards:
+			if card.card_index != -1:
+				row += [Mitre.attack_dict[card.card_index][2]]
+				card.reset_card()
+		row += [successornah]
+		row += [likelihood]
+		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+		file.seek_end()
+		file.store_csv_line(row)
+		file.close()
+		$timeline.submitted = false
+		print("hehehaw")
+		$Window.visible = false
+		disable_attack_buttons(false)
+		$Timer_Label/pause.disabled = false
+		$Timer_Label.play = true
+		$timeline._progress(biggest * 150)
 
-	$dropdown/attack_option.select(-1)
-	$dropdown/defend_option.select(-1)	
-	round += 1
-	$timeline.timelabel += biggest
-
-
-
+		$dropdown/attack_option.select(-1)
+		$dropdown/defend_option.select(-1)	
+		round += 1
+		$timeline.timelabel += biggest
+		sucornah = false
+		chance = false

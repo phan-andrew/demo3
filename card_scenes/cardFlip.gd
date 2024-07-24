@@ -134,7 +134,7 @@ func setText(index):
 		
 func setCost(Cost):
 	if cardType=="a":
-		$card/Dollar.texture=load(cost[Cost])
+		$card/Dollar.texture=load(cost[Cost-1])
 		$card/Dollar.z_index = 2
 		$card/Dollar.hide()
 		print("erm what the sgima")
