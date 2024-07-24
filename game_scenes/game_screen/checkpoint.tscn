@@ -163,7 +163,7 @@ frame_progress = 0.294785
 visible = false
 z_index = -1
 position = Vector2(100, 135)
-scale = Vector2(10, 10)
+scale = Vector2(9.49, 10)
 texture = ExtResource("6_6a4fq")
 
 [node name="tree" type="AnimatedSprite2D" parent="."]

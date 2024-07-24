@@ -13,7 +13,6 @@ var save_path ="res://data/info.txt"
 var successornah
 var sucornah = false
 var likelihood
-var chance = false
 var currenttimer
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
@@ -181,10 +180,10 @@ func _on_option_button_item_selected(index):
 
 func _on_spin_box_value_changed(value):
 	likelihood=value
-	chance = true
+
 
 func _on_button_pressed():
-	if sucornah && chance:
+	if sucornah:
 		var biggest = 0
 		for card in aCards:
 			if card.getTimeValue() > biggest:
@@ -214,4 +213,3 @@ func _on_button_pressed():
 		round += 1
 		$timeline.timelabel += biggest
 		sucornah = false
-		chance = false
