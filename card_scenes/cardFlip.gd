@@ -7,7 +7,7 @@ var reset = 50
 var inPlay = false
 var dPics = []
 var aBack = "res://images/card_images/general/redcard-back.png"
-var bBack = "res://images/card_images/general/bluecard-back.png" 
+var dBack = "res://images/card_images/general/bluecard-back.png" 
 var cost=["res://images/card_images/general/1 Dollar.png", "res://images/card_images/general/2 Dollars.png", "res://images/card_images/general/3 Dollars.png"]
 var cardType
 var original_pos_x
@@ -61,7 +61,7 @@ func setCard(index):
 	if cardType == "a":		
 		$card.texture = load(Mitre.attack_dict[index][4])
 	if cardType == "d":
-		$card.texture = load(dPics[index])
+		$card.texture = load(Mitre.defend_dict[index][4])
 	card_index = index
 
 
@@ -130,6 +130,9 @@ func disable_buttons(state):
 func setText(index):
 	if cardType=="a":
 		$card/definition.text=(Mitre.attack_dict[index][3])
+		$card/definition.hide()
+	if cardType=="d":
+		$card/definition.text=(Mitre.defend_dict[index][3])
 		$card/definition.hide()
 		
 func setCost(Cost):

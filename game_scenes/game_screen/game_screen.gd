@@ -60,6 +60,11 @@ func _process(delta):
 			$dropdown/attack_option.select(-1)
 			card.reset_dropdown = false
 			
+	for card in dCards:
+		if card.reset_dropdown:
+			$dropdown/defend_option.select(-1)
+			card.reset_dropdown = false
+			
 	if $dropdown.generateACard:
 		for card in aCards:
 			if $dropdown.generateACard:
@@ -71,12 +76,19 @@ func _process(delta):
 					card.setCost(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][1]))
 					card.play()
 					$dropdown.generateACard = false
+					
+	if $dropdown.generateDCard:
+		for card in dCards:
+			if $dropdown.generateDCard:
+				if !card.inPlay:
+					card.setCard($dropdown.defend_choice)
+					card.setText($dropdown.defend_choice)
+					card.play()
+					$dropdown.generateDCard = false
+					
 	if Input.is_action_just_pressed("exit"):
 		get_tree().quit()
-	if $dropdown.generateDCard && numD < 3:		
-		dCards[numD].visible = true
-		$dropdown.generateDCard = false
-		numD += 1
+
 	
 	if $Timer_Label.play == true:
 		currenttimer = 0

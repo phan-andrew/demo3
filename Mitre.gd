@@ -25,7 +25,7 @@ func import_resources_data():
 		attack_dict[attack_dict.size()] = attack_data_set
 	file.close()
 	
-	var file2= FileAccess.open("res://data/D3FEND_Names.txt", FileAccess.READ)
+	var file2= FileAccess.open("res://data/D3FEND_database.txt", FileAccess.READ)
 	while !file2.eof_reached():
 		var defense_data_set = Array(file2.get_csv_line())
 		defend_dict[defend_dict.size()] = defense_data_set
