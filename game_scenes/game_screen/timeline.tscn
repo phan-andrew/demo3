@@ -8,11 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://bp28eq7ykh7bp" path="res://images/UI_images/progress_bar/underwater/Mid Seaweed.png" id="3_yihho"]
 [ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="4_ar3ec"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/ParallaxLayer2.gd" id="5_5y0d6"]
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="7_unjkg"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="7_unjkg"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/timeline_label.gd" id="8_du3h6"]
 [ext_resource type="Texture2D" uid="uid://dn1wao6cxa3kt" path="res://images/UI_images/progress_bar/underwater/Submarine.png" id="11_ksuuw"]
 [ext_resource type="Texture2D" uid="uid://c6uuio6befmmi" path="res://images/UI_images/progress_bar/air/airplane.png" id="12_y2538"]
-[ext_resource type="Texture2D" uid="uid://dy01jwumvewn6" path="res://images/UI_images/progress_bar/land/Tanks.png" id="13_cc3wj"]
+[ext_resource type="Texture2D" uid="uid://70raimqxx00y" path="res://images/UI_images/progress_bar/air/Tanks.png" id="13_cc3wj"]
 [ext_resource type="Texture2D" uid="uid://do6j80xtbrp1b" path="res://images/UI_images/progress_bar/land/Tanks-Stationary.png" id="14_ns7pl"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]

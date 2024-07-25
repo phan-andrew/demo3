@@ -1,7 +1,6 @@
-[gd_scene load_steps=20 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=19 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
-[ext_resource type="Texture2D" uid="uid://bga4axkw74rld" path="res://images/card_images/general/bluecard-front.png" id="2_jfmdk"]
 [ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/card_images/general/standardcard-back.png" id="3_nal1o"]
 [ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/card_images/general/redcard-back.png" id="4_rd7a2"]
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/card_images/general/bluecard-back.png" id="5_ubw2l"]
@@ -324,14 +323,14 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7wmbb"]
-size = Vector2(846, 1352)
+size = Vector2(840, 1156)
 
 [node name="Node2D2" type="Node2D"]
 script = ExtResource("1_ocqbr")
 
 [node name="card" type="Sprite2D" parent="."]
 z_index = -1
-texture = ExtResource("2_jfmdk")
+texture = ExtResource("3_nal1o")
 
 [node name="card_back" type="AnimatedSprite2D" parent="card"]
 z_index = -1
@@ -339,25 +338,26 @@ sprite_frames = SubResource("SpriteFrames_fgt5r")
 
 [node name="definition" type="Label" parent="card"]
 offset_left = -268.0
-offset_top = -530.0
+offset_top = -437.0
 offset_right = 299.0
-offset_bottom = 544.0
+offset_bottom = 449.0
 theme = SubResource("Theme_u32eo")
 theme_override_styles/normal = SubResource("StyleBoxFlat_p0gi6")
 autowrap_mode = 3
 
 [node name="Dollar" type="Sprite2D" parent="card"]
-position = Vector2(-178.847, 273)
-scale = Vector2(0.804751, 1.03238)
+position = Vector2(-178.847, 260)
+scale = Vector2(0.45, 0.577)
 
 [node name="Clock" type="Sprite2D" parent="card"]
-position = Vector2(133, 139)
+position = Vector2(133, 240)
+scale = Vector2(0.8, 0.8)
 
 [node name="Time" type="RichTextLabel" parent="card"]
 visible = false
-offset_top = 252.0
+offset_top = 350.0
 offset_right = 284.0
-offset_bottom = 336.0
+offset_bottom = 434.0
 theme_override_font_sizes/normal_font_size = 50
 text = "5 minutes"
 
@@ -369,15 +369,15 @@ libraries = {
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0, -6)
+position = Vector2(-3, -1)
 shape = SubResource("RectangleShape2D_7wmbb")
 
 [node name="close_button" type="Button" parent="."]
 visible = false
 offset_left = -200.0
-offset_top = 700.0
+offset_top = 625.0
 offset_right = -178.0
-offset_bottom = 722.0
+offset_bottom = 647.0
 scale = Vector2(6.8, 6.8)
 theme = ExtResource("6_4fe4i")
 icon = ExtResource("6_0e2l7")
@@ -385,9 +385,9 @@ icon = ExtResource("6_0e2l7")
 [node name="expand_button" type="Button" parent="."]
 visible = false
 offset_left = 50.0
-offset_top = 700.0
+offset_top = 625.0
 offset_right = 72.0
-offset_bottom = 722.0
+offset_bottom = 647.0
 scale = Vector2(6.8, 6.8)
 theme = ExtResource("6_4fe4i")
 icon = ExtResource("6_aj1ct")
