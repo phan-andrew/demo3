@@ -1,2 +1,1 @@
 Time,Attack 1,Attack 2,Attack 3,Defense 1,Defense 2,Defense 3,Attack Success,Attack Success Likelihood
-09:10:07,Account Access Removal,None Selected,None Selected,nothing yet =),nothing yet =),nothing yet =),Success,<null>

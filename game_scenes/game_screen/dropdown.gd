@@ -25,7 +25,7 @@ func _on_attack_option_item_selected(index):
 
 
 func _on_defend_option_item_selected(index):
-	defend_choice = index
+	defend_choice = int(index)
 	generateDCard = true
 
 func choose_attacks():
@@ -41,12 +41,12 @@ func choose_defends():
 		var defend_data_set = Array(file.get_csv_line())
 		defends[defends.size()] = defend_data_set
 	file.close()
-
+	
 func add_attack_options():
 	var drop = $attack_option
 	var a = 2
 	while a<attacks.size():
-		drop.add_item(Mitre.attack_dict[int(attacks[a][0])][2])
+		drop.add_item(Mitre.attack_dict[int(attacks[a][0])][2])		
 		a+=1
 	drop.select(-1)
 	

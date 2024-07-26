@@ -1,4 +1,3 @@
-Index,ID,Name,Description,Path
 0,D3-AM,Access Modeling,"Access modeling identifies and records the access permissions granted to administrators, users, groups, and systems.",
 1,D3-AL,Account Locking,The process of temporarily disabling user accounts on a system or domain.,
 2,D3-ACA,Active Certificate Analysis,Actively collecting PKI certificates by connecting to the server and downloading its server certificates for analysis.,

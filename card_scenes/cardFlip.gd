@@ -63,8 +63,8 @@ func setCard(index):
 	if cardType == "a":		
 		$card.texture = load(Mitre.attack_dict[index][4])
 	if cardType == "d":
-		$card.texture = load(Mitre.defend_dict[index][4])
-	card_index = index
+		$card.texture = load(Mitre.defend_dict[int(index)][4])
+	card_index = int(index)
 
 
 
@@ -137,7 +137,7 @@ func setText(index):
 		$card/definition.text=(Mitre.attack_dict[index][3])
 		$card/definition.hide()
 	if cardType=="d":
-		$card/definition.text=(Mitre.defend_dict[index][3])
+		$card/definition.text=(Mitre.defend_dict[int(index)][3])
 		$card/definition.hide()
 		
 func setCost(Cost):

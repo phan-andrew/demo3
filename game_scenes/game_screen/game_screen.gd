@@ -76,22 +76,24 @@ func _process(delta):
 		for card in aCards:
 			if $dropdown.generateACard:
 				if !card.inPlay:
-					card.setCard($dropdown.attack_choice)
-					card.setText($dropdown.attack_choice)
+					card.setCard(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0]))
+					card.setText(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0]))
 					card.setTimeImage()
 					card.setTimeValue(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][2]))
 					card.setCost(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][1]))
 					card.play()
 					$dropdown.generateACard = false
 					
+					
 	if $dropdown.generateDCard:
 		for card in dCards:
 			if $dropdown.generateDCard:
 				if !card.inPlay:
-					card.setCard($dropdown.defend_choice)
-					card.setText($dropdown.defend_choice)
+					card.setCard(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
+					card.setText(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
 					card.play()
 					$dropdown.generateDCard = false
+					
 					
 	if Input.is_action_just_pressed("exit"):
 		get_tree().quit()
