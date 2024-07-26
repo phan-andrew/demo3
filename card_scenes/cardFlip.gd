@@ -27,6 +27,8 @@ func _ready():
 	original_pos_y = position.y
 	original_pos_x  = position.x
 
+		
+
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -117,7 +119,10 @@ func reset_card():
 	inPlay = false
 	$close_button.hide()
 	$expand_button.hide()
-	$card/card_back.frame = 0
+	if cardType == "a":		
+		$card/card_back.frame = 4
+	if cardType == "d":		
+		$card/card_back.frame = 3
 	$AnimationPlayer.play("end_flip")
 	time_value = 0
 	card_index = -1

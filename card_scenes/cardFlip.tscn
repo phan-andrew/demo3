@@ -1,13 +1,23 @@
-[gd_scene load_steps=19 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=23 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/card_images/general/standardcard-back.png" id="3_nal1o"]
 [ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/card_images/general/redcard-back.png" id="4_rd7a2"]
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/card_images/general/bluecard-back.png" id="5_ubw2l"]
+[ext_resource type="Texture2D" path="res://images/card_images/general/DefendCardBack.png" id="5_xmgio"]
 [ext_resource type="Texture2D" uid="uid://dv401rqumemwa" path="res://images/UI_images/close_button.png" id="6_0e2l7"]
 [ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="6_3juvv"]
 [ext_resource type="Theme" uid="uid://b5n6bvst5x6at" path="res://card_scenes/card_button_theme.tres" id="6_4fe4i"]
 [ext_resource type="Texture2D" uid="uid://bvc6nttjgbhfr" path="res://images/UI_images/expand_button.png" id="6_aj1ct"]
+[ext_resource type="Texture2D" path="res://images/card_images/general/AttackCardBack.png" id="6_xgg8t"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eob0r"]
+atlas = ExtResource("5_xmgio")
+region = Rect2(0, 0, 825, 1155)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hpkc1"]
+atlas = ExtResource("6_xgg8t")
+region = Rect2(0, 0, 825, 1155)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fgt5r"]
 animations = [{
@@ -20,6 +30,12 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": ExtResource("5_ubw2l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eob0r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hpkc1")
 }],
 "loop": true,
 "name": &"default",

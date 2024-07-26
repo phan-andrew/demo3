@@ -25,11 +25,17 @@ func _ready():
 	defendbuttons = [$dropdown/defend_option, $DefenseSubmit]
 	timers = [$Timer_Label, $Timer_Label2]
 	$a_1.cardType = "a"
+	$a_1/card/card_back.frame = 4
 	$a_2.cardType = "a"
+	$a_2/card/card_back.frame = 4
 	$a_3.cardType = "a"
+	$a_3/card/card_back.frame = 4
 	$d_1.cardType = "d"
+	$d_1/card/card_back.frame = 3
 	$d_2.cardType = "d"
+	$d_2/card/card_back.frame = 3
 	$d_3.cardType = "d"
+	$d_3/card/card_back.frame = 3
 	currenttimer = 0
 	var file = FileAccess.open(save_path,FileAccess.WRITE)
 	file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood"])
