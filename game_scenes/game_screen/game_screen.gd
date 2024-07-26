@@ -32,6 +32,7 @@ func _ready():
 	$d_3.cardType = "d"
 	currenttimer = 0
 	var file = FileAccess.open(save_path,FileAccess.WRITE)
+	file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood"])
 	file.close()
 	disable_attack_buttons(true)
 	disable_defend_buttons(true)
@@ -206,6 +207,14 @@ func _on_button_pressed():
 			if card.card_index != -1:
 				row += [Mitre.attack_dict[card.card_index][2]]
 				card.reset_card()
+			else:
+				row+=["None Selected"]
+		for card in dCards:
+			if card.card_index != -1:
+				row+=["nothing yet =)"]
+				card.reset_card()
+			else:
+				row+=["nothing yet =)"]
 		row += [successornah]
 		row += [likelihood]
 		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)

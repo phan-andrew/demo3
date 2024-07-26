@@ -1,0 +1,2 @@
+Time,Attack 1,Attack 2,Attack 3,Defense 1,Defense 2,Defense 3,Attack Success,Attack Success Likelihood
+08:10:41,Access Token Manipulation,None Selected,None Selected,nothing yet =),nothing yet =),nothing yet =),Success,4
