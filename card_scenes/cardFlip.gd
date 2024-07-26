@@ -97,7 +97,6 @@ func _on_expand_button_pressed():
 		$expand_button.position.x -= 150
 		expanded = true
 		$close_button.hide()
-		
 	else:
 		scale.x /= 2
 		scale.y /= 2
@@ -110,6 +109,17 @@ func _on_expand_button_pressed():
 		$close_button.show()
 		print("skibisidi")
 
+func make_small_again():
+	scale.x /= 2
+	scale.y /= 2
+	position.x = original_pos_x
+	position.y = original_pos_y
+	z_index = 1
+	$expand_button.icon = load("res://images/UI_images/expand_button.png")
+	$expand_button.position.x += 150
+	expanded = false
+	$close_button.show()
+	print("skibisidi")
 
 func _on_close_button_pressed():
 	reset_card()
@@ -130,8 +140,8 @@ func reset_card():
 	
 func disable_buttons(state):
 	$close_button.disabled = state
-	#$expand_button.disabled = state
-
+func disable_expand(state):
+	$expand_button.disabled = state
 func setText(index):
 	if cardType=="a":
 		$card/definition.text=(Mitre.attack_dict[index][3])

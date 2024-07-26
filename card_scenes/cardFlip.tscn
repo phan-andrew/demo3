@@ -375,7 +375,6 @@ offset_top = 350.0
 offset_right = 284.0
 offset_bottom = 434.0
 theme_override_font_sizes/normal_font_size = 50
-text = "5 minutes"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

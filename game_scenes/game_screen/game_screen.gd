@@ -17,7 +17,7 @@ var currenttimer
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var round = 1
-
+var card_expanded=-1
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
@@ -71,7 +71,7 @@ func _process(delta):
 		if card.reset_dropdown:
 			$dropdown/defend_option.select(-1)
 			card.reset_dropdown = false
-			
+	
 	if $dropdown.generateACard:
 		for card in aCards:
 			if $dropdown.generateACard:
@@ -83,8 +83,14 @@ func _process(delta):
 					card.setCost(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][1]))
 					card.play()
 					$dropdown.generateACard = false
-					
-					
+	if $a_1.expanded:
+		alock_expands(0)
+	if $a_2.expanded:
+		alock_expands(1)
+	if $a_3.expanded:
+		alock_expands(2)
+	else:
+		areset_expands()
 	if $dropdown.generateDCard:
 		for card in dCards:
 			if $dropdown.generateDCard:
@@ -93,7 +99,14 @@ func _process(delta):
 					card.setText(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
 					card.play()
 					$dropdown.generateDCard = false
-					
+	if $d_1.expanded:
+		dlock_expands(0)
+	if $d_2.expanded:
+		dlock_expands(1)
+	if $d_3.expanded:
+		dlock_expands(2)
+	else:
+		dreset_expands()			
 					
 	if Input.is_action_just_pressed("exit"):
 		get_tree().quit()
@@ -113,8 +126,7 @@ func _process(delta):
 		_on_quit_button_pressed()
 		
 	if Settings.theme == 0:
-		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png"	)
-
+		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png")
 func disable_attack_buttons(state):
 	for button in attackbuttons:
 		button.disabled = state
@@ -172,6 +184,11 @@ func _on_attack_submit_pressed():
 	for card in aCards:
 		if card.card_index != -1:
 			attackpresent = true
+		if card.expanded:	
+			card.make_small_again()
+	for card in dCards:
+		if card.expanded:
+			card.make_small_again()
 	if attackpresent:
 		$Timer_Label.play = false
 		$Timer_Label2.play = true
@@ -179,12 +196,17 @@ func _on_attack_submit_pressed():
 		disable_defend_buttons(false)
 		$DefenseSubmit.disabled = false
 
+
 func _on_defense_submit_pressed():
 	var defensepresent = false
 	for card in dCards:
 		if card.card_index != -1:
 			defensepresent = true
-	#if defensepresent:
+		if card.expanded:
+			card.make_small_again()
+	for card in aCards:
+		if card.expanded:	
+			card.make_small_again()
 		$Timer_Label2.play = false
 		disable_defend_buttons(true)
 		$Timer_Label/pause.disabled = true
@@ -242,3 +264,33 @@ func _on_button_pressed():
 		round += 1
 		$timeline.timelabel += biggest
 		sucornah = false
+		
+func alock_expands(expanded):
+	if expanded==0:
+		$a_2.disable_expand(true)
+		$a_3.disable_expand(true)
+	if expanded==1:
+		$a_1.disable_expand(true)
+		$a_3.disable_expand(true)
+	if expanded==2:
+		$a_1.disable_expand(true)
+		$a_2.disable_expand(true)
+func areset_expands():
+	for card in aCards:
+		card.disable_expand(false)
+		
+func dlock_expands(expanded):
+	if expanded==0:
+		$d_2.disable_expand(true)
+		$d_3.disable_expand(true)
+	if expanded==1:
+		$d_1.disable_expand(true)
+		$d_3.disable_expand(true)
+	if expanded==2:
+		$d_1.disable_expand(true)
+		$d_2.disable_expand(true)
+func dreset_expands():
+	for card in dCards:
+		card.disable_expand(false)
+		
+	
