@@ -4,12 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/card_images/general/standardcard-back.png" id="3_nal1o"]
 [ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/card_images/general/redcard-back.png" id="4_rd7a2"]
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/card_images/general/bluecard-back.png" id="5_ubw2l"]
-[ext_resource type="Texture2D" path="res://images/card_images/general/DefendCardBack.png" id="5_xmgio"]
+[ext_resource type="Texture2D" uid="uid://cmig4fpomrmpq" path="res://images/card_images/general/DefendCardBack.png" id="5_xmgio"]
 [ext_resource type="Texture2D" uid="uid://dv401rqumemwa" path="res://images/UI_images/close_button.png" id="6_0e2l7"]
 [ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="6_3juvv"]
 [ext_resource type="Theme" uid="uid://b5n6bvst5x6at" path="res://card_scenes/card_button_theme.tres" id="6_4fe4i"]
 [ext_resource type="Texture2D" uid="uid://bvc6nttjgbhfr" path="res://images/UI_images/expand_button.png" id="6_aj1ct"]
-[ext_resource type="Texture2D" path="res://images/card_images/general/AttackCardBack.png" id="6_xgg8t"]
+[ext_resource type="Texture2D" uid="uid://qjmh8ts7gnnr" path="res://images/card_images/general/AttackCardBack.png" id="6_xgg8t"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eob0r"]
 atlas = ExtResource("5_xmgio")

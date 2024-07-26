@@ -36,7 +36,7 @@ func choose_attacks():
 	file.close()
 
 func choose_defends():
-	var file= FileAccess.open("res://data/testing_profile_DELETE_LATER.txt", FileAccess.READ)
+	var file= FileAccess.open("res://data/d3fend_profile_test.txt", FileAccess.READ)
 	while !file.eof_reached():
 		var defend_data_set = Array(file.get_csv_line())
 		defends[defends.size()] = defend_data_set

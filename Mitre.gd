@@ -4,6 +4,7 @@ var attack_dict={}
 var defend_dict={}
 var timeline_dict={}
 var opforprof_dict={}
+var d3fendprof_dict={}
 var red_objective=""
 var blue_objective=""
 var time_limit = 300
@@ -42,3 +43,9 @@ func import_resources_data():
 		var opfor_data_set = Array(file4.get_csv_line())
 		opforprof_dict[opforprof_dict.size()] = opfor_data_set
 	file4.close()
+	
+	var file5 = FileAccess.open("res://data/d3fend_profile_test.txt", FileAccess.READ)
+	while !file5.eof_reached():
+		var d3fend_data_set=Array(file5.get_csv_line())
+		d3fendprof_dict[d3fendprof_dict.size()]=d3fend_data_set
+	file5.close()
