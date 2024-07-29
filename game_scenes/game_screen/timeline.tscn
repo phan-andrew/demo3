@@ -8,12 +8,12 @@
 [ext_resource type="Texture2D" uid="uid://bp28eq7ykh7bp" path="res://images/UI_images/progress_bar/underwater/Mid Seaweed.png" id="3_yihho"]
 [ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="4_ar3ec"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/ParallaxLayer2.gd" id="5_5y0d6"]
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="7_unjkg"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="7_unjkg"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/timeline_label.gd" id="8_du3h6"]
 [ext_resource type="Texture2D" uid="uid://dn1wao6cxa3kt" path="res://images/UI_images/progress_bar/underwater/Submarine.png" id="11_ksuuw"]
 [ext_resource type="Texture2D" uid="uid://c6uuio6befmmi" path="res://images/UI_images/progress_bar/air/airplane.png" id="12_y2538"]
-[ext_resource type="Texture2D" uid="uid://70raimqxx00y" path="res://images/UI_images/progress_bar/air/Tanks.png" id="13_cc3wj"]
 [ext_resource type="Texture2D" uid="uid://do6j80xtbrp1b" path="res://images/UI_images/progress_bar/land/Tanks-Stationary.png" id="14_ns7pl"]
+[ext_resource type="Texture2D" uid="uid://bnvpryfb0jwdm" path="res://images/UI_images/progress_bar/land/Tanks-Moving.png" id="14_vxjg4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
 atlas = ExtResource("2_8d8la")
@@ -201,20 +201,20 @@ region = Rect2(0, 40, 25, 40)
 atlas = ExtResource("14_ns7pl")
 region = Rect2(25, 40, 25, 40)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_5uwik"]
-atlas = ExtResource("13_cc3wj")
+[sub_resource type="AtlasTexture" id="AtlasTexture_er662"]
+atlas = ExtResource("14_vxjg4")
 region = Rect2(0, 0, 25, 40)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ffpqr"]
-atlas = ExtResource("13_cc3wj")
+[sub_resource type="AtlasTexture" id="AtlasTexture_n84gp"]
+atlas = ExtResource("14_vxjg4")
 region = Rect2(25, 0, 25, 40)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_v814y"]
-atlas = ExtResource("13_cc3wj")
+[sub_resource type="AtlasTexture" id="AtlasTexture_gla3u"]
+atlas = ExtResource("14_vxjg4")
 region = Rect2(0, 40, 25, 40)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_pik3p"]
-atlas = ExtResource("13_cc3wj")
+[sub_resource type="AtlasTexture" id="AtlasTexture_ydesg"]
+atlas = ExtResource("14_vxjg4")
 region = Rect2(25, 40, 25, 40)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_j0nb0"]
@@ -238,16 +238,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_5uwik")
+"texture": SubResource("AtlasTexture_er662")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ffpqr")
+"texture": SubResource("AtlasTexture_n84gp")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_v814y")
+"texture": SubResource("AtlasTexture_gla3u")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_pik3p")
+"texture": SubResource("AtlasTexture_ydesg")
 }],
 "loop": true,
 "name": &"move",
@@ -321,5 +321,5 @@ visible = false
 position = Vector2(411, 38)
 scale = Vector2(7.22, 7.22)
 sprite_frames = SubResource("SpriteFrames_j0nb0")
-animation = &"hover"
+animation = &"move"
 autoplay = "hover"
