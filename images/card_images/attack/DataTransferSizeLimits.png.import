@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bp2hq3wr5t7rl"
-path="res://.godot/imported/Content Injection.pixil.png-deb532572487dcd8cfc0be46d8b57c29.ctex"
+uid="uid://b17lfv3desmpq"
+path="res://.godot/imported/DataTransferSizeLimits.png-1a756d2db02202e5043d06b783c5458b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/Content Injection.pixil.png"
-dest_files=["res://.godot/imported/Content Injection.pixil.png-deb532572487dcd8cfc0be46d8b57c29.ctex"]
+source_file="res://images/card_images/attack/DataTransferSizeLimits.png"
+dest_files=["res://.godot/imported/DataTransferSizeLimits.png-1a756d2db02202e5043d06b783c5458b.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bx8cxlm3saujs"
-path="res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"
+uid="uid://dgjh8ck6iweg1"
+path="res://.godot/imported/Build Image on Host.png-728eb71d5201aa83e17f4c79a206adb5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/System Services.png"
-dest_files=["res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"]
+source_file="res://images/card_images/attack/Build Image on Host.png"
+dest_files=["res://.godot/imported/Build Image on Host.png-728eb71d5201aa83e17f4c79a206adb5.ctex"]
 
 [params]
 

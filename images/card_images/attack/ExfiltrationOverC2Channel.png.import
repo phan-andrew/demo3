@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bg0deyx40o0j6"
-path="res://.godot/imported/Impare Defenses.png-e218f50a8b20d035579862b830d869f6.ctex"
+uid="uid://du5pqhgkn15h8"
+path="res://.godot/imported/ExfiltrationOverC2Channel.png-332b10a9a8c92cc21833518dfc287dfb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/Impare Defenses.png"
-dest_files=["res://.godot/imported/Impare Defenses.png-e218f50a8b20d035579862b830d869f6.ctex"]
+source_file="res://images/card_images/attack/ExfiltrationOverC2Channel.png"
+dest_files=["res://.godot/imported/ExfiltrationOverC2Channel.png-332b10a9a8c92cc21833518dfc287dfb.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bx8cxlm3saujs"
-path="res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"
+uid="uid://ddngbngrr302j"
+path="res://.godot/imported/Communication Through Removable Media.png-f451d104bdb6d2fd5466ca942864f95b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/System Services.png"
-dest_files=["res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"]
+source_file="res://images/card_images/attack/Communication Through Removable Media.png"
+dest_files=["res://.godot/imported/Communication Through Removable Media.png-f451d104bdb6d2fd5466ca942864f95b.ctex"]
 
 [params]
 

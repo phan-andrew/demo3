@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bx8cxlm3saujs"
-path="res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"
+uid="uid://be4e2l8r86wtv"
+path="res://.godot/imported/NetworkShareDiscovery.png-f474810632d8c1331c4deca2877daa97.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/System Services.png"
-dest_files=["res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"]
+source_file="res://images/card_images/attack/NetworkShareDiscovery.png"
+dest_files=["res://.godot/imported/NetworkShareDiscovery.png-f474810632d8c1331c4deca2877daa97.ctex"]
 
 [params]
 

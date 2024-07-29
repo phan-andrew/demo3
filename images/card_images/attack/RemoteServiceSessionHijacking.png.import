@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bx8cxlm3saujs"
-path="res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"
+uid="uid://6pppcam057ie"
+path="res://.godot/imported/RemoteServiceSessionHijacking.png-397fbd03ef9688ad7d3b6210015d6b4e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/System Services.png"
-dest_files=["res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"]
+source_file="res://images/card_images/attack/RemoteServiceSessionHijacking.png"
+dest_files=["res://.godot/imported/RemoteServiceSessionHijacking.png-397fbd03ef9688ad7d3b6210015d6b4e.ctex"]
 
 [params]
 
