@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bx8cxlm3saujs"
-path="res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"
+uid="uid://c4a31372qqog2"
+path="res://.godot/imported/PeripheralDeviceDiscovery.png-d4f557731c09c56568a4971451ba771f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/System Services.png"
-dest_files=["res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"]
+source_file="res://images/card_images/attack/PeripheralDeviceDiscovery.png"
+dest_files=["res://.godot/imported/PeripheralDeviceDiscovery.png-d4f557731c09c56568a4971451ba771f.ctex"]
 
 [params]
 

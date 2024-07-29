@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bx8cxlm3saujs"
-path="res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"
+uid="uid://bo78nl6ish5jy"
+path="res://.godot/imported/Sysyem Network Connections Discovery.png-aa2da924ff873a48abb7951920fc463b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/System Services.png"
-dest_files=["res://.godot/imported/System Services.png-372d5086f60ec3d8058b8fc083579e57.ctex"]
+source_file="res://images/card_images/attack/Sysyem Network Connections Discovery.png"
+dest_files=["res://.godot/imported/Sysyem Network Connections Discovery.png-aa2da924ff873a48abb7951920fc463b.ctex"]
 
 [params]
 

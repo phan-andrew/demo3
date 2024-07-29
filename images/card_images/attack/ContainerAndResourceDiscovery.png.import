@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://calnmkroe26mi"
-path="res://.godot/imported/ValidAccounts.png-fdb255422e99f4cfc11085fd63f3047f.ctex"
+uid="uid://b3787eel3wm4x"
+path="res://.godot/imported/ContainerAndResourceDiscovery.png-95c27908a97c135ca44d039e2025f202.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/ValidAccounts.png"
-dest_files=["res://.godot/imported/ValidAccounts.png-fdb255422e99f4cfc11085fd63f3047f.ctex"]
+source_file="res://images/card_images/attack/ContainerAndResourceDiscovery.png"
+dest_files=["res://.godot/imported/ContainerAndResourceDiscovery.png-95c27908a97c135ca44d039e2025f202.ctex"]
 
 [params]
 
