@@ -13,11 +13,14 @@ var save_path ="res://data/info.txt"
 var successornah
 var sucornah = false
 var likelihood
+var riskanalysis
 var currenttimer
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var round = 1
 var card_expanded=-1
+var finalattack = false
+
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
 	dCards = [$d_1, $d_2, $d_3]
@@ -224,6 +227,8 @@ func _on_option_button_item_selected(index):
 func _on_spin_box_value_changed(value):
 	likelihood=value
 
+func _on_spin_box_2_value_changed(value):
+	riskanalysis=value
 
 func _on_button_pressed():
 	if sucornah:
@@ -251,20 +256,50 @@ func _on_button_pressed():
 		file.seek_end()
 		file.store_csv_line(row)
 		file.close()
-		$timeline.submitted = false
-		print("hehehaw")
-		$Window.visible = false
-		disable_attack_buttons(false)
-		$Timer_Label/pause.disabled = false
-		$Timer_Label.play = true
-		$timeline._progress(biggest * 150)
-
-		$dropdown/attack_option.select(-1)
-		$dropdown/defend_option.select(-1)	
-		round += 1
-		$timeline.timelabel += biggest
-		sucornah = false
+		for card in aCards:
+			if int(Mitre.attack_dict[int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0])+1][5]) == 3:
+				finalattack = true
 		
+		if finalattack:
+			load_previous_attacks("res://data/info.txt")
+			$Window3.visible  = true
+			$Window.visible = false
+			$timeline._progress(biggest * 150)
+			$timeline.timelabel += biggest
+		else:
+			$timeline.submitted = false
+			$Window.visible = false
+			disable_attack_buttons(false)
+			$Timer_Label/pause.disabled = false
+			$Timer_Label.play = true
+			$timeline._progress(biggest * 150)
+
+			$dropdown/attack_option.select(-1)
+			$dropdown/defend_option.select(-1)	
+			round += 1
+			$timeline.timelabel += biggest
+		sucornah = false
+		finalattack = false
+
+func _on_final_continue_pressed():
+	$timeline.submitted = false
+	$Window3.visible = false
+	disable_attack_buttons(false)
+	$Timer_Label/pause.disabled = false
+	$Timer_Label.play = true
+	$dropdown/attack_option.select(-1)
+	$dropdown/defend_option.select(-1)	
+	round += 1
+
+func load_previous_attacks(path):
+	var file = FileAccess.open(path, FileAccess.READ)
+	if file:
+		var content = file.get_as_text()
+		file.close()
+		$Window3/TextEdit.placeholder_text = content  # Use bbcode_text to display formatted text
+	else:
+		print("Failed to open file: %s" % path)
+
 func alock_expands(expanded):
 	if expanded==0:
 		$a_2.disable_expand(true)

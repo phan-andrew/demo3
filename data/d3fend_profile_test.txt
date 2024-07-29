@@ -1,7 +1,7 @@
 Choose defenses from the database you downloaded that your system has in it and write the index number in the first column. Write the maturity level of that defense in the second column on a scale of 1-5,
 Index,Maturity
-1, 5
-3, 4
-7, 3
-9, 2
-39, 1
+0, 5
+1, 4
+2, 3
+3, 2
+4, 1

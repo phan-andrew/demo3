@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://dfncvobr4liih"]
 
-[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/game_screen.gd" id="1_2nm7d"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/Timer_Label.gd" id="2_quooa"]
 [ext_resource type="Texture2D" uid="uid://deyg0mophu1js" path="res://images/UI_images/play_button.png" id="4_il6gx"]
@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dukho3wja08su" path="res://card_scenes/cardFlip.tscn" id="6_2l2jm"]
 [ext_resource type="Texture2D" uid="uid://drbg5jbdtxa1x" path="res://images/UI_images/progress_bar/underwater/water_background.png" id="9_1lp2d"]
 [ext_resource type="PackedScene" uid="uid://bl2iprvunslcr" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
-[ext_resource type="Theme" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
+[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
 
 [sub_resource type="Theme" id="Theme_takis"]
 
@@ -216,6 +216,51 @@ offset_right = 263.0
 offset_bottom = 121.0
 text = "Continue Game"
 
+[node name="Window3" type="Window" parent="."]
+initial_position = 2
+size = Vector2i(800, 400)
+visible = false
+
+[node name="Label" type="Label" parent="Window3"]
+offset_left = 125.0
+offset_top = 30.0
+offset_right = 675.0
+offset_bottom = 60.0
+theme = ExtResource("1_0jfxs")
+text = "Final Attack Detected!"
+
+[node name="Label2" type="Label" parent="Window3"]
+offset_left = 110.0
+offset_top = 300.0
+offset_right = 420.0
+offset_bottom = 330.0
+scale = Vector2(1.5, 1.5)
+theme = ExtResource("11_qde7s")
+text = "Risk Analysis for Attack Chain:"
+
+[node name="SpinBox" type="SpinBox" parent="Window3"]
+offset_left = 600.0
+offset_top = 290.0
+offset_right = 700.0
+offset_bottom = 321.0
+max_value = 100000.0
+alignment = 1
+
+[node name="Button" type="Button" parent="Window3"]
+offset_left = 300.0
+offset_top = 340.0
+offset_right = 500.0
+offset_bottom = 390.0
+theme = ExtResource("1_0jfxs")
+text = "Submit"
+
+[node name="TextEdit" type="TextEdit" parent="Window3"]
+offset_left = 10.0
+offset_top = 70.0
+offset_right = 790.0
+offset_bottom = 270.0
+editable = false
+
 [connection signal="pressed" from="Timer_Label/pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="AttackSubmit" to="." method="_on_attack_submit_pressed"]
 [connection signal="pressed" from="DefenseSubmit" to="." method="_on_defense_submit_pressed"]
@@ -226,3 +271,5 @@ text = "Continue Game"
 [connection signal="pressed" from="EndGame" to="." method="_on_end_game_pressed"]
 [connection signal="pressed" from="Window2/quit_button" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="Window2/continue_button" to="." method="_on_continue_button_pressed"]
+[connection signal="value_changed" from="Window3/SpinBox" to="." method="_on_spin_box_2_value_changed"]
+[connection signal="pressed" from="Window3/Button" to="." method="_on_final_continue_pressed"]

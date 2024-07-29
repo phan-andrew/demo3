@@ -61,7 +61,7 @@ func _process(delta):
 			
 func setCard(index):
 	if cardType == "a":		
-		$card.texture = load(Mitre.attack_dict[index][4])
+		$card.texture = load(Mitre.attack_dict[index+1][4])
 	if cardType == "d":
 		$card.texture = load(Mitre.defend_dict[int(index)][4])
 	card_index = int(index)
@@ -144,7 +144,7 @@ func disable_expand(state):
 	$expand_button.disabled = state
 func setText(index):
 	if cardType=="a":
-		$card/definition.text=(Mitre.attack_dict[index][3])
+		$card/definition.text=(Mitre.attack_dict[index+1][3])
 		$card/definition.hide()
 	if cardType=="d":
 		$card/definition.text=(Mitre.defend_dict[int(index)][3])
