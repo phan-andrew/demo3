@@ -20,6 +20,7 @@ var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var round = 1
 var card_expanded=-1
 var finalattack = false
+var biggest = 0
 
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
@@ -232,7 +233,6 @@ func _on_spin_box_2_value_changed(value):
 
 func _on_button_pressed():
 	if sucornah:
-		var biggest = 0
 		for card in aCards:
 			if card.getTimeValue() > biggest:
 				biggest = card.getTimeValue()
@@ -264,8 +264,6 @@ func _on_button_pressed():
 			load_previous_attacks("res://data/info.txt")
 			$Window3.visible  = true
 			$Window.visible = false
-			$timeline._progress(biggest * 150)
-			$timeline.timelabel += biggest
 		else:
 			$timeline.submitted = false
 			$Window.visible = false
@@ -278,6 +276,7 @@ func _on_button_pressed():
 			$dropdown/defend_option.select(-1)	
 			round += 1
 			$timeline.timelabel += biggest
+			biggest = 0
 		sucornah = false
 		finalattack = false
 
@@ -288,8 +287,11 @@ func _on_final_continue_pressed():
 	$Timer_Label/pause.disabled = false
 	$Timer_Label.play = true
 	$dropdown/attack_option.select(-1)
-	$dropdown/defend_option.select(-1)	
+	$dropdown/defend_option.select(-1)
+	$timeline._progress(biggest * 150)
+	$timeline.timelabel += biggest
 	round += 1
+	biggest = 0
 
 func load_previous_attacks(path):
 	var file = FileAccess.open(path, FileAccess.READ)
