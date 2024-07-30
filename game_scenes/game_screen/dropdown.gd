@@ -18,7 +18,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
-	
+
 func _on_attack_option_item_selected(index):
 	attack_choice = index
 	generateACard = true
@@ -41,15 +41,15 @@ func choose_defends():
 		var defend_data_set = Array(file.get_csv_line())
 		defends[defends.size()] = defend_data_set
 	file.close()
-	
+
 func add_attack_options():
 	var drop = $attack_option
 	var a = 2
 	while a<attacks.size():
-		drop.add_item(Mitre.attack_dict[int(attacks[a][0])+1][2])		
+		drop.add_item(Mitre.attack_dict[int(attacks[a][0])+1][2])
 		a+=1
 	drop.select(-1)
-	
+
 func add_defend_options():
 	var drop = $defend_option
 	var a = 2

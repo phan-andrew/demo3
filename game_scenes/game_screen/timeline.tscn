@@ -255,7 +255,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_658vp"]
-size = Vector2(520, 84)
+size = Vector2(671, 84)
 
 [node name="timeline" type="Node2D"]
 script = ExtResource("1_qm1ha")
@@ -330,5 +330,5 @@ autoplay = "hover"
 [node name="character" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="character"]
-position = Vector2(623, 136)
+position = Vector2(547.5, 136)
 shape = SubResource("RectangleShape2D_658vp")
