@@ -7,6 +7,7 @@ var initial_time
 var initial_x = 500
 var checkpoint = preload ("res://game_scenes/game_screen/checkpoint.tscn")
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	initial_time = Mitre.timeline_dict[2][0]
@@ -15,6 +16,7 @@ func _ready():
 			var new_checkpoint = checkpoint.instantiate()
 			add_child(new_checkpoint)
 			new_checkpoint.position.x = 500 + (int(Mitre.timeline_dict[row][0]) - int(initial_time)) * 300
+			new_checkpoint.start()
 		
 		 
 

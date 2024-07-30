@@ -3,7 +3,7 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	$descrip_box.hide()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -20,3 +20,17 @@ func _process(delta):
 		$weed.hide()
 		$loon.hide()
 		$tree.show()
+	
+func start():
+	pass
+
+func _on_area_2d_area_entered(area):
+	print(area)
+	if area.name == "character":
+		$AnimationPlayer.play("RESET")
+		print("hallo hallo")
+
+
+func _on_area_2d_area_exited(area):
+	$AnimationPlayer.play_backwards("RESET")
+	print("bye bye bye bye")

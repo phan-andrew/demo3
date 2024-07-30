@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://ckro7775k25rt"]
+[gd_scene load_steps=31 format=3 uid="uid://ckro7775k25rt"]
 
 [ext_resource type="Script" path="res://game_scenes/game_screen/checkpoint.gd" id="1_a0ifi"]
 [ext_resource type="Texture2D" uid="uid://cbxy5iqvcmnil" path="res://images/UI_images/progress_bar/underwater/Left Seaweed.png" id="1_bkggd"]
@@ -109,7 +109,7 @@ animations = [{
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:scale")
+tracks/0/path = NodePath("descrip_box:scale")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -121,7 +121,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite2D:visible")
+tracks/1/path = NodePath("descrip_box:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -188,6 +188,9 @@ animations = [{
 "speed": 3.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_px0da"]
+size = Vector2(74, 126)
+
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_a0ifi")
 
@@ -209,16 +212,15 @@ frame_progress = 0.294785
 libraries = {
 "": SubResource("AnimationLibrary_ucl1u")
 }
-autoplay = "open_checkpoint"
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="descrip_box" type="Sprite2D" parent="."]
 visible = false
 z_index = -1
 position = Vector2(100, 135)
 scale = Vector2(0.5, 10)
 texture = ExtResource("6_6a4fq")
 
-[node name="Label" type="Label" parent="Sprite2D"]
+[node name="descrip_label" type="Label" parent="descrip_box"]
 offset_left = -8.0
 offset_top = -3.0
 offset_right = 152.0
@@ -226,82 +228,7 @@ offset_bottom = 56.0
 scale = Vector2(0.1, 0.1)
 theme = ExtResource("7_a4cyw")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="Sprite2D" type="Sprite2D" parent="Sprite2D"]
-z_index = -1
-position = Vector2(100, 135)
-scale = Vector2(0.5, 10)
-texture = ExtResource("6_6a4fq")
-
-[node name="Label" type="Label" parent="Sprite2D/Sprite2D"]
-offset_left = -8.0
-offset_top = -3.0
-offset_right = 152.0
-offset_bottom = 56.0
-scale = Vector2(0.1, 0.1)
-theme = ExtResource("7_a4cyw")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "skibidi"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="Sprite2D" type="Sprite2D" parent="Sprite2D/Sprite2D"]
-z_index = -1
-position = Vector2(100, 135)
-scale = Vector2(0.5, 10)
-texture = ExtResource("6_6a4fq")
-
-[node name="Label" type="Label" parent="Sprite2D/Sprite2D/Sprite2D"]
-offset_left = -8.0
-offset_top = -3.0
-offset_right = 152.0
-offset_bottom = 56.0
-scale = Vector2(0.1, 0.1)
-theme = ExtResource("7_a4cyw")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "skibidi"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="Sprite2D" type="Sprite2D" parent="Sprite2D/Sprite2D/Sprite2D"]
-z_index = -1
-position = Vector2(100, 135)
-scale = Vector2(0.5, 10)
-texture = ExtResource("6_6a4fq")
-
-[node name="Label" type="Label" parent="Sprite2D/Sprite2D/Sprite2D/Sprite2D"]
-offset_left = -8.0
-offset_top = -3.0
-offset_right = 152.0
-offset_bottom = 56.0
-scale = Vector2(0.1, 0.1)
-theme = ExtResource("7_a4cyw")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "skibidi"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="Sprite2D" type="Sprite2D" parent="Sprite2D/Sprite2D/Sprite2D/Sprite2D"]
-z_index = -1
-position = Vector2(100, 135)
-scale = Vector2(0.5, 10)
-texture = ExtResource("6_6a4fq")
-
-[node name="Label" type="Label" parent="Sprite2D/Sprite2D/Sprite2D/Sprite2D/Sprite2D"]
-offset_left = -8.0
-offset_top = -3.0
-offset_right = 152.0
-offset_bottom = 56.0
-scale = Vector2(0.1, 0.1)
-theme = ExtResource("7_a4cyw")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "skibidi"
+text = "mewoew moew moew meow mewo mewo meowmewo mewo"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -311,3 +238,12 @@ position = Vector2(9, 99)
 scale = Vector2(4, 4.125)
 sprite_frames = SubResource("SpriteFrames_ov6am")
 autoplay = "default"
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-11, 123)
+shape = SubResource("RectangleShape2D_px0da")
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]
