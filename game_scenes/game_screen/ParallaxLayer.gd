@@ -18,7 +18,7 @@ func _process(delta):
 	else:
 		progressing = false
 		timer = 0
-		
+
 func progress(speed):
 	move_speed = speed
 	progressing = true

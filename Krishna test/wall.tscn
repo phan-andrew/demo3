@@ -1,10 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://wmqqkciu7fpy"]
+[gd_scene load_steps=7 format=3 uid="uid://wmqqkciu7fpy"]
 
 [ext_resource type="Texture2D" uid="uid://c3dxg5wxdtl12" path="res://Krishna test/wall.png" id="1_ps4s3"]
 [ext_resource type="Script" path="res://Krishna test/Wall.gd" id="2_ddea1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qj6fg"]
 size = Vector2(17, 611)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8gdbh"]
+size = Vector2(842.5, 10.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ls6sw"]
+size = Vector2(15.5, 629)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_462qr"]
+size = Vector2(837, 10)
 
 [node name="wall" type="CharacterBody2D"]
 
@@ -18,3 +27,15 @@ script = ExtResource("2_ddea1")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(852.5, 314.5)
 shape = SubResource("RectangleShape2D_qj6fg")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+position = Vector2(454, 618)
+shape = SubResource("RectangleShape2D_8gdbh")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
+position = Vector2(36.75, 308)
+shape = SubResource("RectangleShape2D_ls6sw")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
+position = Vector2(447.5, -5)
+shape = SubResource("RectangleShape2D_462qr")

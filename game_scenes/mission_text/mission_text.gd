@@ -25,7 +25,7 @@ func _on_back_pressed():
 	Music.mouse_click()
 	get_tree().change_scene_to_file("res://game_scenes/prompts_screen/starting_prompts.tscn")
 	hide ()
-	
+
 func _on_skip_pressed():
 	Music.mouse_click()
 	get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
