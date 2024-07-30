@@ -12,6 +12,7 @@ offset_left = 750.0
 offset_top = 400.0
 offset_right = 900.0
 offset_bottom = 500.0
+focus_mode = 0
 theme = ExtResource("2_8iye3")
 text = "?"
 
@@ -20,6 +21,7 @@ offset_left = 250.0
 offset_top = 400.0
 offset_right = 400.0
 offset_bottom = 500.0
+focus_mode = 0
 theme = ExtResource("2_8iye3")
 text = "Options"
 
@@ -28,6 +30,7 @@ offset_left = 500.0
 offset_top = 400.0
 offset_right = 650.0
 offset_bottom = 500.0
+focus_mode = 0
 theme = ExtResource("2_8iye3")
 text = "Play"
 

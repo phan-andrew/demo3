@@ -136,6 +136,7 @@ offset_left = 420.0
 offset_top = 491.0
 offset_right = 713.0
 offset_bottom = 566.0
+focus_mode = 0
 theme = ExtResource("2_qb6p7")
 text = "CONTINUE"
 
@@ -144,6 +145,7 @@ offset_left = 251.0
 offset_top = 491.0
 offset_right = 401.0
 offset_bottom = 566.0
+focus_mode = 0
 theme = ExtResource("2_qb6p7")
 text = "BACK"
 

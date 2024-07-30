@@ -22,6 +22,7 @@ offset_left = 463.0
 offset_top = 289.0
 offset_right = 681.0
 offset_bottom = 339.0
+focus_mode = 0
 theme = ExtResource("3_mx321")
 text = "Upload OPFOR Profile"
 
@@ -30,6 +31,7 @@ offset_left = 464.0
 offset_top = 354.0
 offset_right = 666.0
 offset_bottom = 403.0
+focus_mode = 0
 theme = ExtResource("3_mx321")
 text = "Upload Defend Profile"
 
@@ -38,6 +40,7 @@ offset_left = 463.0
 offset_top = 415.0
 offset_right = 681.0
 offset_bottom = 464.0
+focus_mode = 0
 theme = ExtResource("3_mx321")
 text = "Upload Timeline"
 
@@ -70,6 +73,7 @@ offset_left = 420.0
 offset_top = 491.0
 offset_right = 713.0
 offset_bottom = 566.0
+focus_mode = 0
 theme = ExtResource("1_2nmyf")
 text = "CONTINUE"
 
@@ -102,6 +106,7 @@ offset_left = 251.0
 offset_top = 491.0
 offset_right = 401.0
 offset_bottom = 566.0
+focus_mode = 0
 theme = ExtResource("1_2nmyf")
 button_mask = 3
 text = "BACK"

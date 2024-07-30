@@ -51,6 +51,7 @@ func _on_pause_pressed():
 
 func _on_speed_button_pressed():
 	if speedB == 1:
+		$speed_button.icon = playIcon
 		if pauseB == false:
 			speed = 60
 			speedB = 2
@@ -58,6 +59,7 @@ func _on_speed_button_pressed():
 		else:
 			speedB = 2
 	else:
+		$speed_button.icon = fastIcon
 		if pauseB == false:
 			speed = 30
 			speedB = 1

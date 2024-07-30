@@ -2,12 +2,10 @@ Remove other buttons when opening the card
 MONISH Pop-ups make x-button disappear or work
 Bug with blue cards
 MONISH Make start button bigger
-IAN Make scrolling text automatically
 MONISH Make mission statements editable 
 Change background for scene
 MONISH Add comment section to discussion
 MONISH Start download file in downloads folder
 Preexisting title input
-Unhighlight buttons
 Help button on all screens (screen specific help pages)
 MONISH Format final attack text box better
