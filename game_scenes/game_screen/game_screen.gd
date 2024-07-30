@@ -9,7 +9,7 @@ var timers
 var aPics
 var numA = 0
 var numD = 0
-var save_path ="res://data/info.txt"
+var save_path ="res://data/gama_data.txt"
 var successornah
 var sucornah = false
 var likelihood
@@ -243,13 +243,13 @@ func _on_button_pressed():
 				row += [Mitre.attack_dict[card.card_index+1][2]]
 				card.reset_card()
 			else:
-				row+=["None Selected"]
+				row+=["---"]
 		for card in dCards:
 			if card.card_index != -1:
-				row+=["nothing yet =)"]
+				row+=[Mitre.defend_dict[card.card_index+1][2]]
 				card.reset_card()
 			else:
-				row+=["nothing yet =)"]
+				row+=["---"]
 		row += [successornah]
 		row += [likelihood]
 		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
