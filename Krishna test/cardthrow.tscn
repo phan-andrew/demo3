@@ -7,5 +7,15 @@
 
 [node name="Card" parent="." instance=ExtResource("1_87b8e")]
 position = Vector2(2, 2)
+input_pickable = true
 
-[node name="wall" parent="." instance=ExtResource("2_0l03i")]
+[node name="wall1" parent="." instance=ExtResource("2_0l03i")]
+
+[node name="TextEdit" type="TextEdit" parent="."]
+offset_left = 285.0
+offset_top = 522.0
+offset_right = 591.0
+offset_bottom = 580.0
+text = "Touch the card with mouse to go back"
+
+[connection signal="mouse_entered" from="Card" to="Card" method="_on_mouse_entered"]
