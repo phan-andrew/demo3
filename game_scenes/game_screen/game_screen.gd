@@ -261,7 +261,7 @@ func _on_button_pressed():
 				finalattack = true
 		
 		if finalattack:
-			load_previous_attacks("res://data/info.txt")
+			load_previous_attacks("res://data/gama_data.txt")
 			$Window3.visible  = true
 			$Window.visible = false
 		else:
