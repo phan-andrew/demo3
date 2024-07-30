@@ -23,6 +23,7 @@ offset_left = 501.0
 offset_top = 504.0
 offset_right = 651.0
 offset_bottom = 579.0
+focus_mode = 0
 theme = ExtResource("2_1ycly")
 text = "BACK"
 
