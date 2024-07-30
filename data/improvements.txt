@@ -11,4 +11,3 @@ Preexisting title input
 Unhighlight buttons
 Help button on all screens (screen specific help pages)
 MONISH Format final attack text box better
-MONISH Make text input the same font

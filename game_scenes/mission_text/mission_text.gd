@@ -5,14 +5,21 @@ var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var fastIcon = preload("res://images/UI_images/fast_forward_button.png")
 var pauseB = false
 var speedB = 1
+var length = 0
+var pos = 0
 
 func _ready():
 	$Label.text = "Mission Statement\n\n" + Mitre.blue_objective + "\n\n\n\nOPFOR Mission Statement\n\n" + Mitre.red_objective
 	Music.scroll_music(1)
+	length = $Label.size.y
 
 func _process(delta):
 	var velocity = Vector2(0, -speed)
 	$Label.position += velocity * delta
+	pos = $Label.position.y
+	if pos + length <= 0:
+		get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
+		hide ()
 
 func _on_back_pressed():
 	Music.mouse_click()
