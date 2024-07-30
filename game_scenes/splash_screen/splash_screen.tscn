@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0qd0epqdp3ht"]
+[gd_scene load_steps=10 format=3 uid="uid://c0qd0epqdp3ht"]
 
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_60llc"]
 [ext_resource type="Script" path="res://game_scenes/splash_screen/splash_screen.gd" id="1_d2qnl"]
+[ext_resource type="PackedScene" uid="uid://ojp6d3writjk" path="res://bg.tscn" id="2_44uba"]
 [ext_resource type="Texture2D" uid="uid://y1qagnc8ykdp" path="res://images/Logo/SEACAT_nobgFS.png" id="2_ljruu"]
 [ext_resource type="Texture2D" uid="uid://cfft4dopidiq3" path="res://images/UI_images/dod.png" id="5_dqmfp"]
 [ext_resource type="Texture2D" uid="uid://miyoer6h0k0v" path="res://images/UI_images/comuuv.png" id="6_1jmxl"]
@@ -11,6 +12,8 @@
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_d2qnl")
+
+[node name="Node2D" parent="." instance=ExtResource("2_44uba")]
 
 [node name="background" type="Sprite2D" parent="."]
 z_index = -1

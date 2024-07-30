@@ -6,6 +6,7 @@ var bluemission = true
 func _ready():
 	$Continue.disabled = true 
 
+
 func _process(delta):
 	if redmission && bluemission:
 		$Continue.disabled = false

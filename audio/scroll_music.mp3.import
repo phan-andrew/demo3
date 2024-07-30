@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/scroll_music.mp3-6acd0494fd63a34f23a73779e80b
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

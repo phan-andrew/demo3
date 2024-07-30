@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://hpwqdwsycf3r"]
+[gd_scene load_steps=6 format=3 uid="uid://hpwqdwsycf3r"]
 
 [ext_resource type="Script" path="res://game_scenes/help_screen/Control.gd" id="1_0d67t"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="2_1ycly"]
+[ext_resource type="PackedScene" uid="uid://ojp6d3writjk" path="res://bg.tscn" id="2_7hj77"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="3_8ta8a"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kdutx"]
@@ -16,6 +17,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_0d67t")
+
+[node name="Node2D" parent="." instance=ExtResource("2_7hj77")]
 
 [node name="back_button" type="Button" parent="."]
 layout_mode = 0

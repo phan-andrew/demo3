@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://de7ex1vqcxmq"]
+[gd_scene load_steps=6 format=3 uid="uid://de7ex1vqcxmq"]
 
 [ext_resource type="Script" path="res://game_scenes/mission_input_screen/mission_inputs.gd" id="1_2da3q"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_dq41l"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="2_tn4v7"]
+[ext_resource type="PackedScene" uid="uid://ojp6d3writjk" path="res://bg.tscn" id="3_c35an"]
 [ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="4_4kfmx"]
 
 [node name="Node2D" type="Node2D"]
@@ -13,6 +14,8 @@ z_index = -1
 position = Vector2(576, 324)
 scale = Vector2(1.152, 0.973)
 texture = ExtResource("1_dq41l")
+
+[node name="Node2D" parent="." instance=ExtResource("3_c35an")]
 
 [node name="Continue" type="Button" parent="."]
 offset_left = 420.0
