@@ -166,14 +166,6 @@ offset_right = 265.0
 offset_bottom = 121.0
 text = "Success Likelihood:"
 
-[node name="StartGame" type="Button" parent="."]
-offset_left = 493.0
-offset_top = 589.0
-offset_right = 660.0
-offset_bottom = 639.0
-theme = ExtResource("11_qde7s")
-text = "Start Game"
-
 [node name="EndGame" type="Button" parent="."]
 offset_left = 493.0
 offset_top = 589.0
@@ -186,6 +178,8 @@ text = "End Game"
 initial_position = 2
 size = Vector2i(400, 200)
 visible = false
+unresizable = true
+borderless = true
 
 [node name="quit_button" type="Button" parent="Window2"]
 anchors_preset = 7
@@ -262,15 +256,26 @@ offset_bottom = 270.0
 theme = ExtResource("11_qde7s")
 editable = false
 
+[node name="Window4" type="Window" parent="."]
+initial_position = 2
+size = Vector2i(300, 100)
+borderless = true
+
+[node name="StartGame" type="Button" parent="Window4"]
+offset_right = 300.0
+offset_bottom = 100.0
+theme = ExtResource("1_0jfxs")
+text = "Start Game"
+
 [connection signal="pressed" from="Timer_Label/pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="AttackSubmit" to="." method="_on_attack_submit_pressed"]
 [connection signal="pressed" from="DefenseSubmit" to="." method="_on_defense_submit_pressed"]
 [connection signal="pressed" from="Window/Button" to="." method="_on_button_pressed"]
 [connection signal="item_selected" from="Window/OptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="value_changed" from="Window/SpinBox" to="." method="_on_spin_box_value_changed"]
-[connection signal="pressed" from="StartGame" to="." method="_on_start_game_pressed"]
 [connection signal="pressed" from="EndGame" to="." method="_on_end_game_pressed"]
 [connection signal="pressed" from="Window2/quit_button" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="Window2/continue_button" to="." method="_on_continue_button_pressed"]
 [connection signal="value_changed" from="Window3/SpinBox" to="." method="_on_spin_box_2_value_changed"]
 [connection signal="pressed" from="Window3/Button" to="." method="_on_final_continue_pressed"]
+[connection signal="pressed" from="Window4/StartGame" to="." method="_on_start_game_pressed"]

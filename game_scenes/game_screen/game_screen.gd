@@ -163,7 +163,7 @@ func _on_start_game_pressed():
 	$Timer_Label.play = true
 	disable_attack_buttons(false)
 	$Timer_Label/pause.disabled = false
-	$StartGame.visible = false
+	$Window4.visible = false
 	$EndGame.visible = true
 
 func _on_end_game_pressed():
