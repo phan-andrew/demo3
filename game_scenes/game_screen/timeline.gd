@@ -35,4 +35,4 @@ func _process(delta):
 
 func _progress(speed):
 	$ParallaxBackground.progress(speed)
-	
+
