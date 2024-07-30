@@ -22,10 +22,18 @@ func _on_button_pressed():
 
 func _on_button_2_pressed():
 	Mitre.red_objective = $TextEdit.text
-	$TextEdit.clear()
+	$Label4.text = "Saved"
 	redmission = true
 
 func _on_button_3_pressed():
 	Mitre.blue_objective = $TextEdit2.text
-	$TextEdit2.clear()
+	$Label5.text = "Saved"
 	bluemission = true
+
+func _on_text_edit_text_changed():
+	$Label4.text = ""
+	redmission = false
+
+func _on_text_edit_2_text_changed():
+	$Label5.text = ""
+	bluemission = false
