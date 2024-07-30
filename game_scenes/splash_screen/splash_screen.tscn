@@ -1,12 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://c0qd0epqdp3ht"]
+[gd_scene load_steps=9 format=3 uid="uid://c0qd0epqdp3ht"]
 
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_60llc"]
 [ext_resource type="Script" path="res://game_scenes/splash_screen/splash_screen.gd" id="1_d2qnl"]
 [ext_resource type="Texture2D" uid="uid://y1qagnc8ykdp" path="res://images/Logo/SEACAT_nobgFS.png" id="2_ljruu"]
-[ext_resource type="Texture2D" uid="uid://ypb5uuknvxri" path="res://images/UI_images/mitre2.jpeg" id="4_s37gw"]
 [ext_resource type="Texture2D" uid="uid://cfft4dopidiq3" path="res://images/UI_images/dod.png" id="5_dqmfp"]
+[ext_resource type="Texture2D" uid="uid://miyoer6h0k0v" path="res://images/UI_images/comuuv.png" id="6_1jmxl"]
 [ext_resource type="Texture2D" uid="uid://bcel5hil43bfe" path="res://images/UI_images/godotlogo.png" id="6_axrwi"]
-[ext_resource type="Texture2D" uid="uid://pp2f764afrca" path="res://images/UI_images/navy.png" id="7_t7b78"]
 [ext_resource type="Texture2D" uid="uid://bdce0x0otqfo7" path="res://images/UI_images/keyport.jpg" id="8_mvm13"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="9_4rmsb"]
 
@@ -24,14 +23,9 @@ position = Vector2(582, 255)
 scale = Vector2(0.5, 0.534)
 texture = ExtResource("2_ljruu")
 
-[node name="mitre" type="Sprite2D" parent="."]
-position = Vector2(258, 527)
-scale = Vector2(0.15, 0.15)
-texture = ExtResource("4_s37gw")
-
 [node name="dod" type="Sprite2D" parent="."]
 position = Vector2(901, 267)
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_dqmfp")
 
 [node name="godot" type="Sprite2D" parent="."]
@@ -39,13 +33,13 @@ position = Vector2(896, 514)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("6_axrwi")
 
-[node name="navy" type="Sprite2D" parent="."]
-position = Vector2(250, 258)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("7_t7b78")
+[node name="comuuvgru" type="Sprite2D" parent="."]
+position = Vector2(333, 258)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("6_1jmxl")
 
 [node name="navsea" type="Sprite2D" parent="."]
-position = Vector2(585, 515)
+position = Vector2(193, 515)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("8_mvm13")
 
@@ -55,11 +49,37 @@ offset_right = 1155.0
 offset_bottom = 650.0
 
 [node name="Label" type="Label" parent="."]
-offset_left = 279.0
-offset_top = 417.0
-offset_right = 854.0
-offset_bottom = 443.0
+offset_left = 325.0
+offset_top = 490.0
+offset_right = 722.0
+offset_bottom = 545.0
 theme = ExtResource("9_4rmsb")
-text = "CLICK ANYWHERE TO START"
+text = "CLICK ANYWHERE
+TO START"
+horizontal_alignment = 1
+
+[node name="HELP" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 59.0
+offset_right = 108.0
+offset_bottom = 103.0
+focus_mode = 0
+theme = ExtResource("9_4rmsb")
+text = "?"
+
+[node name="Window" type="Window" parent="."]
+initial_position = 2
+size = Vector2i(650, 100)
+visible = false
+
+[node name="Label" type="Label" parent="Window"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme = ExtResource("9_4rmsb")
+text = "Click anywhere onscreen
+to move to the next screen"
+horizontal_alignment = 1
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="HELP" to="." method="_on_help_pressed"]
+[connection signal="close_requested" from="Window" to="." method="_on_window_close_requested"]
