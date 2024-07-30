@@ -9,7 +9,7 @@ var timers
 var aPics
 var numA = 0
 var numD = 0
-var save_path ="res://data/gama_data.txt"
+var save_path ="res://data/game_data.txt"
 var successornah
 var sucornah = false
 var likelihood
@@ -261,7 +261,7 @@ func _on_button_pressed():
 				finalattack = true
 		
 		if finalattack:
-			load_previous_attacks("res://data/gama_data.txt")
+			load_previous_attacks("res://data/game_data.txt")
 			$Window3.visible  = true
 			$Window.visible = false
 		else:

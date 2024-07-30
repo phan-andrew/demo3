@@ -31,7 +31,7 @@ func _on_change_profile_pressed():
 	hide ()
 
 func _on_file_location_selected(path):
-	var src_file = FileAccess.open("res://data/info.txt", FileAccess.ModeFlags.READ)
+	var src_file = FileAccess.open("res://data/game_data.txt", FileAccess.ModeFlags.READ)
 	if src_file == null:
 		$Label.text = "Failed to find source"
 		return
