@@ -26,5 +26,3 @@ bus = &"music"
 stream = ExtResource("5_ynbpn")
 volume_db = 1.0
 bus = &"effects"
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
