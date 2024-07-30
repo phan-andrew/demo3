@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0qd0epqdp3ht"]
+[gd_scene load_steps=10 format=3 uid="uid://c0qd0epqdp3ht"]
 
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_60llc"]
 [ext_resource type="Script" path="res://game_scenes/splash_screen/splash_screen.gd" id="1_d2qnl"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bcel5hil43bfe" path="res://images/UI_images/godotlogo.png" id="6_axrwi"]
 [ext_resource type="Texture2D" uid="uid://pp2f764afrca" path="res://images/UI_images/navy.png" id="7_t7b78"]
 [ext_resource type="Texture2D" uid="uid://bdce0x0otqfo7" path="res://images/UI_images/keyport.jpg" id="8_mvm13"]
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="9_4rmsb"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_d2qnl")
@@ -47,3 +48,18 @@ texture = ExtResource("7_t7b78")
 position = Vector2(585, 515)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("8_mvm13")
+
+[node name="Button" type="Button" parent="."]
+z_index = -2
+offset_right = 1155.0
+offset_bottom = 650.0
+
+[node name="Label" type="Label" parent="."]
+offset_left = 279.0
+offset_top = 417.0
+offset_right = 854.0
+offset_bottom = 443.0
+theme = ExtResource("9_4rmsb")
+text = "CLICK ANYWHERE TO START"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
