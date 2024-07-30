@@ -65,22 +65,27 @@ func _on_continue_pressed():
 
 func _on_attack_download_pressed():
 	filedialog.current_dir = Mitre.downloadpath
+	filedialog.current_file = "attack_database"
 	filedialog.popup_centered()
 
 func _on_opfor_template_pressed():
 	filedialog2.current_dir = Mitre.downloadpath
+	filedialog2.current_file = "opfor_template"
 	filedialog2.popup_centered()
 
 func _on_defend_data_pressed():
 	filedialog3.current_dir = Mitre.downloadpath
+	filedialog3.current_file = "defend_database"
 	filedialog3.popup_centered()
 
 func _on_defense_template_pressed():
 	filedialog4.current_dir = Mitre.downloadpath
+	filedialog4.current_file = "defense_template"
 	filedialog4.popup_centered()
 
 func _on_timeline_template_pressed():
 	filedialog5.current_dir = Mitre.downloadpath
+	filedialog5.current_file = "timeline_template"
 	filedialog5.popup_centered()
 
 func _on_file_selected(path):

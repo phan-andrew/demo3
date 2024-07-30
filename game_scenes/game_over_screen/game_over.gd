@@ -13,7 +13,7 @@ func _process(delta):
 func _on_save_button_pressed():
 	Music.mouse_click()
 	$SaveResults.current_dir = Mitre.downloadpath
-	$SaveResults.current_file = "CTT_results"
+	$SaveResults.current_file = "CTT_results_" + Time.get_time_string_from_system() + "_" + Time.get_date_string_from_system()
 	$SaveResults.popup_centered()
 
 func _on_end_game_pressed():
