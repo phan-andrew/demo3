@@ -6,3 +6,4 @@ Change background for scene
 MONISH Add comment section to discussion
 Preexisting title input
 Help button on all screens (screen specific help pages)
+MONISH make buttons disabled until pre-reqs are fulfilled
