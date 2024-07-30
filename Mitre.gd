@@ -8,10 +8,12 @@ var d3fendprof_dict={}
 var red_objective=""
 var blue_objective=""
 var time_limit = 300
+var downloadpath
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	import_resources_data()
+	get_downloads_path()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -49,3 +51,12 @@ func import_resources_data():
 		var d3fend_data_set=Array(file5.get_csv_line())
 		d3fendprof_dict[d3fendprof_dict.size()]=d3fend_data_set
 	file5.close()
+
+func get_downloads_path():
+	match OS.get_name():
+		"Windows":
+			downloadpath = OS.get_environment("USERPROFILE") + "/Downloads"
+		"Linux", "BSD":
+			downloadpath = OS.get_environment("HOME") + "/Downloads"
+		"MacOS":
+			downloadpath = OS.get_environment("HOME") + "/Downloads"

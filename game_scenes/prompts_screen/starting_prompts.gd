@@ -34,12 +34,15 @@ func _on_line_edit_text_submitted(new_text):
 	CTT_title = new_text
 
 func _on_attack_button_pressed():
+	file_dialog.current_dir = Mitre.downloadpath
 	file_dialog.popup_centered()
 	
 func _on_defend_button_pressed():
+	file_dialog2.current_dir = Mitre.downloadpath
 	file_dialog2.popup_centered()
 
 func _on_timeline_button_pressed():
+	file_dialog3.current_dir = Mitre.downloadpath
 	file_dialog3.popup_centered()
 
 func _on_attack_file_selected(path):

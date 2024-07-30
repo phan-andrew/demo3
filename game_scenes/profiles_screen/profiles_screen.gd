@@ -64,18 +64,23 @@ func _on_continue_pressed():
 	hide ()
 
 func _on_attack_download_pressed():
+	filedialog.current_dir = Mitre.downloadpath
 	filedialog.popup_centered()
 
 func _on_opfor_template_pressed():
+	filedialog2.current_dir = Mitre.downloadpath
 	filedialog2.popup_centered()
 
 func _on_defend_data_pressed():
+	filedialog3.current_dir = Mitre.downloadpath
 	filedialog3.popup_centered()
 
 func _on_defense_template_pressed():
+	filedialog4.current_dir = Mitre.downloadpath
 	filedialog4.popup_centered()
 
 func _on_timeline_template_pressed():
+	filedialog5.current_dir = Mitre.downloadpath
 	filedialog5.popup_centered()
 
 func _on_file_selected(path):
