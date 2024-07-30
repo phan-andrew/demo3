@@ -131,6 +131,8 @@ func _process(delta):
 		
 	if Settings.theme == 0:
 		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png")
+	$Window/Button.disabled = !sucornah
+
 func disable_attack_buttons(state):
 	for button in attackbuttons:
 		button.disabled = state

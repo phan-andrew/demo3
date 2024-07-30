@@ -4,10 +4,13 @@ var redmission = true
 var bluemission = true
 
 func _ready():
-	pass 
+	$Continue.disabled = true 
 
 func _process(delta):
-	pass
+	if redmission && bluemission:
+		$Continue.disabled = false
+	else:
+		$Continue.disabled = true
 
 func _on_continue_pressed():
 	Music.mouse_click()

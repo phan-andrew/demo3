@@ -25,10 +25,12 @@ func _ready():
 	alabel.text = "Not Selected"
 	dlabel.text = "Not Selected"
 	tlabel.text = "Not Selected"
+	$Button3.disabled = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	if attackfile && defendfile && timelinefile && timerselected:
+		$Button3.disabled = false
 
 func _on_line_edit_text_submitted(new_text):
 	CTT_title = new_text

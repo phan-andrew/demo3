@@ -44,7 +44,7 @@ offset_right = 1071.0
 offset_bottom = 578.0
 focus_mode = 0
 theme = ExtResource("1_2s7nj")
-text = "NEXT"
+text = "SKIP"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = -1
