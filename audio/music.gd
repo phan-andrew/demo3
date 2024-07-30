@@ -28,3 +28,6 @@ func play_music():
 
 func mouse_click():
 	$mouse_click.playing = true
+	
+	
+		
