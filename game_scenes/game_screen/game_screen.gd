@@ -240,7 +240,7 @@ func _on_button_pressed():
 		var row=[Time.get_time_string_from_system()]
 		for card in aCards:
 			if card.card_index != -1:
-				row += [Mitre.attack_dict[card.card_index][2]]
+				row += [Mitre.attack_dict[card.card_index+1][2]]
 				card.reset_card()
 			else:
 				row+=["None Selected"]
@@ -298,9 +298,42 @@ func load_previous_attacks(path):
 	if file:
 		var content = file.get_as_text()
 		file.close()
-		$Window3/TextEdit.placeholder_text = content  # Use bbcode_text to display formatted text
+		var formatted_text = format_csv(content)
+		$Window3/TextEdit.text = formatted_text
 	else:
 		print("Failed to open file: %s" % path)
+
+func format_csv(content):
+	var rows = content.split("\n")
+	var columns = []
+	
+	for row in rows:
+		var cells = row.split(",")
+		columns.append(cells)
+	
+	var col_width = []
+	for i in range(columns[0].size()):
+		var max_width = 0
+		for row in columns:
+			if(row.size() > 1):
+				if row[i].length() > max_width:
+					max_width = row[i].length()
+		col_width.append(max_width)
+	
+	var formatted_text = ""
+	for row in columns:
+		for i in range(row.size()):
+			var cell = row[i]
+			formatted_text += pad_string(cell, col_width[i] + 5)
+		formatted_text += "\n"
+	
+	return formatted_text
+
+func pad_string(text: String, width: int):
+	var padded_text = text
+	while padded_text.length() < width:
+		padded_text += " "
+	return padded_text
 
 func alock_expands(expanded):
 	if expanded==0:
