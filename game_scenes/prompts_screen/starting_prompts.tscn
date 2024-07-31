@@ -6,7 +6,7 @@
 [ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="4_e3ols"]
 
-[node name="Node2D2" type="Node2D"]
+[node name="Node2D3" type="Node2D"]
 script = ExtResource("1_jomlb")
 
 [node name="Node2D" parent="." instance=ExtResource("2_wm3qu")]
