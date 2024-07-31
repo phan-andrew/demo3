@@ -12,8 +12,8 @@ var numD = 0
 var save_path ="res://data/game_data.txt"
 var successornah
 var sucornah = false
-var likelihood
-var riskanalysis
+var likelihood = 0
+var riskanalysis = 0
 var currenttimer
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
