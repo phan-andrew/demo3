@@ -42,7 +42,7 @@ func _ready():
 	$d_3/card/card_back.frame = 3
 	currenttimer = 0
 	var file = FileAccess.open(save_path,FileAccess.WRITE)
-	file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood"])
+	file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood","Risk Analysis"])
 	file.close()
 	disable_attack_buttons(true)
 	disable_defend_buttons(true)
@@ -254,6 +254,7 @@ func _on_button_pressed():
 				row+=["---"]
 		row += [successornah]
 		row += [likelihood]
+		row += ["---"]
 		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
 		file.seek_end()
 		file.store_csv_line(row)
@@ -283,6 +284,14 @@ func _on_button_pressed():
 		finalattack = false
 
 func _on_final_continue_pressed():
+	var row=[Time.get_time_string_from_system()]
+	for i in range(8):
+		row += ["---"]
+	row += [riskanalysis]
+	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+	file.seek_end()
+	file.store_csv_line(row)
+	file.close()
 	$timeline.submitted = false
 	$Window3.visible = false
 	disable_attack_buttons(false)
