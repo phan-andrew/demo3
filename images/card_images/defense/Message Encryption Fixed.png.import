@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dku1g3xiqjhhh"
-path="res://.godot/imported/Indirect Branch Call Analysis.png-2aa3c84d4c2d33b59a32c49326a811b4.ctex"
+uid="uid://bhm7jp0qk0pvy"
+path="res://.godot/imported/Message Encryption Fixed.png-58e5ab6aeae14f41e8077b13b5197b50.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/defense/Indirect Branch Call Analysis.png"
-dest_files=["res://.godot/imported/Indirect Branch Call Analysis.png-2aa3c84d4c2d33b59a32c49326a811b4.ctex"]
+source_file="res://images/card_images/defense/Message Encryption Fixed.png"
+dest_files=["res://.godot/imported/Message Encryption Fixed.png-58e5ab6aeae14f41e8077b13b5197b50.ctex"]
 
 [params]
 

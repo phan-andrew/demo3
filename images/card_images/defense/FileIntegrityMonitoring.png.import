@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hu622e8wt1e4"
-path="res://.godot/imported/BootloaderAuthentication.png-917288d0f348cad443619d050c086576.ctex"
+uid="uid://f3hxl55snpb"
+path="res://.godot/imported/FileIntegrityMonitoring.png-da85b25c82eb1ce9bfdfe4d6dd0b41d0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/defense/BootloaderAuthentication.png"
-dest_files=["res://.godot/imported/BootloaderAuthentication.png-917288d0f348cad443619d050c086576.ctex"]
+source_file="res://images/card_images/defense/FileIntegrityMonitoring.png"
+dest_files=["res://.godot/imported/FileIntegrityMonitoring.png-da85b25c82eb1ce9bfdfe4d6dd0b41d0.ctex"]
 
 [params]
 

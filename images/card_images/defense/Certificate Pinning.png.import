@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ck8ormkkg1yjp"
-path="res://.godot/imported/ClientServerPayloadProfiling.png-a720865edaefe74882e2d3771e74fea4.ctex"
+uid="uid://cmicxrtawvv3r"
+path="res://.godot/imported/Certificate Pinning.png-39bbadcb7b13883a7071e0c9b7a51043.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/defense/ClientServerPayloadProfiling.png"
-dest_files=["res://.godot/imported/ClientServerPayloadProfiling.png-a720865edaefe74882e2d3771e74fea4.ctex"]
+source_file="res://images/card_images/defense/Certificate Pinning.png"
+dest_files=["res://.godot/imported/Certificate Pinning.png-39bbadcb7b13883a7071e0c9b7a51043.ctex"]
 
 [params]
 

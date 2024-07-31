@@ -21,12 +21,9 @@ func _physics_process(delta):
 				vectorx=-vectorx
 			if rng.randi_range(0,1)==0:
 				vectory=-vectory
-			if rng.randi_range(0,3)==2:
+			if rng.randi_range(0,6)==2:
 				vectorx+=1
 				vectory+=1
-			elif rng.randi_range(0,3)==1:
-				vectorx-=1
-				vectory-=1
 			
 			
 

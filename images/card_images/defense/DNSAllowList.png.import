@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpj5y85wcuaj1"
-path="res://.godot/imported/Process Self-Modification Verification.png-9b4152169442291229da2601b3ed0efb.ctex"
+uid="uid://c01cd3moxy750"
+path="res://.godot/imported/DNSAllowList.png-45b01ab53177a32f6fe5bb774d64c4ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/defense/Process Self-Modification Verification.png"
-dest_files=["res://.godot/imported/Process Self-Modification Verification.png-9b4152169442291229da2601b3ed0efb.ctex"]
+source_file="res://images/card_images/defense/DNSAllowList.png"
+dest_files=["res://.godot/imported/DNSAllowList.png-45b01ab53177a32f6fe5bb774d64c4ed.ctex"]
 
 [params]
 

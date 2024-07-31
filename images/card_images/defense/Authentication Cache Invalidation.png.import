@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dv1g4dbj1po4e"
-path="res://.godot/imported/Message Encryption.png-c20e0b205759f69c9f6b24eb5d852cbc.ctex"
+uid="uid://i8it13lffr6y"
+path="res://.godot/imported/Authentication Cache Invalidation.png-acb1856c113b4f15e118819bd3afa0d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/defense/Message Encryption.png"
-dest_files=["res://.godot/imported/Message Encryption.png-c20e0b205759f69c9f6b24eb5d852cbc.ctex"]
+source_file="res://images/card_images/defense/Authentication Cache Invalidation.png"
+dest_files=["res://.godot/imported/Authentication Cache Invalidation.png-acb1856c113b4f15e118819bd3afa0d9.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d4lfyr57qwid7"
-path="res://.godot/imported/Transfer Agent Authentication(1).png-6989b1bd69503d430e06a4fc8673698a.ctex"
+uid="uid://bppf0b23xsbvy"
+path="res://.godot/imported/Account Locking.png-eafc41b695115cac0668dfc6b5424410.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/defense/Transfer Agent Authentication(1).png"
-dest_files=["res://.godot/imported/Transfer Agent Authentication(1).png-6989b1bd69503d430e06a4fc8673698a.ctex"]
+source_file="res://images/card_images/defense/Account Locking.png"
+dest_files=["res://.godot/imported/Account Locking.png-eafc41b695115cac0668dfc6b5424410.ctex"]
 
 [params]
 
