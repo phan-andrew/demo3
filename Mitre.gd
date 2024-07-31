@@ -9,6 +9,7 @@ var red_objective=""
 var blue_objective=""
 var time_limit = 300
 var downloadpath
+var preloadedmission=false 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
