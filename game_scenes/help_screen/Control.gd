@@ -1,7 +1,7 @@
 extends Control
 
 func _ready():
-	pass
+	$Sprite2D2.texture = load(Settings.textured[Settings.theme])
 	
 func _on_back_button_pressed():
 	Music.mouse_click()

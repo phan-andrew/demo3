@@ -27,6 +27,7 @@ const timeline_template_path = "res://data/Timeline_Template.txt"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$Sprite2D.texture = load(Settings.textured[Settings.theme])
 	attack_data.pressed.connect(self._on_attack_download_pressed)
 	filedialog.mode = FileDialog.FILE_MODE_SAVE_FILE
 	filedialog.file_selected.connect(self._on_file_selected)

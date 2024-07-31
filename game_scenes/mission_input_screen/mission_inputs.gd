@@ -4,6 +4,7 @@ var redmission = true
 var bluemission = true
 
 func _ready():
+	$Sprite2D.texture = load(Settings.textured[Settings.theme])
 	$Continue.disabled = true 
 
 

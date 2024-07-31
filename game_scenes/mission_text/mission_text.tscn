@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://game_scenes/mission_text/mission_text.gd" id="1_1tnxl"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2s7nj"]
-[ext_resource type="PackedScene" uid="uid://ojp6d3writjk" path="res://bg.tscn" id="2_wa2s8"]
+[ext_resource type="PackedScene" uid="uid://bfol1cqccf88w" path="res://control.tscn" id="2_wa2s8"]
 [ext_resource type="Texture2D" uid="uid://b50lklisctxhu" path="res://images/UI_images/pause_button.png" id="5_5tyjb"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="6_1pw74"]
 [ext_resource type="Texture2D" uid="uid://b36qech8qekm7" path="res://images/UI_images/fast_forward_button.png" id="6_sl2nd"]

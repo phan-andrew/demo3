@@ -7,6 +7,7 @@ var bus2_name = "effects"
 var bus2_index = 1
 
 func _ready():
+	$Sprite2D2.texture = load(Settings.textured[Settings.theme])
 	bus_index = AudioServer.get_bus_index(bus_name)
 	$HSlider.value = Settings.music_value
 	bus2_index = AudioServer.get_bus_index(bus2_name)
@@ -27,6 +28,7 @@ func _on_h_slider_value_changed(value):
 func _on_theme_select_item_selected(index):
 	Settings.theme = index
 	Music.change_theme()
+	$Sprite2D2.texture = load(Settings.textured[Settings.theme])
 
 
 func _on_h_slider_2_value_changed(value):

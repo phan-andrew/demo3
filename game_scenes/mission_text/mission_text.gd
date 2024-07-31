@@ -9,6 +9,7 @@ var length = 0
 var pos = 0
 
 func _ready():
+	$Sprite2D.texture = load(Settings.textured[Settings.theme])
 	$Label.text = "Mission Statement\n\n" + Mitre.blue_objective + "\n\n\n\nOPFOR Mission Statement\n\n" + Mitre.red_objective
 	Music.scroll_music(1)
 	length = $Label.size.y

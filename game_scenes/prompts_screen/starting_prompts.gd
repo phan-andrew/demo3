@@ -16,6 +16,7 @@ var timerselected = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$Sprite2D.texture = load(Settings.textured[Settings.theme])
 	Music.start_music()
 	attack_button.connect("pressed", Callable(self, "_on_attack_button_pressed"))
 	defend_button.connect("pressed", Callable(self, "_on_defend_button_pressed"))

@@ -1,7 +1,7 @@
 extends Node2D
 
 func _ready():
-	pass
+	$background.texture = load(Settings.textured[Settings.theme])
 
 func _process(delta):
 	pass

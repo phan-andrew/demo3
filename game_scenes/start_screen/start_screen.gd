@@ -1,6 +1,7 @@
 extends Node2D
 
 func _ready():
+	$Sprite2D.texture = load(Settings.textured[Settings.theme])
 	Music.start_music()
 
 func _process(delta):
