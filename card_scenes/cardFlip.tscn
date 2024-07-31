@@ -341,7 +341,7 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7wmbb"]
 size = Vector2(840, 1156)
 
-[node name="Node2D2" type="Node2D"]
+[node name="Node2D4" type="Node2D"]
 script = ExtResource("1_ocqbr")
 
 [node name="card" type="Sprite2D" parent="."]

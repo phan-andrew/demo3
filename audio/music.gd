@@ -44,3 +44,5 @@ func change_theme():
 		$theme.volume_db = 0
 	$theme.play()
 		
+func flip_card():
+	$card_flip.playing = true

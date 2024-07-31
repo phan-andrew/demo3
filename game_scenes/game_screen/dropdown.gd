@@ -54,6 +54,6 @@ func add_defend_options():
 	var drop = $defend_option
 	var a = 2
 	while a < defends.size():
-		drop.add_item(Mitre.defend_dict[int(defends[a][0])][2])
+		drop.add_item(Mitre.defend_dict[int(defends[a][0])+1][2])
 		a+=1
 	drop.select(-1)

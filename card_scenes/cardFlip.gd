@@ -48,12 +48,14 @@ func _process(delta):
 				$AnimationPlayer.play("card_flip")
 				#while $AnimationPlayer.current_animation_position < 0.2:
 				flipped = true
+				Music.flip_card()
 
 		else:
 			reset_count +=1
 		if reset_count > reset && flipped:
 			$AnimationPlayer.play_backwards("card_flip")
 			flipped = false
+			Music.flip_card()
 
 
 
@@ -61,13 +63,14 @@ func setCard(index):
 	if cardType == "a":
 		$card.texture = load(Mitre.attack_dict[index+1][4])
 	if cardType == "d":
-		$card.texture = load(Mitre.defend_dict[int(index)][4])
+		$card.texture = load(Mitre.defend_dict[int(index)+1][4])
 	card_index = int(index)
 
 
 
 func _on_area_2d_mouse_shape_entered(shape_idx):
 	hovering = true
+	
 
 func _on_area_2d_mouse_shape_exited(shape_idx):
 	hovering = false
@@ -75,6 +78,7 @@ func _on_area_2d_mouse_shape_exited(shape_idx):
 func play():
 	$AnimationPlayer.play("start_flip")
 	inPlay = true
+	Music.flip_card()
 
 func _on_expand_button_pressed():
 	if !expanded:
@@ -130,6 +134,7 @@ func reset_card():
 	$AnimationPlayer.play("end_flip")
 	time_value = 0
 	card_index = -1
+	Music.flip_card()
 
 
 func disable_buttons(state):
@@ -141,7 +146,7 @@ func setText(index):
 		$card/definition.text=(Mitre.attack_dict[index+1][3])
 		$card/definition.hide()
 	if cardType=="d":
-		$card/definition.text=(Mitre.defend_dict[int(index)][3])
+		$card/definition.text=(Mitre.defend_dict[int(index)+1][3])
 		$card/definition.hide()
 
 func setCost(Cost):
