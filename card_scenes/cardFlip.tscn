@@ -127,6 +127,18 @@ tracks/5/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("card/Maturity:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="Animation" id="Animation_noan5"]
 resource_name = "card_flip"
@@ -203,6 +215,18 @@ tracks/5/keys = {
 "update": 1,
 "values": [true, true, false, false]
 }
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("card/Maturity:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.190951, 0.218074, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, true, false, false]
+}
 
 [sub_resource type="Animation" id="Animation_gsarn"]
 resource_name = "end_flip"
@@ -262,6 +286,18 @@ tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.2932, 0.3103),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, true, false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("card/Maturity:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.293402, 0.31102),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, true, false]
@@ -329,6 +365,18 @@ tracks/4/keys = {
 "update": 1,
 "values": [false, false, true]
 }
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("card/Maturity:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.295435, 0.311698),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, false, true]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bpgj4"]
 _data = {
@@ -368,6 +416,10 @@ scale = Vector2(0.45, 0.577)
 [node name="Clock" type="Sprite2D" parent="card"]
 position = Vector2(133, 240)
 scale = Vector2(0.8, 0.8)
+
+[node name="Maturity" type="Sprite2D" parent="card"]
+position = Vector2(-3, 260)
+scale = Vector2(0.45, 0.577)
 
 [node name="Time" type="RichTextLabel" parent="card"]
 visible = false

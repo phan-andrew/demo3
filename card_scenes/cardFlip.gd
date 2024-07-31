@@ -9,6 +9,7 @@ var dPics = []
 var aBack = "res://images/card_images/general/redcard-back.png"
 var dBack = "res://images/card_images/general/bluecard-back.png"
 var cost=["res://images/card_images/general/1 Dollar.png", "res://images/card_images/general/2 Dollars.png", "res://images/card_images/general/3 Dollars.png"]
+var maturity=["res://images/card_images/general/1 Star.png", "res://images/card_images/general/2 Stars.png", "res://images/card_images/general/3 Stars.png", "res://images/card_images/general/4 Stars.png", "res://images/card_images/general/5 Stars.png"]
 var cardType
 var original_pos_x
 var original_pos_y
@@ -154,10 +155,19 @@ func setCost(Cost):
 		$card/Dollar.texture=load(cost[Cost-1])
 		$card/Dollar.z_index = 2
 		$card/Dollar.hide()
+		
+func setMaturity(Maturity):
+	if cardType=="d":
+		$card/Maturity.texture=load(maturity[Maturity-1])
+		print(Maturity)
+		$card/Maturity.z_index = 2
+		$card/Maturity.hide()
+		
 func setTimeImage():
 	if cardType=="a":
 		$card/Clock.texture=load("res://images/card_images/general/Clock.png")
 		$card/Clock.hide()
+		
 func setTimeValue(value):
 	if cardType=="a":
 		$card/Time.text=str(value) + " minutes"

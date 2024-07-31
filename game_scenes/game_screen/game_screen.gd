@@ -101,6 +101,7 @@ func _process(delta):
 				if !card.inPlay:
 					card.setCard(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
 					card.setText(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
+					card.setMaturity(int(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][1]))
 					card.play()
 					$dropdown.generateDCard = false
 	if $d_1.expanded:
