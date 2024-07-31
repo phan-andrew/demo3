@@ -13,7 +13,3 @@ func condense():
 	var a=0
 	while a<205:
 		descriptions.append(Mitre.attack_dict[a][2])
-	print(descriptions)
-	
-
-	

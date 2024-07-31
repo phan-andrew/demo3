@@ -46,9 +46,7 @@ func _process(delta):
 				if cardType == "d":
 					$card/card_back.frame = 2
 				$AnimationPlayer.play("card_flip")
-				print($AnimationPlayer.current_animation_position)
 				#while $AnimationPlayer.current_animation_position < 0.2:
-					#print("hehehaw")
 				flipped = true
 
 		else:
@@ -79,8 +77,6 @@ func play():
 	inPlay = true
 
 func _on_expand_button_pressed():
-	print(original_pos_x)
-	print(original_pos_y)
 	if !expanded:
 		if cardType == "a":
 			expand_pos_x = 300
@@ -107,7 +103,6 @@ func _on_expand_button_pressed():
 		$expand_button.position.x += 150
 		expanded = false
 		$close_button.show()
-		print("skibisidi")
 
 func make_small_again():
 	scale.x /= 2
@@ -119,7 +114,6 @@ func make_small_again():
 	$expand_button.position.x += 150
 	expanded = false
 	$close_button.show()
-	print("skibisidi")
 
 func _on_close_button_pressed():
 	reset_card()
@@ -155,7 +149,6 @@ func setCost(Cost):
 		$card/Dollar.texture=load(cost[Cost-1])
 		$card/Dollar.z_index = 2
 		$card/Dollar.hide()
-		print("erm what the sgima")
 func setTimeImage():
 	if cardType=="a":
 		$card/Clock.texture=load("res://images/card_images/general/Clock.png")

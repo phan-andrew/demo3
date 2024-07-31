@@ -14,13 +14,10 @@ func start_music():
 func scroll_music(speed):
 	if speed == 0:
 		$scroll_music.stream_paused = true
-		print("america yaa :D")
 	else:	
 		$scroll_music.stream_paused = false
 		$scroll_music.pitch_scale = speed
-		print("hallllllllloooo")
 	if !$scroll_music.playing && !$scroll_music.stream_paused:
-		print("hallllooo")
 		$start_music.playing = false
 		$scroll_music.playing = true
 			
