@@ -158,4 +158,23 @@ position = Vector2(576, 324)
 scale = Vector2(1.152, 0.972973)
 texture = ExtResource("4_56ldv")
 
+[node name="HELP" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 548.0
+offset_right = 108.0
+offset_bottom = 592.0
+focus_mode = 0
+theme = ExtResource("2_qb6p7")
+text = "?"
+
+[node name="Window" type="Window" parent="."]
+initial_position = 2
+visible = false
+
+[node name="TextEdit" type="TextEdit" parent="Window"]
+offset_right = 8.0
+offset_bottom = 8.0
+
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="HELP" to="." method="_on_help_pressed"]
+[connection signal="close_requested" from="Window" to="." method="_on_window_close_requested"]

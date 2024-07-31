@@ -41,3 +41,9 @@ func _on_text_edit_text_changed():
 func _on_text_edit_2_text_changed():
 	$Label5.text = ""
 	bluemission = false
+
+func _on_help_pressed():
+	$Window.visible = true
+
+func _on_window_close_requested():
+	$Window.visible = false

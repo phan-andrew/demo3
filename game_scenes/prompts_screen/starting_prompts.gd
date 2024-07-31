@@ -104,3 +104,9 @@ func _on_button_5_pressed():
 func _on_spin_box_value_changed(value):
 	Mitre.time_limit = int(value*60)
 	timerselected = true
+
+func _on_help_pressed():
+	$Window.visible = true
+
+func _on_window_close_requested():
+	$Window.visible = false

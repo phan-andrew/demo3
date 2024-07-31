@@ -179,9 +179,13 @@ func _on_file_5_selected(path):
 	timeline_template_download_label.text = "File saved successfully at: " + path
 	
 
-
-
 func _on_button_pressed():
 	Music.mouse_click()
 	get_tree().change_scene_to_file("res://game_scenes/mission_input_screen/mission_inputs.tscn")
 	hide()
+
+func _on_help_pressed():
+	$Window.visible = true
+
+func _on_window_close_requested():
+	$Window.visible = false

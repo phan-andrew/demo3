@@ -20,3 +20,7 @@ func _on_button_2_pressed():
 	Music.mouse_click()
 	get_tree().change_scene_to_file("res://game_scenes/help_screen/help_screen.tscn")
 	hide ()
+
+
+func _on_help_pressed():
+	pass # Replace with function body.

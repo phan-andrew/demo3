@@ -362,5 +362,9 @@ func dlock_expands(expanded):
 func dreset_expands():
 	for card in dCards:
 		card.disable_expand(false)
-		
-	
+
+func _on_help_pressed():
+	$Window5.visible = true
+
+func _on_window_close_requested():
+	$Window5.visible = false

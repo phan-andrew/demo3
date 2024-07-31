@@ -269,6 +269,23 @@ offset_bottom = 100.0
 theme = ExtResource("1_0jfxs")
 text = "Start Game"
 
+[node name="HELP" type="Button" parent="."]
+offset_left = -3.0
+offset_top = 606.0
+offset_right = 41.0
+offset_bottom = 650.0
+focus_mode = 0
+theme = ExtResource("1_0jfxs")
+text = "?"
+
+[node name="Window5" type="Window" parent="."]
+initial_position = 2
+visible = false
+
+[node name="TextEdit" type="TextEdit" parent="Window5"]
+offset_right = 8.0
+offset_bottom = 8.0
+
 [connection signal="pressed" from="Timer_Label/pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="AttackSubmit" to="." method="_on_attack_submit_pressed"]
 [connection signal="pressed" from="DefenseSubmit" to="." method="_on_defense_submit_pressed"]
@@ -281,3 +298,5 @@ text = "Start Game"
 [connection signal="value_changed" from="Window3/SpinBox" to="." method="_on_spin_box_2_value_changed"]
 [connection signal="pressed" from="Window3/Button" to="." method="_on_final_continue_pressed"]
 [connection signal="pressed" from="Window4/StartGame" to="." method="_on_start_game_pressed"]
+[connection signal="pressed" from="HELP" to="." method="_on_help_pressed"]
+[connection signal="close_requested" from="Window5" to="." method="_on_window_close_requested"]
