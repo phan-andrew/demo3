@@ -9,6 +9,5 @@ func _on_back_button_pressed():
 	hide()
 
 func _on_area_2d_mouse_shape_entered(shape_idx):
-	print("sigma")
 	get_tree().change_scene_to_file("res://Krishna test/cardthrow.tscn")
 	hide()

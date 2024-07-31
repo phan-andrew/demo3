@@ -59,13 +59,9 @@ func _on_attack_file_selected(path):
 		var save_file = FileAccess.open(save_path, FileAccess.WRITE)
 		save_file.store_string(content)
 		save_file.close()
-		
-		print("File saved to: ", save_path)
 		attackfile = true
 		alabel.text = path.get_file()
-	else:
-		print("error")
-		
+
 func _on_defend_file_selected(path):
 	var file = FileAccess.open(path, FileAccess.READ)
 	
@@ -77,12 +73,8 @@ func _on_defend_file_selected(path):
 		var save_file = FileAccess.open(save_path, FileAccess.WRITE)
 		save_file.store_string(content)
 		save_file.close()
-		
-		print("File saved to: ", save_path)
 		defendfile = true
 		dlabel.text = path.get_file()
-	else:
-		print("error")
 
 func _on_timeline_file_selected(path):
 	var file = FileAccess.open(path, FileAccess.READ)
@@ -95,12 +87,8 @@ func _on_timeline_file_selected(path):
 		var save_file = FileAccess.open(save_path, FileAccess.WRITE)
 		save_file.store_string(content)
 		save_file.close()
-		
-		print("File saved to: ", save_path)
 		timelinefile = true
 		tlabel.text = path.get_file()
-	else:
-		print("error")
 
 func _on_button_3_pressed():
 	Music.mouse_click()

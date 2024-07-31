@@ -302,8 +302,6 @@ func load_previous_attacks(path):
 		file.close()
 		var formatted_text = format_csv(content)
 		$Window3/TextEdit.text = formatted_text
-	else:
-		print("Failed to open file: %s" % path)
 
 func format_csv(content):
 	var rows = content.split("\n")
