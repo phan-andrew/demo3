@@ -35,13 +35,13 @@ func _process(delta):
 func change_theme():
 	if Settings.theme == 0:
 		$theme.stream = preload("res://audio/themes/sea.mp3")
-		$theme.volume_db = 0
+		$theme.volume_db = -1
 	if Settings.theme == 1:
 		$theme.stream = preload("res://audio/themes/air.mp3")
-		$theme.volume_db = 0
+		$theme.volume_db = 1
 	if Settings.theme == 2:
 		$theme.stream = preload("res://audio/themes/land.mp3")
-		$theme.volume_db = 0
+		$theme.volume_db = -1
 	$theme.play()
 		
 func flip_card():
