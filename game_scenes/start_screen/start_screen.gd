@@ -1,6 +1,7 @@
 extends Node2D
-
+var seacar=false
 func _ready():
+	$Label.text="SEACAT"
 	$Sprite2D.texture = load(Settings.textured[Settings.theme])
 	Music.start_music()
 	var file= FileAccess.open("res://missionstatements.txt", FileAccess.READ)
@@ -14,7 +15,8 @@ func _ready():
 	
 
 func _process(delta):
-	pass
+	if seacar:
+		$Label.text='SEACAR'
 
 func _on_button_3_pressed():
 	Music.mouse_click()
@@ -38,3 +40,11 @@ func _on_button_2_pressed():
 
 func _on_help_pressed():
 	pass # Replace with function body.
+
+
+func _on_area_2d_area_entered(area):
+	seacar=true
+
+
+func _on_area_2d_mouse_entered():
+	seacar=true

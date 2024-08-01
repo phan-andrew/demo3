@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://c3lhlwrt3ceu4"]
+[gd_scene load_steps=5 format=3 uid="uid://c3lhlwrt3ceu4"]
 
 [ext_resource type="Script" path="res://game_scenes/start_screen/start_screen.gd" id="1_ugavs"]
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="2_8iye3"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="2_8iye3"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="3_6unbj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wvptk"]
+size = Vector2(349, 28)
 
 [node name="Node2D5" type="Node2D"]
 script = ExtResource("1_ugavs")
@@ -41,7 +44,6 @@ offset_right = 741.0
 offset_bottom = 273.0
 theme = ExtResource("2_8iye3")
 theme_override_font_sizes/font_size = 52
-text = "SEACAT"
 
 [node name="Label2" type="Label" parent="."]
 offset_right = 40.0
@@ -53,6 +55,14 @@ position = Vector2(576, 324)
 scale = Vector2(1.152, 0.972973)
 texture = ExtResource("3_6unbj")
 
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(587, 212)
+shape = SubResource("RectangleShape2D_wvptk")
+
 [connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
