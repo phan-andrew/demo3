@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://dfncvobr4liih"]
+[gd_scene load_steps=17 format=3 uid="uid://dfncvobr4liih"]
 
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/game_screen.gd" id="1_2nm7d"]
+[ext_resource type="Theme" path="res://game_scenes/game_screen/background.tres" id="2_pjlcr"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/Timer_Label.gd" id="2_quooa"]
 [ext_resource type="Texture2D" uid="uid://deyg0mophu1js" path="res://images/UI_images/play_button.png" id="4_il6gx"]
 [ext_resource type="PackedScene" uid="uid://dif6nj4pejdsw" path="res://card_scenes/card_shadowBackgrounds.tscn" id="4_u4wtv"]
@@ -11,75 +12,94 @@
 [ext_resource type="Texture2D" uid="uid://drbg5jbdtxa1x" path="res://images/UI_images/progress_bar/underwater/water_background.png" id="9_1lp2d"]
 [ext_resource type="PackedScene" uid="uid://bl2iprvunslcr" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
 [ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
+[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="13_t5eb4"]
 
 [sub_resource type="Theme" id="Theme_takis"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fwh2p"]
+bg_color = Color(0.223529, 0, 0.290196, 1)
+
+[sub_resource type="Theme" id="Theme_bx0w1"]
+default_font = ExtResource("13_t5eb4")
+default_font_size = 25
+Button/styles/normal = SubResource("StyleBoxFlat_fwh2p")
 
 [node name="game_screen" type="Node2D"]
 script = ExtResource("1_2nm7d")
 
+[node name="bg_label" type="Label" parent="."]
+offset_left = -4.0
+offset_top = 12.0
+offset_right = 1160.0
+offset_bottom = 68.0
+theme = ExtResource("2_pjlcr")
+
 [node name="Timer_Label" type="Label" parent="."]
-offset_left = 412.0
-offset_top = 27.0
-offset_right = 538.0
-offset_bottom = 53.0
+offset_left = 409.0
+offset_top = 24.0
+offset_right = 539.0
+offset_bottom = 58.0
 theme = ExtResource("1_0jfxs")
 text = "
 "
+horizontal_alignment = 1
+vertical_alignment = 1
 script = ExtResource("2_quooa")
 
 [node name="pause" type="Button" parent="Timer_Label"]
 texture_filter = 1
 layout_mode = 0
-offset_left = 148.0
-offset_top = -3.0
-offset_right = 164.0
-offset_bottom = 13.0
+offset_left = 147.0
+offset_top = -1.0
+offset_right = 163.0
+offset_bottom = 15.0
 scale = Vector2(2, 2)
 theme = SubResource("Theme_takis")
 icon = ExtResource("4_il6gx")
 
 [node name="Timer_Label2" type="Label" parent="."]
-offset_left = 611.0
-offset_top = 27.0
-offset_right = 737.0
-offset_bottom = 53.0
+offset_left = 610.0
+offset_top = 24.0
+offset_right = 746.0
+offset_bottom = 58.0
 theme = ExtResource("1_0jfxs")
+horizontal_alignment = 1
+vertical_alignment = 1
 script = ExtResource("5_i01nf")
 
 [node name="cardShadow" parent="." instance=ExtResource("4_u4wtv")]
-position = Vector2(0, -20)
 
 [node name="dropdown" parent="." instance=ExtResource("5_c2rya")]
 position = Vector2(-130, 22)
 
 [node name="a_1" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(100, 355)
+position = Vector2(100, 375)
 scale = Vector2(0.2, 0.2)
 
 [node name="a_2" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(275, 355)
+position = Vector2(275, 375)
 scale = Vector2(0.2, 0.2)
 
 [node name="a_3" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(450, 355)
+position = Vector2(450, 375)
 scale = Vector2(0.2, 0.2)
 
 [node name="d_1" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(700, 355)
+position = Vector2(700, 375)
 scale = Vector2(0.2, 0.2)
 
 [node name="d_2" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(875, 355)
+position = Vector2(875, 375)
 scale = Vector2(0.2, 0.2)
 
 [node name="d_3" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(1050, 355)
+position = Vector2(1050, 375)
 scale = Vector2(0.2, 0.2)
 
 [node name="background" type="Sprite2D" parent="."]
@@ -89,7 +109,7 @@ scale = Vector2(10, 10)
 texture = ExtResource("9_1lp2d")
 
 [node name="timeline" parent="." instance=ExtResource("11_i0t33")]
-position = Vector2(0, -7.28)
+position = Vector2(0, 12.135)
 
 [node name="AttackSubmit" type="Button" parent="."]
 offset_left = 16.0
@@ -258,16 +278,13 @@ offset_bottom = 270.0
 theme = ExtResource("11_qde7s")
 editable = false
 
-[node name="Window4" type="Window" parent="."]
-initial_position = 2
-size = Vector2i(300, 100)
-unresizable = true
-borderless = true
-
-[node name="StartGame" type="Button" parent="Window4"]
-offset_right = 300.0
-offset_bottom = 100.0
-theme = ExtResource("1_0jfxs")
+[node name="StartGame" type="Button" parent="."]
+z_index = 1
+offset_left = 425.0
+offset_top = 213.0
+offset_right = 725.0
+offset_bottom = 313.0
+theme = SubResource("Theme_bx0w1")
 text = "Start Game"
 
 [node name="HELP" type="Button" parent="."]
@@ -298,6 +315,6 @@ offset_bottom = 8.0
 [connection signal="pressed" from="Window2/continue_button" to="." method="_on_continue_button_pressed"]
 [connection signal="value_changed" from="Window3/SpinBox" to="." method="_on_spin_box_2_value_changed"]
 [connection signal="pressed" from="Window3/Button" to="." method="_on_final_continue_pressed"]
-[connection signal="pressed" from="Window4/StartGame" to="." method="_on_start_game_pressed"]
+[connection signal="pressed" from="StartGame" to="." method="_on_start_game_pressed"]
 [connection signal="pressed" from="HELP" to="." method="_on_help_pressed"]
 [connection signal="close_requested" from="Window5" to="." method="_on_window_close_requested"]

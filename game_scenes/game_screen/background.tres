@@ -1,0 +1,11 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://do1l3vd814mvc"]
+
+[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="1_ofmp0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p2oe2"]
+bg_color = Color(0, 0, 0, 0.584314)
+
+[resource]
+default_font = ExtResource("1_ofmp0")
+default_font_size = 25
+Label/styles/normal = SubResource("StyleBoxFlat_p2oe2")
