@@ -23,6 +23,8 @@ func _on_end_game_pressed():
 
 func _on_same_profile_pressed():
 	Music.mouse_click()
+	TransitionScene.transition()
+	await TransitionScene.on_transition_finished
 	get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
 	hide ()
 

@@ -7,6 +7,8 @@ var pauseB = false
 var speedB = 1
 var length = 0
 var pos = 0
+var switch = false
+var canswitch = true
 
 func _ready():
 	$Sprite2D.texture = load(Settings.textured[Settings.theme])
@@ -18,9 +20,13 @@ func _process(delta):
 	var velocity = Vector2(0, -speed)
 	$Label.position += velocity * delta
 	pos = $Label.position.y
-	if pos + length <= 0:
-		get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
-		hide ()
+	if pos + length <= 0 && canswitch:
+		switch = true
+		canswitch = false
+	if switch:
+		switch = false
+		next()
+		
 
 func _on_back_pressed():
 	Music.mouse_click()
@@ -29,6 +35,11 @@ func _on_back_pressed():
 
 func _on_skip_pressed():
 	Music.mouse_click()
+	next()
+
+func next():
+	TransitionScene.transition()
+	await TransitionScene.on_transition_finished
 	get_tree().change_scene_to_file("res://game_scenes/game_screen/game_screen.tscn")
 	hide ()
 
