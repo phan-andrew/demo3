@@ -219,6 +219,7 @@ func _on_defense_submit_pressed():
 	for card in aCards:
 		if card.expanded:	
 			card.make_small_again()
+	if defensepresent:
 		$Timer_Label2.play = false
 		disable_defend_buttons(true)
 		$Timer_Label/pause.disabled = true

@@ -14,8 +14,20 @@ func _process(delta):
 func _on_save_button_pressed():
 	Music.mouse_click()
 	$SaveResults.current_dir = Mitre.downloadpath
-	$SaveResults.current_file = "CTT_results_" + Time.get_time_string_from_system() + "_" + Time.get_date_string_from_system()
+	$SaveResults.current_file = "CTT_results_" + get_military_time() + "_" + Time.get_date_string_from_system()
 	$SaveResults.popup_centered()
+
+func get_military_time():
+	# Get the current date and time
+	var datetime = Time.get_datetime_dict_from_system()
+	
+	# Extract hour and minute
+	var hour = str(datetime["hour"]).pad_zeros(2)
+	var minute = str(datetime["minute"]).pad_zeros(2)
+	
+	# Format as HHMM
+	var military_time = hour + minute
+	return military_time
 
 func _on_end_game_pressed():
 	Music.mouse_click()
