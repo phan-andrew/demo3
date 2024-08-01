@@ -17,6 +17,8 @@ func _ready():
 func _process(delta):
 	if seacar:
 		$Label.text='SEACAR'
+	else:
+		$Label.text='SEACAT'
 
 func _on_button_3_pressed():
 	Music.mouse_click()
@@ -42,9 +44,14 @@ func _on_help_pressed():
 	pass # Replace with function body.
 
 
-func _on_area_2d_area_entered(area):
-	seacar=true
 
 
 func _on_area_2d_mouse_entered():
-	seacar=true
+	seacar=true 
+
+
+
+
+
+func _on_area_2d_mouse_exited():
+	seacar=false
