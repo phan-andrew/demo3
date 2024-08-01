@@ -169,11 +169,24 @@ text = "?"
 
 [node name="Window" type="Window" parent="."]
 initial_position = 2
+size = Vector2i(400, 350)
 visible = false
 
 [node name="TextEdit" type="TextEdit" parent="Window"]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_right = 400.0
+offset_bottom = 350.0
+theme = ExtResource("3_6gpeu")
+text = "                  Help
+
+1. Download all the files by pressing the buttons with their names and import/open them in a Google Sheets or Excel file to view better
+
+2. The ATT&CK and D3FEND databases are files that contain all the MITRE attacks and defenses along with an index and description associated with them
+
+3. The OPFOR and Defend templates are for you to input the attacks and defenses that you have available using their index numbers as well as giving them a cost/time for attacks and a maturity level for defenses.
+
+4. The timeline template lets you put in the steps in your mission timeline, how long each step is, a description of the steps, as well as what subsystems are in play during that step."
+editable = false
+wrap_mode = 1
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="HELP" to="." method="_on_help_pressed"]

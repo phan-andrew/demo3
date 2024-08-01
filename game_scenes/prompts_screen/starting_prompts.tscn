@@ -149,11 +149,20 @@ text = "?"
 
 [node name="Window" type="Window" parent="."]
 initial_position = 2
+size = Vector2i(400, 225)
 visible = false
 
 [node name="TextEdit" type="TextEdit" parent="Window"]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_right = 400.0
+offset_bottom = 225.0
+theme = ExtResource("3_mx321")
+text = "                  Help
+
+1. Upload the profiles and timeline  you created by filling out the templates from the previous screen.
+
+2. Choose the amount of time you want each side to have to choose attacks and defenses. This will work as a chess timer, so the defense's time will start once the attack side finishes their turn."
+editable = false
+wrap_mode = 1
 
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
 [connection signal="pressed" from="Button5" to="." method="_on_button_5_pressed"]
