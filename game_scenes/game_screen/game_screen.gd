@@ -139,6 +139,10 @@ func _process(delta):
 		
 	if Settings.theme == 0:
 		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png")
+	if Settings.theme == 1:
+		$background.texture = load("res://images/UI_images/progress_bar/air/air_background.png")
+	if Settings.theme == 2:
+		$background.texture = load("res://images/UI_images/progress_bar/land/Land Background.png")
 	$Window/Button.disabled = !sucornah
 
 func disable_attack_buttons(state):
@@ -173,7 +177,7 @@ func _on_start_game_pressed():
 	$Timer_Label.play = true
 	disable_attack_buttons(false)
 	$Timer_Label/pause.disabled = false
-	$Window4.visible = false
+	$StartGame.visible = false
 	$EndGame.visible = true
 
 func _on_end_game_pressed():

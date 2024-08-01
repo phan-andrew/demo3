@@ -204,7 +204,7 @@ libraries = {
 [node name="descrip_box" type="Sprite2D" parent="."]
 visible = false
 z_index = -1
-position = Vector2(100, 135)
+position = Vector2(100, 122)
 scale = Vector2(0.5, 10)
 texture = ExtResource("6_6a4fq")
 
@@ -220,6 +220,7 @@ text = "mewoew moew moew meow mewo mewo meowmewo mewo"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="tree" type="AnimatedSprite2D" parent="."]
 position = Vector2(9, 99)
