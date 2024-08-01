@@ -21,6 +21,11 @@ var round = 1
 var card_expanded=-1
 var finalattack = false
 var biggest = 0
+var attackstringstart = ": $"
+var attackstringmid = ", "
+var attackstringend = " minutes"
+var defendstringstart = ": "
+var defendstringend = " stars"
 
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
@@ -243,13 +248,13 @@ func _on_button_pressed():
 		var row=[Time.get_time_string_from_system()]
 		for card in aCards:
 			if card.card_index != -1:
-				row += [Mitre.attack_dict[card.card_index+1][2]]
+				row += [card.getString()]
 				card.reset_card()
 			else:
 				row+=["---"]
 		for card in dCards:
 			if card.card_index != -1:
-				row+=[Mitre.defend_dict[card.card_index+1][2]]
+				row+=[card.getString()]
 				card.reset_card()
 			else:
 				row+=["---"]
@@ -320,21 +325,47 @@ func format_csv(content):
 	for row in rows:
 		var cells = row.split(",")
 		columns.append(cells)
-	
+
 	var col_width = []
 	for i in range(columns[0].size()):
-		var max_width = 0
-		for row in columns:
-			if(row.size() > 1):
-				if row[i].length() > max_width:
-					max_width = row[i].length()
-		col_width.append(max_width)
-	
+		if i != 2 && i != 3 && i != 5 && i != 6:
+			var max_width = 0
+			for row in columns:
+				if i != 1 && i != 4:
+					if(row.size() > 1):
+						if row[i].length() > max_width:
+							max_width = row[i].length()
+				else:
+					if(row.size()>1):
+						for j in range(3):
+							if row[i+j].length() > max_width:
+								max_width = row[i+j].length()
+			col_width.append(max_width)
+		else:
+			col_width.append(0)
 	var formatted_text = ""
 	for row in columns:
-		for i in range(row.size()):
-			var cell = row[i]
-			formatted_text += pad_string(cell, col_width[i] + 5)
+		if row.size() > 1:
+			for i in range(row.size()):
+				if i != 2 && i != 3 && i != 5 && i != 6:
+					var cell = row[i]
+					formatted_text += pad_string(cell, col_width[i] + 5)
+			if row[9] == "---":
+				formatted_text += "\n"
+				formatted_text += pad_string("", col_width[0] + 5)
+				formatted_text += pad_string(row[2], col_width[1] + 5)
+				formatted_text += pad_string(row[5], col_width[4] + 5)
+				formatted_text += pad_string("", col_width[7] + 5)
+				formatted_text += pad_string("", col_width[8] + 5)
+				formatted_text += pad_string("", col_width[9] + 5)
+				formatted_text += "\n"
+				formatted_text += pad_string("", col_width[0] + 5)
+				formatted_text += pad_string(row[3], col_width[1] + 5)
+				formatted_text += pad_string(row[6], col_width[4] + 5)
+				formatted_text += pad_string("", col_width[7] + 5)
+				formatted_text += pad_string("", col_width[8] + 5)
+				formatted_text += pad_string("", col_width[9] + 5)
+		formatted_text += "\n"
 		formatted_text += "\n"
 	
 	return formatted_text

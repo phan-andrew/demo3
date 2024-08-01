@@ -19,6 +19,8 @@ var expanded = false
 var reset_dropdown = false
 var card_index = -1
 var time_value = 0
+var cost_value = 0
+var maturity_level = 0
 
 
 # Called when the node enters the scene tree for the first time.
@@ -155,13 +157,14 @@ func setCost(Cost):
 		$card/Dollar.texture=load(cost[Cost-1])
 		$card/Dollar.z_index = 2
 		$card/Dollar.hide()
-		
+		cost_value = Cost
+
 func setMaturity(Maturity):
 	if cardType=="d":
 		$card/Maturity.texture=load(maturity[Maturity-1])
-		print(Maturity)
 		$card/Maturity.z_index = 2
 		$card/Maturity.hide()
+		maturity_level = Maturity
 		
 func setTimeImage():
 	if cardType=="a":
@@ -175,3 +178,17 @@ func setTimeValue(value):
 
 func getTimeValue():
 	return time_value
+
+func getCostValue():
+	return cost_value
+
+func getMaturityValue():
+	return maturity_level
+
+func getString():
+	if cardType == "a":
+		var printable = Mitre.attack_dict[card_index+1][2] + ": $" + str(cost_value) + " " + str(time_value) + " minutes"
+		return printable
+	if cardType == "d":
+		var printable = Mitre.defend_dict[card_index+1][2] + ": " + str(maturity_level) + " stars"
+		return printable
