@@ -1,5 +1,6 @@
 extends Node2D
 
+var save_path = OS.get_user_data_dir() + "/game_data.txt"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -46,7 +47,7 @@ func _on_change_profile_pressed():
 	hide ()
 
 func _on_file_location_selected(path):
-	var src_file = FileAccess.open("res://data/game_data.txt", FileAccess.ModeFlags.READ)
+	var src_file = FileAccess.open(save_path, FileAccess.ModeFlags.READ)
 	if src_file == null:
 		$Label.text = "Failed to find source"
 		return

@@ -9,7 +9,7 @@ var timers
 var aPics
 var numA = 0
 var numD = 0
-var save_path ="res://data/game_data.txt"
+var save_path = OS.get_user_data_dir() + "/game_data.txt"
 var successornah
 var sucornah = false
 var likelihood = 0
@@ -46,9 +46,6 @@ func _ready():
 	$d_3.cardType = "d"
 	$d_3/card/card_back.frame = 3
 	currenttimer = 0
-	var file = FileAccess.open(save_path,FileAccess.WRITE)
-	file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood","Risk Analysis"])
-	file.close()
 	disable_attack_buttons(true)
 	disable_defend_buttons(true)
 	$Timer_Label/pause.disabled = true
@@ -69,6 +66,11 @@ func _ready():
 	else:
 		$Timer_Label2.text = str(minutes) + ":" + str(seconds)
 	Music.play_music()
+	var file = FileAccess.open(save_path,FileAccess.WRITE)
+	if file:
+		file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood","Risk Analysis"])
+		file.close()
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	for card in aCards:
@@ -271,7 +273,7 @@ func _on_button_pressed():
 				finalattack = true
 		
 		if finalattack:
-			load_previous_attacks("res://data/game_data.txt")
+			load_previous_attacks(save_path)
 			$Window3.visible  = true
 			$Window.visible = false
 		else:
