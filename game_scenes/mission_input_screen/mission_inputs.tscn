@@ -120,11 +120,23 @@ text = "?"
 
 [node name="Window" type="Window" parent="."]
 initial_position = 2
+size = Vector2i(400, 250)
 visible = false
 
 [node name="TextEdit" type="TextEdit" parent="Window"]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_right = 400.0
+offset_bottom = 250.0
+theme = ExtResource("4_4kfmx")
+text = "                  
+                  Help
+
+1. Enter mission statements for the OPFOR (red) team and the Defense (blue) team.
+
+2. Press the save button to save your mission statements. You will NOT be able to move on until you save.
+
+3. Once saved, you can edit your statements and resave to move on."
+editable = false
+wrap_mode = 1
 
 [connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
