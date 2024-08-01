@@ -1,4 +1,5 @@
 extends Node
+var mission_input_help = ""
 var music_value = 1
 var sound_effects = 1
 var theme = 0

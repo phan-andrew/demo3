@@ -7,6 +7,8 @@ func _process(delta):
 	pass
 
 func _on_button_pressed():
+	TransitionScene.transition()
+	await TransitionScene.on_transition_finished
 	get_tree().change_scene_to_file("res://game_scenes/start_screen/start_screen.tscn")
 	hide()
 
