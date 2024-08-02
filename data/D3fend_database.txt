@@ -114,4 +114,4 @@ Index,ID,Name,Description,Path
 113,D3-UAP,User Account Permissions,Restricting a user account's access to resources.,res://images/card_images/defense/User Account Permissions.png
 114,D3-UDTA,User Data Transfer Analysis,Analyzing the amount of data transferred by a user.,res://images/card_images/defense/UserDataTransferAnalysis.png
 115,D3-UGLPA,User Geolocation Logon Pattern Analysis,Monitoring geolocation data of user logon attempts and comparing it to a baseline user behavior profile to identify anomalies in logon location.,res://images/card_images/defense/UserGeolocationLogonPatternAnalysis.png
-116,D3-WSAA,Web Session Activity Analysis,Monitoring changes in user web session behavior by comparing current web session activity to a baseline behavior profile or a catalog of predetermined malicious behavior.,res://images/card_images/defense/WebSessionAnalysis.png
+116,D3-WSAA,Web Session Activity Analysis,Monitoring changes in user web session behavior by comparing current web session activity to a baseline behavior profile or a catalog of predetermined malicious behavior.,res://images/card_images/defense/WebSessionActivityAnalysis.png
