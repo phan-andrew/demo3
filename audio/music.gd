@@ -41,7 +41,7 @@ func change_theme():
 		$theme.volume_db = 1
 	if Settings.theme == 2:
 		$theme.stream = preload("res://audio/themes/land.mp3")
-		$theme.volume_db = -1
+		$theme.volume_db = -2
 	$theme.play()
 		
 func flip_card():
