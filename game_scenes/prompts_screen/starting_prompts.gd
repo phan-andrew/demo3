@@ -9,10 +9,10 @@ var CTT_title
 @onready var alabel = $attackfilelabel
 @onready var dlabel = $defendfilelabel
 @onready var tlabel = $timelinefilelabel
-var attackfile = true
-var defendfile = true
-var timelinefile = true
-var timerselected = true
+var attackfile = false
+var defendfile = false
+var timelinefile = false
+var timerselected = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -94,6 +94,7 @@ func _on_timeline_file_selected(path):
 func _on_button_3_pressed():
 	Music.mouse_click()
 	if attackfile == true && defendfile == true && timelinefile == true && timerselected == true:
+		Mitre.import_resources_data()
 		get_tree().change_scene_to_file("res://game_scenes/mission_text/mission_text.tscn")
 		hide ()
 

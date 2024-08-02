@@ -29,14 +29,14 @@ func _on_defend_option_item_selected(index):
 	generateDCard = true
 
 func choose_attacks():
-	var file= FileAccess.open("res://data/testing_profile_DELETE_LATER.txt", FileAccess.READ)
+	var file= FileAccess.open("user://opfor_profile.txt", FileAccess.READ)
 	while !file.eof_reached():
 		var attack_data_set = Array(file.get_csv_line())
 		attacks[attacks.size()] = attack_data_set
 	file.close()
 
 func choose_defends():
-	var file= FileAccess.open("res://data/d3fend_profile_test.txt", FileAccess.READ)
+	var file= FileAccess.open("user://defend_profile.txt", FileAccess.READ)
 	while !file.eof_reached():
 		var defend_data_set = Array(file.get_csv_line())
 		defends[defends.size()] = defend_data_set

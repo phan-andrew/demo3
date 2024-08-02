@@ -13,7 +13,6 @@ var preloadedmission=false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	import_resources_data()
 	get_downloads_path()
 
 
@@ -35,19 +34,19 @@ func import_resources_data():
 		defend_dict[defend_dict.size()] = defense_data_set
 	file2.close()
 	
-	var file3 = FileAccess.open("res://data/example_mission_timeline.txt", FileAccess.READ)
+	var file3 = FileAccess.open("user://mission_timeline.txt", FileAccess.READ)
 	while !file3.eof_reached():
 		var timeline_data_set = Array(file3.get_csv_line())
 		timeline_dict[timeline_dict.size()] = timeline_data_set
 	file3.close()
 	
-	var file4 = FileAccess.open("res://data/testing_profile_DELETE_LATER.txt", FileAccess.READ)
+	var file4 = FileAccess.open("user://opfor_profile.txt", FileAccess.READ)
 	while !file4.eof_reached():
 		var opfor_data_set = Array(file4.get_csv_line())
 		opforprof_dict[opforprof_dict.size()] = opfor_data_set
 	file4.close()
 	
-	var file5 = FileAccess.open("res://data/d3fend_profile_test.txt", FileAccess.READ)
+	var file5 = FileAccess.open("user://defend_profile.txt", FileAccess.READ)
 	while !file5.eof_reached():
 		var d3fend_data_set=Array(file5.get_csv_line())
 		d3fendprof_dict[d3fendprof_dict.size()]=d3fend_data_set

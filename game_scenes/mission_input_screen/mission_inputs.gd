@@ -1,7 +1,7 @@
 extends Node2D
 
-var redmission = true
-var bluemission = true
+var redmission = false
+var bluemission = false
 
 func _ready():
 	$Sprite2D.texture = load(Settings.textured[Settings.theme])
