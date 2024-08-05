@@ -68,38 +68,39 @@ vertical_alignment = 1
 script = ExtResource("5_i01nf")
 
 [node name="cardShadow" parent="." instance=ExtResource("4_u4wtv")]
+position = Vector2(0, -15)
 
 [node name="dropdown" parent="." instance=ExtResource("5_c2rya")]
 position = Vector2(-130, 22)
 
 [node name="a_1" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(100, 375)
+position = Vector2(100, 360)
 scale = Vector2(0.2, 0.2)
 
 [node name="a_2" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(275, 375)
+position = Vector2(275, 360)
 scale = Vector2(0.2, 0.2)
 
 [node name="a_3" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(450, 375)
+position = Vector2(450, 360)
 scale = Vector2(0.2, 0.2)
 
 [node name="d_1" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(700, 375)
+position = Vector2(700, 360)
 scale = Vector2(0.2, 0.2)
 
 [node name="d_2" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(875, 375)
+position = Vector2(875, 360)
 scale = Vector2(0.2, 0.2)
 
 [node name="d_3" parent="." instance=ExtResource("6_2l2jm")]
 z_index = 1
-position = Vector2(1050, 375)
+position = Vector2(1050, 360)
 scale = Vector2(0.2, 0.2)
 
 [node name="background" type="Sprite2D" parent="."]

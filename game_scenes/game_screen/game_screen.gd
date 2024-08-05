@@ -140,7 +140,7 @@ func _process(delta):
 	if Settings.theme == 0:
 		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png")
 	if Settings.theme == 1:
-		$background.texture = load("res://images/UI_images/progress_bar/air/air_background.png")
+		$background.texture = load("res://images/UI_images/progress_bar/air/Air Background.png")
 	if Settings.theme == 2:
 		$background.texture = load("res://images/UI_images/progress_bar/land/Land Background.png")
 	$Window/Button.disabled = !sucornah
@@ -150,6 +150,7 @@ func disable_attack_buttons(state):
 		button.disabled = state
 	for card in aCards:
 		card.disable_buttons(state)
+	
 
 func disable_defend_buttons(state):
 	for button in defendbuttons:
@@ -176,6 +177,8 @@ func _on_pause_pressed():
 func _on_start_game_pressed():
 	$Timer_Label.play = true
 	disable_attack_buttons(false)
+	for card in aCards:
+		card.disable_buttons(true)
 	$Timer_Label/pause.disabled = false
 	$CanvasLayer/StartGame.visible = false
 	$CanvasLayer/ColorRect.visible = false
@@ -188,9 +191,9 @@ func _on_end_game_pressed():
 	$Window2.visible=true
 	
 func _on_quit_button_pressed():
-		Music.mouse_click()
-		get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
-		hide()
+	Music.mouse_click()
+	get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
+	hide()
 
 func _on_continue_button_pressed():
 	_on_pause_pressed()
@@ -204,7 +207,7 @@ func _on_attack_submit_pressed():
 		if card.card_index != -1:
 			attackpresent = true
 		if card.expanded:	
-			card.make_small_again()
+			card.make_small_again
 	for card in dCards:
 		if card.expanded:
 			card.make_small_again()
@@ -213,6 +216,8 @@ func _on_attack_submit_pressed():
 		$Timer_Label2.play = true
 		disable_attack_buttons(true)
 		disable_defend_buttons(false)
+		for card in dCards:
+				card.disable_buttons(true)
 		$DefenseSubmit.disabled = false
 
 
@@ -285,6 +290,8 @@ func _on_button_pressed():
 			$timeline.submitted = false
 			$Window.visible = false
 			disable_attack_buttons(false)
+			for card in aCards:
+				card.disable_buttons(true)
 			$Timer_Label/pause.disabled = false
 			$Timer_Label.play = true
 			$timeline._progress(biggest * 150)
@@ -396,7 +403,9 @@ func alock_expands(expanded):
 		$a_2.disable_expand(true)
 func areset_expands():
 	for card in aCards:
-		card.disable_expand(false)
+		if card.inPlay:
+			card.disable_expand(false)
+			card.disable_flip(false)
 		
 func dlock_expands(expanded):
 	if expanded==0:
@@ -410,7 +419,9 @@ func dlock_expands(expanded):
 		$d_2.disable_expand(true)
 func dreset_expands():
 	for card in dCards:
-		card.disable_expand(false)
+		if card.inPlay:
+			card.disable_expand(false)
+			card.disable_flip(false)
 
 func _on_help_pressed():
 	$Window5.visible = true
