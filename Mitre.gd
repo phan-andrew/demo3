@@ -11,8 +11,8 @@ var time_limit = 300
 var downloadpath
 var preloadedmission=false 
 var default = true
+var readtime=false
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	get_downloads_path()
 
@@ -20,7 +20,6 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
-
 
 func import_resources_data():
 	var file= FileAccess.open("res://data/ATT&CK_database.txt", FileAccess.READ)
@@ -80,3 +79,13 @@ func get_downloads_path():
 			downloadpath = OS.get_environment("HOME") + "/Downloads"
 		"MacOS":
 			downloadpath = OS.get_environment("HOME") + "/Downloads"
+			
+func convert_time(time):
+	var converted
+	if time.length()==3:
+		converted=int(time.substr(0,1))*60+int(time.substr(1,2))
+		print(converted)
+	if time.length()==4:
+		converted=int(time.substr(0,2))*60+int(time.substr(2,2))
+		print(converted)
+	return converted

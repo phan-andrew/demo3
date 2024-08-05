@@ -112,3 +112,11 @@ func _on_help_pressed():
 
 func _on_window_close_requested():
 	$Window.visible = false
+
+
+
+func _on_check_box_toggled(toggled_on):
+	if toggled_on:
+		Mitre.readtime=true
+	if !toggled_on:
+		Mitre.readtime=false

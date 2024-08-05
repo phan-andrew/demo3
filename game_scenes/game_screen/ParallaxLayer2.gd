@@ -10,16 +10,24 @@ var checkpoint = preload ("res://game_scenes/game_screen/checkpoint.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	initial_time = Mitre.timeline_dict[2][0]
-	for row in Mitre.timeline_dict:
-		if row > 2:
-			var new_checkpoint = checkpoint.instantiate()
-			add_child(new_checkpoint)
-			new_checkpoint.position.x = 500 + (int(Mitre.timeline_dict[row-1][0]) - int(initial_time)) * 300
-			new_checkpoint.start()
-			new_checkpoint.set_descrip((Mitre.timeline_dict[row-1][1]))
-
-
+	if !Mitre.readtime:
+		initial_time = Mitre.timeline_dict[2][0]
+		for row in Mitre.timeline_dict:
+			if row > 2:
+				var new_checkpoint = checkpoint.instantiate()
+				add_child(new_checkpoint)
+				new_checkpoint.position.x = 500 + (int(Mitre.timeline_dict[row-1][0]) - int(initial_time)) * 300
+				new_checkpoint.start()
+				new_checkpoint.set_descrip((Mitre.timeline_dict[row-1][1]))
+	if Mitre.readtime:
+		initial_time=Mitre.convert_time(Mitre.timeline_dict[2][0])
+		for row in Mitre.timeline_dict:
+			if row>2: 
+				var new_checkpoint=checkpoint.instantiate()
+				add_child(new_checkpoint)
+				new_checkpoint.position.x=500+(int(Mitre.convert_time(Mitre.timeline_dict[row-1][0]))-int(initial_time))*300
+				new_checkpoint.start()
+				new_checkpoint.set_descrip((Mitre.timeline_dict[row-1][1]))
 
 func _process(delta):
 	if progressing && timer < move_time:
@@ -32,3 +40,4 @@ func _process(delta):
 func progress(speed):
 	move_speed = speed
 	progressing = true
+
