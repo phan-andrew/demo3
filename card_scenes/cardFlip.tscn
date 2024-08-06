@@ -188,6 +188,11 @@ animations = [{
 "loop": true,
 "name": &"none",
 "speed": 4.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"nothing",
+"speed": 5.0
 }]
 
 [sub_resource type="Animation" id="Animation_2h8i5"]
@@ -599,7 +604,7 @@ scale = Vector2(0.45, 0.577)
 position = Vector2(157, 265)
 scale = Vector2(3.89, 3.89)
 sprite_frames = SubResource("SpriteFrames_4ybv1")
-animation = &"full"
+animation = &"nothing"
 
 [node name="Maturity" type="Sprite2D" parent="card"]
 position = Vector2(-3, 260)

@@ -52,6 +52,7 @@ func _process(delta):
 				$card/Clock.play("none")
 			time_value = $card/sliders/time_slider.value
 		if cardType == "d":
+			$card/Clock.play("nothing")
 			$card/Maturity.texture = load(maturity[$card/sliders/maturity_slider.value-1])
 			maturity_level = $card/sliders/maturity_slider.value
 			
