@@ -16,8 +16,8 @@ var expanded = false
 var reset_dropdown = false
 var card_index = -1
 var time_value = 0
-var cost_value = 0
-var maturity_level = 0
+var cost_value = 1
+var maturity_level = 1
 
 
 # Called when the node enters the scene tree for the first time.
@@ -40,6 +40,7 @@ func _process(delta):
 	if inPlay:
 		if cardType == "a":
 			$card/Dollar.texture = load(cost[$card/sliders/cost_slider.value-1])
+			cost_value = $card/sliders/cost_slider.value
 			$card/Time.text = str($card/sliders/time_slider.value) + " min"
 			if $card/sliders/time_slider.value > 360:
 				$card/Clock.play("full")
@@ -49,8 +50,10 @@ func _process(delta):
 				$card/Clock.play("0.25")
 			else:
 				$card/Clock.play("none")
+			time_value = $card/sliders/time_slider.value
 		if cardType == "d":
 			$card/Maturity.texture = load(maturity[$card/sliders/maturity_slider.value-1])
+			maturity_level = $card/sliders/maturity_slider.value
 	
 func setCard(index):
 	if cardType == "a":
@@ -150,25 +153,17 @@ func setText(index):
 
 func setCost(Cost):
 	if cardType=="a":
-		$card/Dollar.texture=load(cost[Cost-1])
-		$card/Dollar.z_index = 2
-		$card/Dollar.hide()
-		cost_value = Cost
+		$card/sliders/cost_slider.value = Cost
 
 func setMaturity(Maturity):
 	if cardType=="d":
-		$card/Maturity.texture=load(maturity[Maturity-1])
-		$card/Maturity.z_index = 2
-		$card/Maturity.hide()
-		maturity_level = Maturity
+		$card/sliders/maturity_slider.value = Maturity
 		
-func setTimeImage():
-	pass
+
 		
 func setTimeValue(value):
-	if cardType=="a":
-		$card/Time.text=str(value) + " minutes"
-	time_value = value
+	if cardType == "a":
+		$card/sliders/time_slider.value = value
 
 func getTimeValue():
 	return time_value

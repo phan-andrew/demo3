@@ -89,7 +89,6 @@ func _process(delta):
 				if !card.inPlay:
 					card.setCard(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0]))
 					card.setText(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0]))
-					card.setTimeImage()
 					card.setTimeValue(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][2]))
 					card.setCost(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][1]))
 					card.play()
