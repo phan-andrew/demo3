@@ -54,6 +54,8 @@ func _process(delta):
 		if cardType == "d":
 			$card/Maturity.texture = load(maturity[$card/sliders/maturity_slider.value-1])
 			maturity_level = $card/sliders/maturity_slider.value
+			
+			
 	
 func setCard(index):
 	if cardType == "a":
@@ -63,6 +65,7 @@ func setCard(index):
 		$card.texture = load(Mitre.defend_dict[int(index)+1][4])
 		$card/sliders/cost_slider.hide()
 		$card/sliders/time_slider.hide()
+		$card/Clock.hide()
 	card_index = int(index)
 
 func play():
@@ -108,7 +111,8 @@ func make_small_again():
 	position.y = original_pos_y
 	z_index = 1
 	$expand_button.icon = load("res://images/UI_images/expand_button.png")
-	$expand_button.position.x += 150
+	$expand_button.position.x += 50
+	$flip_button.position.x += 150
 	expanded = false
 	$close_button.show()
 

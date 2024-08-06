@@ -149,7 +149,8 @@ func disable_attack_buttons(state):
 	for button in attackbuttons:
 		button.disabled = state
 	for card in aCards:
-		card.disable_buttons(state)
+		if card.inPlay:
+			card.disable_buttons(state)
 	
 
 func disable_defend_buttons(state):
@@ -207,7 +208,7 @@ func _on_attack_submit_pressed():
 		if card.card_index != -1:
 			attackpresent = true
 		if card.expanded:	
-			card.make_small_again
+			card.make_small_again()
 	for card in dCards:
 		if card.expanded:
 			card.make_small_again()
@@ -267,12 +268,17 @@ func _on_button_pressed():
 		for card in aCards:
 			if card.card_index != -1:
 				row += [card.getString()]
+				if card.expanded:
+					card.make_small_again()
 				card.reset_card()
 			else:
 				row+=["---"]
 		for card in dCards:
 			if card.card_index != -1:
 				row+=[card.getString()]
+				if card.expanded:
+					card.make_small_again()
+				card.reset_card()
 			else:
 				row+=["---"]
 		row += [successornah]

@@ -599,8 +599,7 @@ scale = Vector2(0.45, 0.577)
 position = Vector2(157, 265)
 scale = Vector2(3.89, 3.89)
 sprite_frames = SubResource("SpriteFrames_4ybv1")
-animation = &"0.25"
-autoplay = "full"
+animation = &"full"
 
 [node name="Maturity" type="Sprite2D" parent="card"]
 position = Vector2(-3, 260)
@@ -632,7 +631,6 @@ offset_right = 275.0
 offset_bottom = 350.0
 max_value = 600.0
 step = 5.0
-value = 1.0
 
 [node name="maturity_slider" type="VSlider" parent="card/sliders"]
 offset_left = 125.0
