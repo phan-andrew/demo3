@@ -253,10 +253,13 @@ func _on_spin_box_value_changed(value):
 func _on_spin_box_2_value_changed(value):
 	riskanalysis=value
 func _on_var_1_value_changed(value):
+	value=value/100
 	variables+=[value]
 func _on_var_2_value_changed(value):
+	value=value/100
 	variables+=[value]
 func _on_var_3_value_changed(value):
+	value=value/100
 	variables+=[value]
 func _on_button_pressed():
 	if sucornah:
@@ -320,7 +323,7 @@ func _on_button_pressed():
 			$dropdown/attack_option.select(-1)
 			$dropdown/defend_option.select(-1)	
 			round += 1
-			$timeline.timelabel += biggest
+			$timeline.increase_time(biggest)
 			biggest = 0
 		sucornah = false
 		finalattack = false
@@ -342,7 +345,7 @@ func _on_final_continue_pressed():
 	$dropdown/attack_option.select(-1)
 	$dropdown/defend_option.select(-1)
 	$timeline._progress(biggest * 150)
-	$timeline.timelabel += biggest
+	$timeline.increase_time(biggest)
 	round += 1
 	biggest = 0
 
