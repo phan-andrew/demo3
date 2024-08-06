@@ -26,6 +26,7 @@ var attackstringmid = ", "
 var attackstringend = " minutes"
 var defendstringstart = ": "
 var defendstringend = " stars"
+var variables=[]
 
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
@@ -68,7 +69,7 @@ func _ready():
 	Music.play_music()
 	var file = FileAccess.open(save_path,FileAccess.WRITE)
 	if file:
-		file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood","Risk Analysis"])
+		file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood","Risk Analysis","D1 APL", "D2 APL", "D3 APL"])
 		file.close()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -250,7 +251,12 @@ func _on_spin_box_value_changed(value):
 
 func _on_spin_box_2_value_changed(value):
 	riskanalysis=value
-
+func _on_var_1_value_changed(value):
+	variables+=[value]
+func _on_var_2_value_changed(value):
+	variables+=[value]
+func _on_var_3_value_changed(value):
+	variables+=[value]
 func _on_button_pressed():
 	if sucornah:
 		for card in aCards:
@@ -267,12 +273,22 @@ func _on_button_pressed():
 		for card in dCards:
 			if card.card_index != -1:
 				row+=[card.getString()]
-				card.reset_card()
 			else:
 				row+=["---"]
 		row += [successornah]
 		row += [likelihood]
 		row += ["---"]
+		var i=0
+		var ASP="sigma"
+		for card in dCards:
+			if card.card_index != -1:
+				ASP=1-(int(card.getMaturityValue())*0.2)*variables[i]
+				print(ASP)
+				row+=[ASP]
+				card.reset_card()
+			else:
+				row+=["---"]
+			i+=1
 		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
 		file.seek_end()
 		file.store_csv_line(row)
@@ -427,3 +443,9 @@ func _on_help_pressed():
 
 func _on_window_close_requested():
 	$Window5.visible = false
+
+
+
+
+
+

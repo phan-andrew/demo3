@@ -165,10 +165,10 @@ editable = false
 wrap_mode = 1
 
 [node name="CheckBox" type="CheckBox" parent="."]
-offset_left = 327.0
-offset_top = 279.0
-offset_right = 470.0
-offset_bottom = 598.0
+offset_left = 310.0
+offset_top = 418.0
+offset_right = 453.0
+offset_bottom = 462.0
 size_flags_stretch_ratio = 3.08
 text = "HH:MM time"
 

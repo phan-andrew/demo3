@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=3 uid="uid://dfncvobr4liih"]
 
-[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
+[ext_resource type="Theme" path="res://pixel font/mid_font_theme.tres" id="1_0jfxs"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/game_screen.gd" id="1_2nm7d"]
 [ext_resource type="Theme" uid="uid://capn2565llexb" path="res://game_scenes/game_screen/background.tres" id="2_pjlcr"]
 [ext_resource type="Script" path="res://game_scenes/game_screen/Timer_Label.gd" id="2_quooa"]
@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://dukho3wja08su" path="res://card_scenes/cardFlip.tscn" id="6_2l2jm"]
 [ext_resource type="Texture2D" uid="uid://drbg5jbdtxa1x" path="res://images/UI_images/progress_bar/underwater/water_background.png" id="9_1lp2d"]
 [ext_resource type="PackedScene" uid="uid://bl2iprvunslcr" path="res://game_scenes/game_screen/timeline.tscn" id="11_i0t33"]
-[ext_resource type="Theme" uid="uid://867x5f46yrxo" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
+[ext_resource type="Theme" uid="uid://bsacj2o8glxjs" path="res://pixel font/small_font_theme.tres" id="11_qde7s"]
 [ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="13_t5eb4"]
 
 [sub_resource type="Theme" id="Theme_takis"]
@@ -130,18 +130,24 @@ text = "Submit Defense"
 
 [node name="Window" type="Window" parent="."]
 initial_position = 2
-size = Vector2i(300, 200)
-visible = false
+size = Vector2i(300, 250)
 exclusive = true
 unresizable = true
 content_scale_mode = 2
 theme = ExtResource("11_qde7s")
 
 [node name="Button" type="Button" parent="Window"]
-offset_left = 42.0
-offset_top = 150.0
-offset_right = 222.0
-offset_bottom = 180.0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -30.0
+offset_right = 68.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 0
 scale = Vector2(1.2, 1.2)
 text = "Start Next Phase"
 
@@ -186,6 +192,34 @@ offset_top = 110.0
 offset_right = 265.0
 offset_bottom = 121.0
 text = "Success Percentage:"
+
+[node name="Label4" type="Label" parent="Window"]
+offset_left = 100.0
+offset_top = 150.0
+offset_right = 200.0
+offset_bottom = 161.0
+text = "Variables:"
+
+[node name="var1" type="SpinBox" parent="Window"]
+offset_left = 10.0
+offset_top = 170.0
+offset_right = 90.0
+offset_bottom = 200.0
+alignment = 1
+
+[node name="var2" type="SpinBox" parent="Window"]
+offset_left = 110.0
+offset_top = 170.0
+offset_right = 190.0
+offset_bottom = 200.0
+alignment = 1
+
+[node name="var3" type="SpinBox" parent="Window"]
+offset_left = 210.0
+offset_top = 170.0
+offset_right = 290.0
+offset_bottom = 200.0
+alignment = 1
 
 [node name="EndGame" type="Button" parent="."]
 offset_left = 493.0
@@ -329,6 +363,9 @@ text = "Start Game"
 [connection signal="pressed" from="Window/Button" to="." method="_on_button_pressed"]
 [connection signal="item_selected" from="Window/OptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="value_changed" from="Window/SpinBox" to="." method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="Window/var1" to="." method="_on_var_1_value_changed"]
+[connection signal="value_changed" from="Window/var2" to="." method="_on_var_2_value_changed"]
+[connection signal="value_changed" from="Window/var3" to="." method="_on_var_3_value_changed"]
 [connection signal="pressed" from="EndGame" to="." method="_on_end_game_pressed"]
 [connection signal="pressed" from="Window2/quit_button" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="Window2/continue_button" to="." method="_on_continue_button_pressed"]
