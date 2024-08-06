@@ -89,3 +89,13 @@ func convert_time(time):
 		converted=int(time.substr(0,2))*60+int(time.substr(2,2))
 		print(converted)
 	return converted
+	
+	
+func time_convert(time):
+	time=int(time)
+	var hours=str(time/60)
+	var minutes=str(time%60)
+	if str(minutes).length()==1:
+		minutes="0"+str(minutes)
+	return hours+minutes
+	

@@ -131,6 +131,7 @@ text = "Submit Defense"
 [node name="Window" type="Window" parent="."]
 initial_position = 2
 size = Vector2i(300, 250)
+visible = false
 exclusive = true
 unresizable = true
 content_scale_mode = 2

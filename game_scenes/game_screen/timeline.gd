@@ -31,8 +31,19 @@ func _process(delta):
 		$tank.show()
 		vehicle = $tank
 		$ParallaxBackground/ParallaxLayer/background.texture = load("res://images/UI_images/progress_bar/land/Surface.png")
-	$Label.text = "T" + str(timelabel)
+	$Label.text="T"+str(timelabel)
 
 func _progress(speed):
 	$ParallaxBackground.progress(speed)
-
+func increase_time(value):
+	if !Mitre.readtime:
+		timelabel=timelabel+value
+		$Label.text = "T" +str(timelabel)
+	if Mitre.readtime:
+		timelabel=Mitre.convert_time(str(timelabel))
+		
+		timelabel=int(timelabel)+value
+		print("Minutes:"+str(timelabel))
+		timelabel=Mitre.time_convert(timelabel)
+		$Label.text= "T" +str(timelabel)
+	timelabel=int(timelabel)
