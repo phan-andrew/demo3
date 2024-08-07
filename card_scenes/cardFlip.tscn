@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://dukho3wja08su"]
+[gd_scene load_steps=42 format=3 uid="uid://dukho3wja08su"]
 
 [ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/card_images/general/standardcard-back.png" id="3_nal1o"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bvc6nttjgbhfr" path="res://images/UI_images/expand_button.png" id="6_aj1ct"]
 [ext_resource type="Texture2D" uid="uid://qjmh8ts7gnnr" path="res://images/card_images/general/AttackCardBack.png" id="6_xgg8t"]
 [ext_resource type="Texture2D" uid="uid://c1jce2nhkjuxi" path="res://images/card_images/general/Clock.png" id="8_f0d6h"]
+[ext_resource type="Theme" uid="uid://bsacj2o8glxjs" path="res://pixel font/small_font_theme.tres" id="9_mtckg"]
 [ext_resource type="Texture2D" uid="uid://blthi0lxo6ts5" path="res://images/UI_images/flip_button.png" id="11_1sp60"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eob0r"]
@@ -612,10 +613,12 @@ scale = Vector2(0.45, 0.577)
 
 [node name="Time" type="RichTextLabel" parent="card"]
 visible = false
-offset_top = 350.0
-offset_right = 284.0
-offset_bottom = 434.0
-theme_override_font_sizes/normal_font_size = 50
+offset_left = 75.0
+offset_top = 375.0
+offset_right = 359.0
+offset_bottom = 459.0
+theme = ExtResource("9_mtckg")
+theme_override_font_sizes/normal_font_size = 30
 
 [node name="sliders" type="Node2D" parent="card"]
 

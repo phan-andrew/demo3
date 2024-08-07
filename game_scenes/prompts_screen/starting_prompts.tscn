@@ -170,6 +170,7 @@ offset_top = 418.0
 offset_right = 453.0
 offset_bottom = 462.0
 size_flags_stretch_ratio = 3.08
+theme = ExtResource("3_mx321")
 text = "HH:MM time"
 
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
