@@ -1,0 +1,13 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dt5l65gal6oud"
+
+[deps]
+
+source_file="res://000stuff/timeline_template.csv"
+[params]
+
+compress=true
+delimiter=0

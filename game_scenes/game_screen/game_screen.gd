@@ -452,9 +452,3 @@ func _on_help_pressed():
 
 func _on_window_close_requested():
 	$Window5.visible = false
-
-
-
-
-
-

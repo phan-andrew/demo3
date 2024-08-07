@@ -35,7 +35,7 @@ func import_resources_data():
 	file2.close()
 	
 	if default:
-		var file3 = FileAccess.open("res://data/example_mission_timeline.txt", FileAccess.READ)
+		var file3 = FileAccess.open("res://000stuff/Ttimeline_template.txt", FileAccess.READ)
 		while !file3.eof_reached():
 			var timeline_data_set = Array(file3.get_csv_line())
 			timeline_dict[timeline_dict.size()] = timeline_data_set
