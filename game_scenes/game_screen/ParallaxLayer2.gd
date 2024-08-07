@@ -16,7 +16,7 @@ func _ready():
 			if row > 2:
 				var new_checkpoint = checkpoint.instantiate()
 				add_child(new_checkpoint)
-				new_checkpoint.position.x = 500 + (int(Mitre.timeline_dict[row-1][0]) - int(initial_time)) * 300
+				new_checkpoint.position.x = 500 + (int(Mitre.timeline_dict[row-1][0]) - int(initial_time)) * 50
 				new_checkpoint.start()
 				new_checkpoint.set_descrip((Mitre.timeline_dict[row-1][1]))
 	if Mitre.readtime:

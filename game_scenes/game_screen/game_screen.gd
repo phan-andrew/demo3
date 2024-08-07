@@ -20,7 +20,7 @@ var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var round = 1
 var card_expanded=-1
 var finalattack = false
-var biggest = 0
+var timeTaken = 0
 var attackstringstart = ": $"
 var attackstringmid = ", "
 var attackstringend = " minutes"
@@ -264,8 +264,8 @@ func _on_var_3_value_changed(value):
 func _on_button_pressed():
 	if sucornah:
 		for card in aCards:
-			if card.getTimeValue() > biggest:
-				biggest = card.getTimeValue()
+			if card.inPlay:
+				timeTaken += card.getTimeValue()
 		
 		var row=[Time.get_time_string_from_system()]
 		for card in aCards:
@@ -318,13 +318,13 @@ func _on_button_pressed():
 				card.disable_buttons(true)
 			$Timer_Label/pause.disabled = false
 			$Timer_Label.play = true
-			$timeline._progress(biggest * 150)
+			$timeline._progress(timeTaken * 25)
 
 			$dropdown/attack_option.select(-1)
 			$dropdown/defend_option.select(-1)	
 			round += 1
-			$timeline.increase_time(biggest)
-			biggest = 0
+			$timeline.increase_time(timeTaken)
+			timeTaken = 0
 		sucornah = false
 		finalattack = false
 
@@ -344,10 +344,10 @@ func _on_final_continue_pressed():
 	$Timer_Label.play = true
 	$dropdown/attack_option.select(-1)
 	$dropdown/defend_option.select(-1)
-	$timeline._progress(biggest * 150)
-	$timeline.increase_time(biggest)
+	$timeline._progress(timeTaken * 25)
+	$timeline.increase_time(timeTaken)
 	round += 1
-	biggest = 0
+	timeTaken = 0
 
 func load_previous_attacks(path):
 	var file = FileAccess.open(path, FileAccess.READ)
