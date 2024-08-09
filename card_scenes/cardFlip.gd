@@ -42,11 +42,11 @@ func _process(delta):
 			$card/Dollar.texture = load(cost[$card/sliders/cost_slider.value-1])
 			cost_value = $card/sliders/cost_slider.value
 			$card/Time.text = str($card/sliders/time_slider.value) + " min"
-			if $card/sliders/time_slider.value > 360:
+			if $card/sliders/time_slider.value > 90:
 				$card/Clock.play("full")
-			elif $card/sliders/time_slider.value > 240:
-				$card/Clock.play("0.75")
 			elif $card/sliders/time_slider.value > 60:
+				$card/Clock.play("0.75")
+			elif $card/sliders/time_slider.value > 30:
 				$card/Clock.play("0.25")
 			else:
 				$card/Clock.play("none")
