@@ -281,7 +281,6 @@ func _on_button_pressed():
 				row+=[card.getString()]
 				if card.expanded:
 					card.make_small_again()
-				card.reset_card()
 			else:
 				row+=["---"]
 		row += [successornah]

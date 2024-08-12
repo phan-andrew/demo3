@@ -3,5 +3,5 @@ Time,Description,Subsystems not in Play
 -15,launch,none
 0,start sortie,planning
 25,surveillance,planning
-100,recovery,planning
+100,recovery,planning, C4I
 300,post mission analysis,planning uuv
