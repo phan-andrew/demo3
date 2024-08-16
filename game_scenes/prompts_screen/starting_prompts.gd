@@ -29,7 +29,6 @@ func _ready():
 	tlabel.text = "Not Selected"
 	$Button3.disabled = true
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if attackfile && defendfile && timelinefile && timerselected:
 		$Button3.disabled = false
@@ -114,9 +113,8 @@ func _on_window_close_requested():
 	$Window.visible = false
 
 
-
-func _on_check_box_toggled(toggled_on):
-	if toggled_on:
-		Mitre.readtime=true
-	if !toggled_on:
+func _on_check_box_pressed():
+	if Mitre.readtime:
 		Mitre.readtime=false
+	if Mitre.readtime==false:
+		Mitre.readtime=true

@@ -26,7 +26,7 @@ var attackstringmid = ", "
 var attackstringend = " minutes"
 var defendstringstart = ": "
 var defendstringend = " stars"
-var variables=[]
+var variables=[0,0,0]
 
 func _ready():
 	aCards = [$a_1, $a_2, $a_3]
@@ -254,13 +254,13 @@ func _on_spin_box_2_value_changed(value):
 	riskanalysis=value
 func _on_var_1_value_changed(value):
 	value=value/100
-	variables+=[value]
+	variables[0]=[value]
 func _on_var_2_value_changed(value):
 	value=value/100
-	variables+=[value]
+	variables[1]=[value]
 func _on_var_3_value_changed(value):
 	value=value/100
-	variables+=[value]
+	variables[2]=[value]
 func _on_button_pressed():
 	if sucornah:
 		for card in aCards:
