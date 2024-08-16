@@ -1,7 +1,7 @@
 "In the first column, write the time at which each step will occure in minutes. Start with negative numbers if the step occurs before the mission starts. In the secon column, write a short description of the step. In the third column, write all the subsystems not in play during the step",,
 Time,Description,Subsystems not in Play
--15,launch,none
-0,start sortie,planning
-25,surveillance,planning
-100,recovery,planning, C4I
-300,post mission analysis,planning uuv
+755,launch,none
+810,start sortie,planning
+830,surveillance,planning
+845,recovery,planning, C4I
+910,post mission analysis,planning uuv
