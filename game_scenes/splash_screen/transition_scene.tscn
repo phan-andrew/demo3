@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dsf5eyt52g6s2"]
 
-[ext_resource type="Script" path="res://game_scenes/splash_screen/transition_scene.gd" id="1_jmwmj"]
+[ext_resource type="Script" uid="uid://cfdghqj2mr082" path="res://game_scenes/splash_screen/transition_scene.gd" id="1_jmwmj"]
 
 [sub_resource type="Animation" id="Animation_66qaf"]
 length = 0.001
@@ -51,9 +51,9 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ltw0f"]
 _data = {
-"RESET": SubResource("Animation_66qaf"),
-"fade_back": SubResource("Animation_fw0mb"),
-"fade_to_black": SubResource("Animation_pwufe")
+&"RESET": SubResource("Animation_66qaf"),
+&"fade_back": SubResource("Animation_fw0mb"),
+&"fade_to_black": SubResource("Animation_pwufe")
 }
 
 [node name="transition_scene" type="CanvasLayer"]

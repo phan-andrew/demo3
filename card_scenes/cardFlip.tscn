@@ -1,6 +1,6 @@
 [gd_scene load_steps=42 format=3 uid="uid://dukho3wja08su"]
 
-[ext_resource type="Script" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
+[ext_resource type="Script" uid="uid://rmv08u5bupf0" path="res://card_scenes/cardFlip.gd" id="1_ocqbr"]
 [ext_resource type="Texture2D" uid="uid://cpxh0splux2kg" path="res://images/card_images/general/standardcard-back.png" id="3_nal1o"]
 [ext_resource type="Texture2D" uid="uid://b68bau51o15yi" path="res://images/card_images/general/redcard-back.png" id="4_rd7a2"]
 [ext_resource type="Texture2D" uid="uid://b3d3eqfyx0ihs" path="res://images/card_images/general/bluecard-back.png" id="5_ubw2l"]
@@ -571,10 +571,10 @@ tracks/6/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bpgj4"]
 _data = {
-"RESET": SubResource("Animation_2h8i5"),
-"card_flip": SubResource("Animation_noan5"),
-"end_flip": SubResource("Animation_gsarn"),
-"start_flip": SubResource("Animation_86bif")
+&"RESET": SubResource("Animation_2h8i5"),
+&"card_flip": SubResource("Animation_noan5"),
+&"end_flip": SubResource("Animation_gsarn"),
+&"start_flip": SubResource("Animation_86bif")
 }
 
 [node name="Node2D4" type="Node2D"]

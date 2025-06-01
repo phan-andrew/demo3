@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://c0qd0epqdp3ht"]
 
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_60llc"]
-[ext_resource type="Script" path="res://game_scenes/splash_screen/splash_screen.gd" id="1_d2qnl"]
+[ext_resource type="Script" uid="uid://cwwh8r0ol4t3o" path="res://game_scenes/splash_screen/splash_screen.gd" id="1_d2qnl"]
 [ext_resource type="PackedScene" uid="uid://bfol1cqccf88w" path="res://control.tscn" id="2_44uba"]
 [ext_resource type="Texture2D" uid="uid://y1qagnc8ykdp" path="res://images/Logo/SEACAT_nobgFS.png" id="2_ljruu"]
 [ext_resource type="Texture2D" uid="uid://cfft4dopidiq3" path="res://images/UI_images/dod.png" id="5_dqmfp"]
@@ -27,16 +27,19 @@ scale = Vector2(0.5, 0.534)
 texture = ExtResource("2_ljruu")
 
 [node name="dod" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(901, 267)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_dqmfp")
 
 [node name="godot" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(896, 514)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("6_axrwi")
 
 [node name="comuuvgru" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(333, 258)
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("6_1jmxl")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=32 format=3 uid="uid://ckro7775k25rt"]
 
-[ext_resource type="Script" path="res://game_scenes/game_screen/checkpoint.gd" id="1_a0ifi"]
+[ext_resource type="Script" uid="uid://chyydee3bqfhs" path="res://game_scenes/game_screen/checkpoint.gd" id="1_a0ifi"]
 [ext_resource type="Texture2D" uid="uid://cbxy5iqvcmnil" path="res://images/UI_images/progress_bar/underwater/Left Seaweed.png" id="1_bkggd"]
 [ext_resource type="Texture2D" uid="uid://bp28eq7ykh7bp" path="res://images/UI_images/progress_bar/underwater/Mid Seaweed.png" id="2_b42bn"]
 [ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="3_34dha"]
@@ -136,8 +136,8 @@ resource_name = "open_checkpoint"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ucl1u"]
 _data = {
-"RESET": SubResource("Animation_3j7dj"),
-"open_checkpoint": SubResource("Animation_j6uca")
+&"RESET": SubResource("Animation_3j7dj"),
+&"open_checkpoint": SubResource("Animation_j6uca")
 }
 
 [sub_resource type="Theme" id="Theme_frtm7"]
