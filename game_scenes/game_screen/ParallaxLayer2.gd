@@ -40,4 +40,3 @@ func _process(delta):
 func progress(speed):
 	move_speed = speed
 	progressing = true
-
