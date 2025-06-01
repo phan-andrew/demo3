@@ -93,7 +93,7 @@ func _on_timeline_file_selected(path):
 func _on_button_3_pressed():
 	Music.mouse_click()
 	if attackfile == true && defendfile == true && timelinefile == true && timerselected == true:
-		Mitre.import_resources_data()
+		Mitre.import_resources_data(attackfile,defendfile,timelinefile,timerselected)
 		get_tree().change_scene_to_file("res://game_scenes/mission_text/mission_text.tscn")
 		hide ()
 

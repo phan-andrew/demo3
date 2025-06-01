@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://cy6qdae7lgetf"]
 
-[ext_resource type="Script" path="res://game_scenes/mission_text/mission_text.gd" id="1_1tnxl"]
+[ext_resource type="Script" uid="uid://cy7oj5wu7ft0e" path="res://game_scenes/mission_text/mission_text.gd" id="1_1tnxl"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2s7nj"]
 [ext_resource type="PackedScene" uid="uid://bfol1cqccf88w" path="res://control.tscn" id="2_wa2s8"]
 [ext_resource type="Texture2D" uid="uid://b50lklisctxhu" path="res://images/UI_images/pause_button.png" id="5_5tyjb"]
