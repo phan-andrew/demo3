@@ -9,10 +9,10 @@ var CTT_title
 @onready var alabel = $attackfilelabel
 @onready var dlabel = $defendfilelabel
 @onready var tlabel = $timelinefilelabel
-var attackfile = true
-var defendfile = true
-var timelinefile = true
-var timerselected = true
+var attackfile = false
+var defendfile = false
+var timelinefile = false
+var timerselected = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,11 +27,10 @@ func _ready():
 	alabel.text = "Not Selected"
 	dlabel.text = "Not Selected"
 	tlabel.text = "Not Selected"
-	$Button3.disabled = true
+	#$Button3.disabled = true
 
 func _process(delta):
-	if attackfile && defendfile && timelinefile && timerselected:
-		$Button3.disabled = false
+	pass
 
 func _on_line_edit_text_submitted(new_text):
 	CTT_title = new_text
@@ -48,13 +47,12 @@ func _on_timeline_button_pressed():
 	file_dialog3.current_dir = Mitre.downloadpath
 	file_dialog3.popup_centered()
 
+# Upload file as opfor_profile.txt
 func _on_attack_file_selected(path):
 	var file = FileAccess.open(path, FileAccess.READ)
-	
 	if file:
 		var content = file.get_as_text()
 		file.close()
-		
 		var save_path = "user://opfor_profile.txt"
 		var save_file = FileAccess.open(save_path, FileAccess.WRITE)
 		save_file.store_string(content)
@@ -62,13 +60,12 @@ func _on_attack_file_selected(path):
 		attackfile = true
 		alabel.text = path.get_file()
 
+# Upload file as defend_profile.txt
 func _on_defend_file_selected(path):
 	var file = FileAccess.open(path, FileAccess.READ)
-	
 	if file:
 		var content = file.get_as_text()
 		file.close()
-		
 		var save_path = "user://defend_profile.txt"
 		var save_file = FileAccess.open(save_path, FileAccess.WRITE)
 		save_file.store_string(content)
@@ -78,11 +75,9 @@ func _on_defend_file_selected(path):
 
 func _on_timeline_file_selected(path):
 	var file = FileAccess.open(path, FileAccess.READ)
-	
 	if file:
 		var content = file.get_as_text()
 		file.close()
-		
 		var save_path = "user://mission_timeline.txt"
 		var save_file = FileAccess.open(save_path, FileAccess.WRITE)
 		save_file.store_string(content)
@@ -92,10 +87,9 @@ func _on_timeline_file_selected(path):
 
 func _on_button_3_pressed():
 	Music.mouse_click()
-	if attackfile == true && defendfile == true && timelinefile == true && timerselected == true:
-		Mitre.import_resources_data(attackfile,defendfile,timelinefile,timerselected)
-		get_tree().change_scene_to_file("res://game_scenes/mission_text/mission_text.tscn")
-		hide ()
+	Mitre.import_resources_data(attackfile,defendfile,timelinefile,timerselected)
+	get_tree().change_scene_to_file("res://game_scenes/mission_text/mission_text.tscn")
+	hide ()
 
 func _on_button_5_pressed():
 	Music.mouse_click()
@@ -111,7 +105,6 @@ func _on_help_pressed():
 
 func _on_window_close_requested():
 	$Window.visible = false
-
 
 func _on_check_box_pressed():
 	if Mitre.readtime:
