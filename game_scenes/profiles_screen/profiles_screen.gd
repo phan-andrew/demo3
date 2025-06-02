@@ -13,8 +13,8 @@ extends Node2D
 @onready var filedialog4 = $FileDialog4
 @onready var filedialog5 = $FileDialog5
 
-const attack_data_path = "res://data/ATT&CK_Data_Download.txt"
-const defend_data_path = "res://data/D3FEND_Data_Download.txt"
+const attack_data_path = "res://data/ATT&CK_database.txt"
+const defend_data_path = "res://data/D3fend_database.txt"
 const opfor_template_path = "res://data/OPFOR_Template.txt"
 const defend_template_path = "res://data/Defense_Template.txt"
 const timeline_template_path = "res://data/Timeline_Template.txt"

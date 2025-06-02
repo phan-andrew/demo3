@@ -1,6 +1,0 @@
-Remove other buttons when opening the card
-MONISH Pop-ups make x-button disappear or work
-Bug with blue cards
-Change background for scene
-MONISH Add comment section to discussion
-Help button on all screens (screen specific help pages)
