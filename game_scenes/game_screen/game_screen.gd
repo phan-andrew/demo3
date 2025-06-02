@@ -17,7 +17,6 @@ var riskanalysis = 0
 var currenttimer
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
-var round = 1
 var card_expanded=-1
 var finalattack = false
 var timeTaken = 0
@@ -321,7 +320,6 @@ func _on_button_pressed():
 
 			$dropdown/attack_option.select(-1)
 			$dropdown/defend_option.select(-1)	
-			round += 1
 			$timeline.increase_time(timeTaken)
 			timeTaken = 0
 		sucornah = false
@@ -345,7 +343,6 @@ func _on_final_continue_pressed():
 	$dropdown/defend_option.select(-1)
 	$timeline._progress(timeTaken * 25)
 	$timeline.increase_time(timeTaken)
-	round += 1
 	timeTaken = 0
 
 func load_previous_attacks(path):

@@ -175,6 +175,7 @@ text = "HH:MM time"
 
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
 [connection signal="pressed" from="Button5" to="." method="_on_button_5_pressed"]
+[connection signal="changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]
 [connection signal="value_changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]
 [connection signal="pressed" from="HELP" to="." method="_on_help_pressed"]
 [connection signal="close_requested" from="Window" to="." method="_on_window_close_requested"]

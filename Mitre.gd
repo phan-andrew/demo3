@@ -19,7 +19,7 @@ func _ready():
 func _process(delta):
 	pass
 
-func import_resources_data(user_attack_profile,user_defend_profile,user_timeline_file,user_time_selected):
+func import_resources_data(user_attack_profile,user_defend_profile,user_timeline_file):
 	var file= FileAccess.open("res://data/ATT&CK_database.txt", FileAccess.READ)
 	while !file.eof_reached():
 		var attack_data_set = Array(file.get_csv_line())
@@ -31,7 +31,7 @@ func import_resources_data(user_attack_profile,user_defend_profile,user_timeline
 		var defense_data_set = Array(file2.get_csv_line())
 		defend_dict[defend_dict.size()] = defense_data_set
 	file2.close()
-# Default currently always true, always using default for game, update to use user files if provided.
+
 # Upload attack profile. If true use user upload file, else use game default settings.
 	if user_attack_profile:
 		var file4 = FileAccess.open("user://opfor_profile.txt", FileAccess.READ)
@@ -41,7 +41,7 @@ func import_resources_data(user_attack_profile,user_defend_profile,user_timeline
 				opforprof_dict[opforprof_dict.size()] = opfor_data_set
 		file4.close()
 	else:
-		var file4 = FileAccess.open("res://data/testing_profile_DELETE_LATER.txt", FileAccess.READ)
+		var file4 = FileAccess.open("res://default/attack_profile_default.txt", FileAccess.READ)
 		while !file4.eof_reached():
 			var opfor_data_set = Array(file4.get_csv_line())
 			if opfor_data_set != [""]:
@@ -56,7 +56,7 @@ func import_resources_data(user_attack_profile,user_defend_profile,user_timeline
 				d3fendprof_dict[d3fendprof_dict.size()]=d3fend_data_set
 		file5.close()
 	else:
-		var file5 = FileAccess.open("res://data/d3fend_profile_test.txt", FileAccess.READ)
+		var file5 = FileAccess.open("res://default/defend_profile_default.txt", FileAccess.READ)
 		while !file5.eof_reached():
 			var d3fend_data_set=Array(file5.get_csv_line())
 			if d3fend_data_set != [""]:
@@ -70,7 +70,7 @@ func import_resources_data(user_attack_profile,user_defend_profile,user_timeline
 			timeline_dict[timeline_dict.size()] = timeline_data_set
 		file3.close()
 	else:
-		var file3 = FileAccess.open("res://000stuff/Ttimeline_template.txt", FileAccess.READ)
+		var file3 = FileAccess.open("res://default/timeline_default.txt", FileAccess.READ)
 		while !file3.eof_reached():
 			var timeline_data_set = Array(file3.get_csv_line())
 			timeline_dict[timeline_dict.size()] = timeline_data_set
@@ -87,9 +87,9 @@ func get_downloads_path():
 		"MacOS":
 			downloadpath = OS.get_environment("HOME") + "/Downloads"
 
-# Two time convert functions where is each used and why?
+# Take string timestamp convert to int value of total minutes
 func convert_time(time):
-	var converted
+	var converted = 0
 	if time.length()==3:
 		converted=int(time.substr(0,1))*60+int(time.substr(1,2))
 		print(converted)
@@ -97,8 +97,8 @@ func convert_time(time):
 		converted=int(time.substr(0,2))*60+int(time.substr(2,2))
 		print(converted)
 	return converted
-	
-	
+
+# Take int and convert to strings of hours and minutes. 
 func time_convert(time):
 	time=int(time)
 	var hours=str(time/60)

@@ -12,7 +12,6 @@ var CTT_title
 var attackfile = false
 var defendfile = false
 var timelinefile = false
-var timerselected = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,7 +26,6 @@ func _ready():
 	alabel.text = "Not Selected"
 	dlabel.text = "Not Selected"
 	tlabel.text = "Not Selected"
-	#$Button3.disabled = true
 
 func _process(delta):
 	pass
@@ -87,7 +85,7 @@ func _on_timeline_file_selected(path):
 
 func _on_button_3_pressed():
 	Music.mouse_click()
-	Mitre.import_resources_data(attackfile,defendfile,timelinefile,timerselected)
+	Mitre.import_resources_data(attackfile,defendfile,timelinefile)
 	get_tree().change_scene_to_file("res://game_scenes/mission_text/mission_text.tscn")
 	hide ()
 
@@ -98,7 +96,6 @@ func _on_button_5_pressed():
 
 func _on_spin_box_value_changed(value):
 	Mitre.time_limit = int(value*60)
-	timerselected = true
 
 func _on_help_pressed():
 	$Window.visible = true

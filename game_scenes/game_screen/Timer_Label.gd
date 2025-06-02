@@ -19,4 +19,3 @@ func _process(delta):
 			text = str(minutes) + ":0" + str(seconds)
 		else:
 			text = str(minutes) + ":" + str(seconds)
-
