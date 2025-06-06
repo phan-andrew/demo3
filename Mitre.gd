@@ -33,48 +33,36 @@ func import_resources_data(user_attack_profile,user_defend_profile,user_timeline
 	file2.close()
 
 # Upload attack profile. If true use user upload file, else use game default settings.
+	var file_name4 = "res://default/attack_profile_default.txt"
 	if user_attack_profile:
-		var file4 = FileAccess.open("user://opfor_profile.txt", FileAccess.READ)
-		while !file4.eof_reached():
-			var opfor_data_set = Array(file4.get_csv_line())
-			if opfor_data_set != [""]:
-				opforprof_dict[opforprof_dict.size()] = opfor_data_set
-		file4.close()
-	else:
-		var file4 = FileAccess.open("res://default/attack_profile_default.txt", FileAccess.READ)
-		while !file4.eof_reached():
-			var opfor_data_set = Array(file4.get_csv_line())
-			if opfor_data_set != [""]:
-				opforprof_dict[opforprof_dict.size()] = opfor_data_set
-		file4.close()
+		file_name4 = "user://opfor_profile.txt"
+	var file4 = FileAccess.open(file_name4, FileAccess.READ)
+	while !file4.eof_reached():
+		var opfor_data_set = Array(file4.get_csv_line())
+		if opfor_data_set != [""]:
+			opforprof_dict[opforprof_dict.size()] = opfor_data_set
+	file4.close()
 # Upload defend profile. If true use user uploaded file, else use game default settings.
+	var file_name5 = "res://default/defend_profile_default.txt"
 	if user_defend_profile:	
-		var file5 = FileAccess.open("user://defend_profile.txt", FileAccess.READ)
-		while !file5.eof_reached():
-			var d3fend_data_set=Array(file5.get_csv_line())
-			if d3fend_data_set != [""]:
-				d3fendprof_dict[d3fendprof_dict.size()]=d3fend_data_set
-		file5.close()
-	else:
-		var file5 = FileAccess.open("res://default/defend_profile_default.txt", FileAccess.READ)
-		while !file5.eof_reached():
-			var d3fend_data_set=Array(file5.get_csv_line())
-			if d3fend_data_set != [""]:
-				d3fendprof_dict[d3fendprof_dict.size()]=d3fend_data_set
-		file5.close()
+		file_name5 = "user://defend_profile.txt"
+	var file5 = FileAccess.open(file_name5, FileAccess.READ)
+	while !file5.eof_reached():
+		var d3fend_data_set=Array(file5.get_csv_line())
+		if d3fend_data_set != [""]:
+			d3fendprof_dict[d3fendprof_dict.size()]=d3fend_data_set
+	file5.close()
+	
 # Upload mission timeline. If true use user defined timeline, else use game default.
+	var file_name3 = "res://default/timeline_default.txt"
 	if user_timeline_file:
-		var file3 = FileAccess.open("user://mission_timeline.txt", FileAccess.READ)
-		while !file3.eof_reached():
-			var timeline_data_set = Array(file3.get_csv_line())
+		file_name3 = "user://mission_timeline.txt"
+	var file3 = FileAccess.open(file_name3, FileAccess.READ)
+	while !file3.eof_reached():
+		var timeline_data_set = Array(file3.get_csv_line())
+		if timeline_data_set != [""]:
 			timeline_dict[timeline_dict.size()] = timeline_data_set
-		file3.close()
-	else:
-		var file3 = FileAccess.open("res://default/timeline_default.txt", FileAccess.READ)
-		while !file3.eof_reached():
-			var timeline_data_set = Array(file3.get_csv_line())
-			timeline_dict[timeline_dict.size()] = timeline_data_set
-		file3.close()
+	file3.close()
 		
 
 # Get Users Download Path
