@@ -1,12 +1,10 @@
-[gd_scene load_steps=32 format=3 uid="uid://ckro7775k25rt"]
+[gd_scene load_steps=29 format=3 uid="uid://ckro7775k25rt"]
 
 [ext_resource type="Script" uid="uid://chyydee3bqfhs" path="res://game_scenes/game_screen/checkpoint.gd" id="1_a0ifi"]
 [ext_resource type="Texture2D" uid="uid://cbxy5iqvcmnil" path="res://images/UI_images/progress_bar/underwater/Left Seaweed.png" id="1_bkggd"]
 [ext_resource type="Texture2D" uid="uid://bp28eq7ykh7bp" path="res://images/UI_images/progress_bar/underwater/Mid Seaweed.png" id="2_b42bn"]
 [ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="3_34dha"]
 [ext_resource type="Texture2D" uid="uid://cigqyagm26e1i" path="res://images/UI_images/progress_bar/air/hotair baloom.png" id="4_xq277"]
-[ext_resource type="Texture2D" uid="uid://celvd4fdujsng" path="res://images/UI_images/progress_bar/checkpoint/checkpoint_text.png" id="6_6a4fq"]
-[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="7_ikreu"]
 [ext_resource type="Texture2D" uid="uid://c4phrd3nk3c02" path="res://images/UI_images/progress_bar/land/trees.png" id="7_n2al4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
@@ -105,50 +103,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="Animation" id="Animation_3j7dj"]
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("descrip_box:scale")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0.5, 10), Vector2(10, 10)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("descrip_box:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, true]
-}
-
-[sub_resource type="Animation" id="Animation_j6uca"]
-resource_name = "open_checkpoint"
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_ucl1u"]
-_data = {
-&"RESET": SubResource("Animation_3j7dj"),
-&"open_checkpoint": SubResource("Animation_j6uca")
-}
-
-[sub_resource type="Theme" id="Theme_frtm7"]
-default_font = ExtResource("7_ikreu")
-default_font_size = 10
-RichTextLabel/font_sizes/bold_font_size = 16
-RichTextLabel/font_sizes/bold_italics_font_size = 16
-RichTextLabel/font_sizes/italics_font_size = 16
-RichTextLabel/font_sizes/mono_font_size = 14
-RichTextLabel/font_sizes/normal_font_size = 8
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_2qfgc"]
 atlas = ExtResource("7_n2al4")
 region = Rect2(0, 0, 30, 40)
@@ -185,6 +139,17 @@ animations = [{
 "speed": 3.0
 }]
 
+[sub_resource type="Animation" id="Animation_3j7dj"]
+
+[sub_resource type="Animation" id="Animation_j6uca"]
+resource_name = "open_checkpoint"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ucl1u"]
+_data = {
+&"RESET": SubResource("Animation_3j7dj"),
+&"open_checkpoint": SubResource("Animation_j6uca")
+}
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_px0da"]
 size = Vector2(74, 126)
 
@@ -205,38 +170,19 @@ animation = &"hover"
 autoplay = "hover"
 frame_progress = 0.294785
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_ucl1u")
-}
-
-[node name="descrip_box" type="Sprite2D" parent="."]
-visible = false
-z_index = -1
-position = Vector2(100, 122)
-scale = Vector2(0.5, 10)
-texture = ExtResource("6_6a4fq")
-
-[node name="descrip_label" type="RichTextLabel" parent="descrip_box"]
-offset_left = -8.0
-offset_top = -3.0
-offset_right = 99.0
-offset_bottom = 37.0
-scale = Vector2(0.15, 0.15)
-theme = SubResource("Theme_frtm7")
-theme_override_colors/default_color = Color(0, 0, 0, 1)
-
 [node name="tree" type="AnimatedSprite2D" parent="."]
 position = Vector2(9, 99)
 scale = Vector2(4, 4.125)
 sprite_frames = SubResource("SpriteFrames_ov6am")
 autoplay = "default"
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_ucl1u")
+}
+
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(-11, 123)
 shape = SubResource("RectangleShape2D_px0da")
-
-[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
-[connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]

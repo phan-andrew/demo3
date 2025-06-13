@@ -1,15 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://c0bngicr1p4w0"]
+[gd_scene load_steps=5 format=3 uid="uid://c0bngicr1p4w0"]
 
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_2nmyf"]
 [ext_resource type="Script" uid="uid://o6uy2tmh11ry" path="res://game_scenes/prompts_screen/starting_prompts.gd" id="1_jomlb"]
-[ext_resource type="PackedScene" uid="uid://bfol1cqccf88w" path="res://control.tscn" id="2_wm3qu"]
 [ext_resource type="Theme" uid="uid://bsacj2o8glxjs" path="res://pixel font/small_font_theme.tres" id="3_mx321"]
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="4_e3ols"]
 
 [node name="Node2D3" type="Node2D"]
 script = ExtResource("1_jomlb")
-
-[node name="Node2D" parent="." instance=ExtResource("2_wm3qu")]
 
 [node name="Label" type="Label" parent="."]
 offset_left = 190.0

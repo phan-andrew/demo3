@@ -15,8 +15,6 @@ func _ready():
 			var new_checkpoint = checkpoint.instantiate()
 			add_child(new_checkpoint)
 			new_checkpoint.position.x = 500 + (int(Mitre.timeline_dict[row-1][0]) - int(initial_time)) * 50
-			new_checkpoint.start()
-			new_checkpoint.set_descrip((Mitre.timeline_dict[row-1][1]))
 
 func _process(delta):
 	if progressing && timer < move_time:
