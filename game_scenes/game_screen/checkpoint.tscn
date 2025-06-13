@@ -207,7 +207,7 @@ frame_progress = 0.294785
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-&"": SubResource("AnimationLibrary_ucl1u")
+"": SubResource("AnimationLibrary_ucl1u")
 }
 
 [node name="descrip_box" type="Sprite2D" parent="."]
