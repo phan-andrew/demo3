@@ -7,5 +7,5 @@ var textured = ["res://images/UI_images/sea.png", "res://images/UI_images/air.pn
 func _ready():
 	pass
 
-func _process(delta):
+func _process(_delta):
 	pass

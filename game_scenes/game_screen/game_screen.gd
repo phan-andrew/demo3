@@ -72,7 +72,7 @@ func _ready():
 		file.close()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	for card in aCards:
 		if card.reset_dropdown:
 			$dropdown/attack_option.select(-1)
