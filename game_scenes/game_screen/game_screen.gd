@@ -310,7 +310,6 @@ func _on_button_pressed():
 			$Window3.visible  = true
 			$Window.visible = false
 		else:
-#			$timeline.submitted = false
 			$Window.visible = false
 			disable_attack_buttons(false)
 			for card in aCards:
@@ -335,7 +334,6 @@ func _on_final_continue_pressed():
 	file.seek_end()
 	file.store_csv_line(row)
 	file.close()
-	$timeline.submitted = false
 	$Window3.visible = false
 	disable_attack_buttons(false)
 	$Timer_Label/pause.disabled = false
