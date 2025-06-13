@@ -285,15 +285,18 @@ sprite_frames = SubResource("SpriteFrames_amj5b")
 autoplay = "default"
 frame_progress = 0.402242
 
-[node name="timeline_label" type="Label" parent="."]
-offset_left = 900.0
-offset_top = 6.0
-offset_right = 1091.0
-offset_bottom = 49.0
+[node name="timeline_title" type="Label" parent="."]
+offset_left = 816.0
+offset_top = 8.0
+offset_right = 1119.0
+offset_bottom = 48.0
+pivot_offset = Vector2(148, 25)
 theme = ExtResource("7_unjkg")
 text = "lllll"
-horizontal_alignment = 1
+horizontal_alignment = 2
 vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 1
 
 [node name="sub" type="AnimatedSprite2D" parent="."]
 position = Vector2(419, 138)
@@ -314,13 +317,12 @@ autoplay = "hover"
 frame_progress = 0.774695
 
 [node name="Label" type="Label" parent="."]
-offset_left = 23.0
-offset_top = 2.0
-offset_right = 148.0
+offset_left = 32.0
+offset_top = 8.0
+offset_right = 157.0
 offset_bottom = 48.0
 theme = ExtResource("7_unjkg")
 text = "edfdf"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="tank" type="AnimatedSprite2D" parent="."]

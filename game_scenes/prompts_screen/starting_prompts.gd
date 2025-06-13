@@ -102,9 +102,3 @@ func _on_help_pressed():
 
 func _on_window_close_requested():
 	$Window.visible = false
-
-func _on_check_box_pressed():
-	if Mitre.readtime:
-		Mitre.readtime=false
-	if Mitre.readtime==false:
-		Mitre.readtime=true

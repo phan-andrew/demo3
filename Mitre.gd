@@ -9,8 +9,6 @@ var red_objective=""
 var blue_objective=""
 var time_limit = 300
 var downloadpath = ""
-var preloadedmission=false 
-var readtime=false
 
 func _ready():
 	get_downloads_path()
@@ -101,22 +99,24 @@ func get_downloads_path():
 			downloadpath = OS.get_environment("HOME") + "/Downloads"
 
 # Take string timestamp convert to int value of total minutes
-func convert_time(time):
-	var converted = 0
-	if time.length()==3:
-		converted=int(time.substr(0,1))*60+int(time.substr(1,2))
-		print(converted)
-	if time.length()==4:
-		converted=int(time.substr(0,2))*60+int(time.substr(2,2))
-		print(converted)
-	return converted
+# Keep function for now, plan to remove later if not needed. 
+#func convert_time(time):
+	#var converted = 0
+	#if time.length()==3:
+		#converted=int(time.substr(0,1))*60+int(time.substr(1,2))
+		#print(converted)
+	#if time.length()==4:
+		#converted=int(time.substr(0,2))*60+int(time.substr(2,2))
+		#print(converted)
+	#return converted
 
 # Take int and convert to strings of hours and minutes. 
-func time_convert(time):
-	time=int(time)
-	var hours=str(time/60)
-	var minutes=str(time%60)
-	if str(minutes).length()==1:
-		minutes="0"+str(minutes)
-	return hours+minutes
+# Keep function for now, plan to remove later if not needed. 
+#func time_convert(time):
+	#time=int(time)
+	#var hours=str(time/60)
+	#var minutes=str(time%60)
+	#if str(minutes).length()==1:
+		#minutes="0"+str(minutes)
+	#return hours+minutes
 	
