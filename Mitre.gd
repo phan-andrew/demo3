@@ -32,7 +32,7 @@ func import_resources_data(user_attack_profile,user_defend_profile,user_timeline
 		defend_dict[defend_dict.size()] = defense_data_set
 	file2.close()
 
-# Upload attack profile. If true use user upload file, else use game default settings.
+# Upload attack profile and mission text. If true use user upload file, else use game default settings.
 	var file_name4 = "res://default/attack_profile_default.txt"
 	if user_attack_profile:
 		file_name4 = "user://opfor_profile.txt"
@@ -42,6 +42,19 @@ func import_resources_data(user_attack_profile,user_defend_profile,user_timeline
 		if opfor_data_set != [""]:
 			opforprof_dict[opforprof_dict.size()] = opfor_data_set
 	file4.close()
+	# Clean dict and set red objective aka opfor mission text
+	red_objective = ",".join(opforprof_dict[1])
+	opforprof_dict.erase(0)
+	opforprof_dict.erase(1)
+	# Reset keys to be sequential
+	var temp_dict = {}
+	var index = 0
+	for value in opforprof_dict.values():
+		temp_dict[index] = value
+		index += 1
+	# Replace the old dictionary with the new one
+	opforprof_dict = temp_dict
+
 # Upload defend profile. If true use user uploaded file, else use game default settings.
 	var file_name5 = "res://default/defend_profile_default.txt"
 	if user_defend_profile:	
@@ -52,6 +65,18 @@ func import_resources_data(user_attack_profile,user_defend_profile,user_timeline
 		if d3fend_data_set != [""]:
 			d3fendprof_dict[d3fendprof_dict.size()]=d3fend_data_set
 	file5.close()
+	# Clean dict and set blue objective aka mission text
+	blue_objective = ",".join(d3fendprof_dict[1])
+	d3fendprof_dict.erase(0)
+	d3fendprof_dict.erase(1)
+	# Reset keys to be sequential
+	temp_dict = {}
+	index = 0
+	for value in d3fendprof_dict.values():
+		temp_dict[index] = value
+		index += 1
+	# Replace the old dictionary with the new one
+	d3fendprof_dict = temp_dict
 	
 # Upload mission timeline. If true use user defined timeline, else use game default.
 	var file_name3 = "res://default/timeline_default.txt"
