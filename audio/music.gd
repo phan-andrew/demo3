@@ -29,7 +29,7 @@ func play_music():
 func mouse_click():
 	$mouse_click.playing = true
 	
-func _process(delta):
+func _process(_delta):
 	pass
 
 func change_theme():

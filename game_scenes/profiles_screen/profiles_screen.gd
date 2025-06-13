@@ -56,7 +56,7 @@ func _ready():
 	cont.pressed.connect(self._on_continue_pressed)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 func _on_continue_pressed():

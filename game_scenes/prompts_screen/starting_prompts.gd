@@ -27,7 +27,7 @@ func _ready():
 	dlabel.text = "Not Selected"
 	tlabel.text = "Not Selected"
 
-func _process(delta):
+func _process(_delta):
 	pass
 
 func _on_line_edit_text_submitted(new_text):

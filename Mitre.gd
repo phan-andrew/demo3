@@ -14,7 +14,7 @@ func _ready():
 	get_downloads_path()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 func import_resources_data(user_attack_profile,user_defend_profile,user_timeline_file):

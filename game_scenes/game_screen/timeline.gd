@@ -6,7 +6,7 @@ var current_round = 2
 func _ready():
 	vehicle = $sub
 
-func _process(delta):
+func _process(_delta):
 	if $ParallaxBackground/ParallaxLayer.progressing:
 		vehicle.play("move")
 	else:
