@@ -1,12 +1,10 @@
 extends Node2D
 
-var submitted = false
 var vehicle
-var timelabel
+var current_round = 2
 
 func _ready():
 	vehicle = $sub
-	timelabel = int(Mitre.timeline_dict[2][0])
 
 func _process(delta):
 	if $ParallaxBackground/ParallaxLayer.progressing:
@@ -31,19 +29,10 @@ func _process(delta):
 		$tank.show()
 		vehicle = $tank
 		$ParallaxBackground/ParallaxLayer/background.texture = load("res://images/UI_images/progress_bar/land/Surface.png")
-	$Label.text="T"+str(timelabel)
+	$Label.text="T"+str(int(Mitre.timeline_dict[current_round][0]))
+	$timeline_label.text=str(Mitre.timeline_dict[current_round][1])
 
 func _progress(speed):
 	$ParallaxBackground.progress(speed)
-func increase_time(value):
-	if !Mitre.readtime:
-		timelabel=timelabel+value
-		$Label.text = "T" +str(timelabel)
-	if Mitre.readtime:
-		timelabel=Mitre.convert_time(str(timelabel))
-		
-		timelabel=int(timelabel)+value
-		print("Minutes:"+str(timelabel))
-		timelabel=Mitre.time_convert(timelabel)
-		$Label.text= "T" +str(timelabel)
-	timelabel=int(timelabel)
+func increase_time():
+	current_round=current_round+1

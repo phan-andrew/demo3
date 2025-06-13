@@ -133,7 +133,8 @@ func _process(delta):
 	else:
 		$Timer_Label/pause.icon = playIcon
 	
-	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.timelabel > int(Mitre.timeline_dict[Mitre.timeline_dict.size()-2][0]):
+	# End Game when out of time or out of rounds. 
+	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.current_round >= Mitre.timeline_dict.size():
 		_on_quit_button_pressed()
 		
 	if Settings.theme == 0:
@@ -303,13 +304,13 @@ func _on_button_pressed():
 		for card in aCards:
 			if int(Mitre.attack_dict[int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0])+1][5]) == 3:
 				finalattack = true
-		
+		# Come back and check this if and else.
 		if finalattack:
 			load_previous_attacks(save_path)
 			$Window3.visible  = true
 			$Window.visible = false
 		else:
-			$timeline.submitted = false
+#			$timeline.submitted = false
 			$Window.visible = false
 			disable_attack_buttons(false)
 			for card in aCards:
@@ -320,7 +321,7 @@ func _on_button_pressed():
 
 			$dropdown/attack_option.select(-1)
 			$dropdown/defend_option.select(-1)	
-			$timeline.increase_time(timeTaken)
+			$timeline.increase_time()
 			timeTaken = 0
 		sucornah = false
 		finalattack = false
@@ -342,16 +343,17 @@ func _on_final_continue_pressed():
 	$dropdown/attack_option.select(-1)
 	$dropdown/defend_option.select(-1)
 	$timeline._progress(timeTaken * 25)
-	$timeline.increase_time(timeTaken)
+	$timeline.increase_time()
 	timeTaken = 0
 
+# Error with CSV formatting. 
 func load_previous_attacks(path):
 	var file = FileAccess.open(path, FileAccess.READ)
 	if file:
 		var content = file.get_as_text()
 		file.close()
-		var formatted_text = format_csv(content)
-		$Window3/TextEdit.text = formatted_text
+		#var formatted_text = format_csv(content)
+		#$Window3/TextEdit.text = formatted_text
 
 func format_csv(content):
 	var rows = content.split("\n")
