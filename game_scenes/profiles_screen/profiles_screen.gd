@@ -182,12 +182,8 @@ func _on_file_5_selected(path):
 
 func _on_button_pressed():
 	Music.mouse_click()
-	if !Mitre.preloadedmission:
-		get_tree().change_scene_to_file("res://game_scenes/mission_input_screen/mission_inputs.tscn")
-		hide()
-	else:
-		get_tree().change_scene_to_file("res://game_scenes/start_screen/start_screen.tscn")
-		hide ()
+	get_tree().change_scene_to_file("res://game_scenes/start_screen/start_screen.tscn")
+	hide ()
 
 func _on_help_pressed():
 	$Window.visible = true

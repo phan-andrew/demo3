@@ -164,19 +164,9 @@ text = "                  Help
 editable = false
 wrap_mode = 1
 
-[node name="CheckBox" type="CheckBox" parent="."]
-offset_left = 310.0
-offset_top = 418.0
-offset_right = 453.0
-offset_bottom = 462.0
-size_flags_stretch_ratio = 3.08
-theme = ExtResource("3_mx321")
-text = "HH:MM time"
-
 [connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
 [connection signal="pressed" from="Button5" to="." method="_on_button_5_pressed"]
 [connection signal="changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]
 [connection signal="value_changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]
 [connection signal="pressed" from="HELP" to="." method="_on_help_pressed"]
 [connection signal="close_requested" from="Window" to="." method="_on_window_close_requested"]
-[connection signal="pressed" from="CheckBox" to="." method="_on_check_box_pressed"]

@@ -30,7 +30,7 @@ func _process(delta):
 		vehicle = $tank
 		$ParallaxBackground/ParallaxLayer/background.texture = load("res://images/UI_images/progress_bar/land/Surface.png")
 	$Label.text="T"+str(int(Mitre.timeline_dict[current_round][0]))
-	$timeline_label.text=str(Mitre.timeline_dict[current_round][1])
+	$timeline_title.text=str(Mitre.timeline_dict[current_round][1])
 
 func _progress(speed):
 	$ParallaxBackground.progress(speed)
