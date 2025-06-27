@@ -46,21 +46,25 @@ func _on_area_2d_mouse_exited():
 	$CanvasLayer/PanelContainerCurrent.hide()
 
 func _on_start_area_2d_mouse_entered():
-	$StartCanvasLayer/PanelContainerCurrent.show()
 	var previous_round = current_round-1
 	if previous_round-1 != 0:
+		$StartCanvasLayer/PanelContainerCurrent.show()
 		$StartCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text="Round: " + str(previous_round-1) + " of " + str(round_end) + "\n" + "Time: "+str(Mitre.timeline_dict[previous_round][0]) +  "\n" + "Description: " + str(Mitre.timeline_dict[previous_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[previous_round][2])
+	else:
+		$StartCanvasLayer/PanelContainerStart.show()
 
 func _on_start_area_2d_mouse_exited():
 	$StartCanvasLayer/PanelContainerCurrent.hide()
+	$StartCanvasLayer/PanelContainerStart.hide()
 
 func _on_end_area_2d_mouse_entered() -> void:
-	$EndCanvasLayer/PanelContainerCurrent.show()
 	var next_round = current_round+1
-	if next_round+1 <= round_end:
+	if next_round <= round_end+1:
+		$EndCanvasLayer/PanelContainerCurrent.show()
 		$EndCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text="Round: " + str(next_round-1) + " of " + str(round_end) + "\n" + "Time: "+str(Mitre.timeline_dict[next_round][0]) +  "\n" + "Description: " + str(Mitre.timeline_dict[next_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[next_round][2])
 	else:
-		$EndCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text = "Finish"
+		$EndCanvasLayer/PanelContainerEnd.show()
 
 func _on_end_area_2d_mouse_exited() -> void:
 	$EndCanvasLayer/PanelContainerCurrent.hide()
+	$EndCanvasLayer/PanelContainerEnd.hide()
