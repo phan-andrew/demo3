@@ -253,8 +253,8 @@ animations = [{
 "speed": 3.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_658vp"]
-size = Vector2(671, 84)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ljkcy"]
+size = Vector2(54.5, 126)
 
 [node name="timeline" type="Node2D"]
 script = ExtResource("1_qm1ha")
@@ -333,8 +333,148 @@ sprite_frames = SubResource("SpriteFrames_j0nb0")
 animation = &"move"
 autoplay = "hover"
 
-[node name="character" type="Area2D" parent="."]
+[node name="Area2D" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="character"]
-position = Vector2(547.5, 136)
-shape = SubResource("RectangleShape2D_658vp")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(523, 150)
+shape = SubResource("RectangleShape2D_ljkcy")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PanelContainerCurrent" type="PanelContainer" parent="CanvasLayer"]
+visible = false
+z_as_relative = false
+offset_left = 501.0
+offset_top = 152.0
+offset_right = 1123.0
+offset_bottom = 198.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainerCurrent"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="CanvasLayer/PanelContainerCurrent/MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("7_unjkg")
+text = "text"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="StartArea2D" type="Area2D" parent="."]
+position = Vector2(-368, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StartArea2D"]
+position = Vector2(492.75, 152)
+shape = SubResource("RectangleShape2D_ljkcy")
+
+[node name="StartCanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PanelContainerCurrent" type="PanelContainer" parent="StartCanvasLayer"]
+visible = false
+z_as_relative = false
+offset_left = 120.0
+offset_top = 152.0
+offset_right = 742.0
+offset_bottom = 198.0
+
+[node name="MarginContainer" type="MarginContainer" parent="StartCanvasLayer/PanelContainerCurrent"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="StartCanvasLayer/PanelContainerCurrent/MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("7_unjkg")
+text = "start"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="PanelContainerStart" type="PanelContainer" parent="StartCanvasLayer"]
+visible = false
+z_as_relative = false
+offset_left = 120.0
+offset_top = 112.0
+offset_right = 264.0
+offset_bottom = 187.0
+
+[node name="MarginContainer" type="MarginContainer" parent="StartCanvasLayer/PanelContainerStart"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="StartCanvasLayer/PanelContainerStart/MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("7_unjkg")
+text = "start"
+vertical_alignment = 1
+
+[node name="EndArea2D" type="Area2D" parent="."]
+position = Vector2(440, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EndArea2D"]
+position = Vector2(552, 152)
+shape = SubResource("RectangleShape2D_ljkcy")
+
+[node name="EndCanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PanelContainerCurrent" type="PanelContainer" parent="EndCanvasLayer"]
+visible = false
+z_as_relative = false
+offset_left = 408.0
+offset_top = 152.0
+offset_right = 1030.0
+offset_bottom = 198.0
+
+[node name="MarginContainer" type="MarginContainer" parent="EndCanvasLayer/PanelContainerCurrent"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="EndCanvasLayer/PanelContainerCurrent/MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("7_unjkg")
+text = "Finish"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="PanelContainerEnd" type="PanelContainer" parent="EndCanvasLayer"]
+visible = false
+z_as_relative = false
+offset_left = 848.0
+offset_top = 112.0
+offset_right = 992.0
+offset_bottom = 187.0
+
+[node name="MarginContainer" type="MarginContainer" parent="EndCanvasLayer/PanelContainerEnd"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="EndCanvasLayer/PanelContainerEnd/MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("7_unjkg")
+text = "Finish"
+vertical_alignment = 1
+
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
+[connection signal="mouse_entered" from="StartArea2D" to="." method="_on_start_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="StartArea2D" to="." method="_on_start_area_2d_mouse_exited"]
+[connection signal="mouse_entered" from="EndArea2D" to="." method="_on_end_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="EndArea2D" to="." method="_on_end_area_2d_mouse_exited"]

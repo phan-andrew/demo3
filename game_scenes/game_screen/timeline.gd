@@ -2,6 +2,7 @@ extends Node2D
 
 var vehicle
 var current_round = 2
+var round_end = Mitre.timeline_dict.size()-2
 
 func _ready():
 	vehicle = $sub
@@ -36,3 +37,34 @@ func _progress(speed):
 	$ParallaxBackground.progress(speed)
 func increase_time():
 	current_round=current_round+1
+
+func _on_area_2d_mouse_entered():
+	$CanvasLayer/PanelContainerCurrent.show()
+	$CanvasLayer/PanelContainerCurrent/MarginContainer/Label.text="Round: " + str(current_round-1) + " of " + str(round_end) + "\n" + "Time: "+str(Mitre.timeline_dict[current_round][0]) +  "\n" + "Description: " + str(Mitre.timeline_dict[current_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[current_round][2])
+	
+func _on_area_2d_mouse_exited():
+	$CanvasLayer/PanelContainerCurrent.hide()
+
+func _on_start_area_2d_mouse_entered():
+	var previous_round = current_round-1
+	if previous_round-1 != 0:
+		$StartCanvasLayer/PanelContainerCurrent.show()
+		$StartCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text="Round: " + str(previous_round-1) + " of " + str(round_end) + "\n" + "Time: "+str(Mitre.timeline_dict[previous_round][0]) +  "\n" + "Description: " + str(Mitre.timeline_dict[previous_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[previous_round][2])
+	else:
+		$StartCanvasLayer/PanelContainerStart.show()
+
+func _on_start_area_2d_mouse_exited():
+	$StartCanvasLayer/PanelContainerCurrent.hide()
+	$StartCanvasLayer/PanelContainerStart.hide()
+
+func _on_end_area_2d_mouse_entered() -> void:
+	var next_round = current_round+1
+	if next_round <= round_end+1:
+		$EndCanvasLayer/PanelContainerCurrent.show()
+		$EndCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text="Round: " + str(next_round-1) + " of " + str(round_end) + "\n" + "Time: "+str(Mitre.timeline_dict[next_round][0]) +  "\n" + "Description: " + str(Mitre.timeline_dict[next_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[next_round][2])
+	else:
+		$EndCanvasLayer/PanelContainerEnd.show()
+
+func _on_end_area_2d_mouse_exited() -> void:
+	$EndCanvasLayer/PanelContainerCurrent.hide()
+	$EndCanvasLayer/PanelContainerEnd.hide()
