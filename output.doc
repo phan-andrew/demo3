@@ -1,0 +1,978 @@
+Folder PATH listing
+Volume serial number is B846-D22E
+C:.
+|   .gitattributes
+|   .gitignore
+|   default_bus_layout.tres
+|   dropdown.gd
+|   dropdown.gd.uid
+|   export_presets.cfg
+|   Game Manual
+|   icon.svg
+|   icon.svg.import
+|   Mitre.gd
+|   Mitre.gd.uid
+|   node_2d.gd
+|   node_2d.gd.uid
+|   output.doc
+|   output.dodc
+|   output.dpc
+|   project.godot
+|   README.md
+|   SEACAT Graphics.mp4
+|   settings.gd
+|   settings.gd.uid
+|   Textbox.gd
+|   Textbox.gd.uid
+|   
++---addons
+|   \---godot-git-plugin
+|       |   git_plugin.gdextension
+|       |   git_plugin.gdextension.uid
+|       |   LICENSE
+|       |   plugin.cfg
+|       |   THIRDPARTY.md
+|       |   
+|       +---linux
+|       |       libgit_plugin.linux.editor.x86_64.so
+|       |       
+|       +---macos
+|       |       libgit_plugin.macos.editor.universal.dylib
+|       |       
+|       \---win64
+|               libgit_plugin.windows.editor.x86_64.dll
+|               libgit_plugin.windows.editor.x86_64.exp
+|               libgit_plugin.windows.editor.x86_64.lib
+|               ~libgit_plugin.windows.editor.x86_64.dll
+|               
++---audio
+|   |   8-bit-beeping-computer-sounds-90005.mp3
+|   |   8-bit-beeping-computer-sounds-90005.mp3.import
+|   |   8-bit-wrong-2-84407.mp3
+|   |   8-bit-wrong-2-84407.mp3.import
+|   |   audio.mp3
+|   |   audio.mp3.import
+|   |   audio.tscn
+|   |   coin-collect-retro-8-bit-sound-effect-145251.mp3
+|   |   coin-collect-retro-8-bit-sound-effect-145251.mp3.import
+|   |   flipcard-91468.mp3
+|   |   flipcard-91468.mp3.import
+|   |   Mouse Click Sound Effect edited 2.mp3
+|   |   Mouse Click Sound Effect edited 2.mp3.import
+|   |   Mouse Click Sound Effect edited.mp3
+|   |   Mouse Click Sound Effect edited.mp3.import
+|   |   Mouse Click Sound Effect.mp3
+|   |   Mouse Click Sound Effect.mp3.import
+|   |   music.gd
+|   |   music.gd.uid
+|   |   music.tscn
+|   |   playing_music.mp3
+|   |   playing_music.mp3.import
+|   |   scroll_music.mp3
+|   |   scroll_music.mp3.import
+|   |   sigma.mp3
+|   |   sigma.mp3.import
+|   |   starting_music.mp3
+|   |   starting_music.mp3.import
+|   |   
+|   \---themes
+|           027942_desert-wind-stereo-70264.mp3.import
+|           air.mp3
+|           air.mp3.import
+|           airplane-sound-67522.mp3.import
+|           land.mp3
+|           land.mp3.import
+|           ocean-waves-112906.mp3.import
+|           sea.mp3
+|           sea.mp3.import
+|           
++---card_scenes
+|       cardFlip.gd
+|       cardFlip.gd.uid
+|       cardFlip.tscn
+|       card_button_theme.tres
+|       card_shadowBackgrounds.tscn
+|       
++---data
+|       ATT&CK_database.txt
+|       D3fend_database.txt
+|       Defense_Template.txt
+|       gama_data.txt
+|       game_data.txt
+|       OPFOR_Template.txt
+|       Timeline_Template.txt
+|       
++---default
+|       attack_profile_default.txt
+|       defend_profile_default.txt
+|       timeline_default.txt
+|       
++---Game Manuel
+|       GameManuel.pdf
+|       
++---game_scenes
+|   +---dice_screen
+|   +---game_over_screen
+|   |       game_over.gd
+|   |       game_over.gd.uid
+|   |       game_over.tscn
+|   |       
+|   +---game_screen
+|   |       ATT&CK_descriptions.gd
+|   |       ATT&CK_descriptions.gd.uid
+|   |       ATT&CK_descriptions.tscn
+|   |       background.tres
+|   |       checkpoint.gd
+|   |       checkpoint.gd.uid
+|   |       checkpoint.tscn
+|   |       dropdown.gd
+|   |       dropdown.gd.uid
+|   |       dropdown.tscn
+|   |       game_screen.gd
+|   |       game_screen.gd.uid
+|   |       game_screen.tscn
+|   |       ParallaxBackground.gd
+|   |       ParallaxBackground.gd.uid
+|   |       ParallaxLayer.gd
+|   |       ParallaxLayer.gd.uid
+|   |       ParallaxLayer2.gd
+|   |       ParallaxLayer2.gd.uid
+|   |       ProgressBar.gd
+|   |       ProgressBar.gd.uid
+|   |       timeline.gd
+|   |       timeline.gd.uid
+|   |       timeline.tscn
+|   |       Timer_Label.gd
+|   |       Timer_Label.gd.uid
+|   |       Timer_Label2.gd
+|   |       Timer_Label2.gd.uid
+|   |       
+|   +---help_screen
+|   |       help_screen.gd
+|   |       help_screen.gd.uid
+|   |       help_screen.tscn
+|   |       
+|   +---mission_text
+|   |       Label.gd
+|   |       Label.gd.uid
+|   |       mission_text.gd
+|   |       mission_text.gd.uid
+|   |       mission_text.tscn
+|   |       
+|   +---options_screen
+|   |       HSlider.gd
+|   |       HSlider.gd.uid
+|   |       options_screen.gd
+|   |       options_screen.gd.uid
+|   |       options_screen.tscn
+|   |       
+|   +---profiles_screen
+|   |       profiles_screen.gd
+|   |       profiles_screen.gd.uid
+|   |       profiles_screen.tscn
+|   |       
+|   +---prompts_screen
+|   |       starting_prompts.gd
+|   |       starting_prompts.gd.uid
+|   |       starting_prompts.tscn
+|   |       
+|   +---splash_screen
+|   |       splash_screen.gd
+|   |       splash_screen.gd.uid
+|   |       splash_screen.tscn
+|   |       transition_scene.gd
+|   |       transition_scene.gd.uid
+|   |       transition_scene.tscn
+|   |       
+|   \---start_screen
+|           start_screen.gd
+|           start_screen.gd.uid
+|           start_screen.tscn
+|           
++---images
+|   +---card_images
+|   |   +---attack
+|   |   |       Abuse Elevation.png
+|   |   |       Abuse Elevation.png.import
+|   |   |       AbuseElevationControlMechanism.png
+|   |   |       AbuseElevationControlMechanism.png.import
+|   |   |       Access Token Manipulation.png
+|   |   |       Access Token Manipulation.png.import
+|   |   |       Account Access Removal.png
+|   |   |       Account Access Removal.png.import
+|   |   |       Account Discovery.png
+|   |   |       Account Discovery.png.import
+|   |   |       Account Manipulation.png
+|   |   |       Account Manipulation.png.import
+|   |   |       Adversary in the Middle.png
+|   |   |       Adversary in the Middle.png.import
+|   |   |       Application Layer Protocol.png
+|   |   |       Application Layer Protocol.png.import
+|   |   |       Application Windows Discovery.png
+|   |   |       Application Windows Discovery.png.import
+|   |   |       Archive Collected Data.png
+|   |   |       Archive Collected Data.png.import
+|   |   |       Audio Capture.png
+|   |   |       Audio Capture.png.import
+|   |   |       Automated Collection.png
+|   |   |       Automated Collection.png.import
+|   |   |       Automated Exfiltration.png
+|   |   |       Automated Exfiltration.png.import
+|   |   |       BITS Jobs.png
+|   |   |       BITS Jobs.png.import
+|   |   |       Boot or Logon Autostart Execution.png
+|   |   |       Boot or Logon Autostart Execution.png.import
+|   |   |       Boot or Logon Initialization Scripts.png
+|   |   |       Boot or Logon Initialization Scripts.png.import
+|   |   |       Browser Extensions.png
+|   |   |       Browser Extensions.png.import
+|   |   |       Browser Information Discovery.png
+|   |   |       Browser Information Discovery.png.import
+|   |   |       Browser Session Hijacking.png
+|   |   |       Browser Session Hijacking.png.import
+|   |   |       BruteForce.png
+|   |   |       BruteForce.png.import
+|   |   |       Build File on Host.png
+|   |   |       Build File on Host.png.import
+|   |   |       Build Image on Host.png
+|   |   |       Build Image on Host.png.import
+|   |   |       Clipboard Data.png
+|   |   |       Clipboard Data.png.import
+|   |   |       Cloud Infrastructure Discovery.png
+|   |   |       Cloud Infrastructure Discovery.png.import
+|   |   |       Cloud Service Dashboard.png
+|   |   |       Cloud Service Dashboard.png.import
+|   |   |       Cloud Service Discovery.png
+|   |   |       Cloud Service Discovery.png.import
+|   |   |       Cloud Storage Object Discovery.png
+|   |   |       Cloud Storage Object Discovery.png.import
+|   |   |       CloudAdministrationCommand.png
+|   |   |       CloudAdministrationCommand.png.import
+|   |   |       CommandAndScriptingInterpreter.png
+|   |   |       CommandAndScriptingInterpreter.png.import
+|   |   |       Communication Through Removable Device.png
+|   |   |       Communication Through Removable Device.png.import
+|   |   |       Communication Through Removable Media.png
+|   |   |       Communication Through Removable Media.png.import
+|   |   |       Compromise Host Software Binary.png
+|   |   |       Compromise Host Software Binary.png.import
+|   |   |       Container Administration Command.png
+|   |   |       Container Administration Command.png.import
+|   |   |       ContainerAndResourceDiscovery.png
+|   |   |       ContainerAndResourceDiscovery.png.import
+|   |   |       Content Injection C&C.png
+|   |   |       Content Injection C&C.png.import
+|   |   |       Content Injection.png
+|   |   |       Content Injection.png.import
+|   |   |       Create or Modify System Processes.png
+|   |   |       Create or Modify System Processes.png.import
+|   |   |       CreateAccount.png
+|   |   |       CreateAccount.png.import
+|   |   |       Credentials from Password Stores.png
+|   |   |       Credentials from Password Stores.png.import
+|   |   |       Data Destruction.png
+|   |   |       Data Destruction.png.import
+|   |   |       Data Encoding.png
+|   |   |       Data Encoding.png.import
+|   |   |       Data From Cloud Storage.png
+|   |   |       Data From Cloud Storage.png.import
+|   |   |       Data from Configuration Repository.png
+|   |   |       Data from Configuration Repository.png.import
+|   |   |       Data from Information Repository.png
+|   |   |       Data from Information Repository.png.import
+|   |   |       Data From Local System.png
+|   |   |       Data From Local System.png.import
+|   |   |       Data From Network Shared Drive.png
+|   |   |       Data From Network Shared Drive.png.import
+|   |   |       Data from Removable Media.png
+|   |   |       Data from Removable Media.png.import
+|   |   |       Data Obfuscation.png
+|   |   |       Data Obfuscation.png.import
+|   |   |       Data Staged.png
+|   |   |       Data Staged.png.import
+|   |   |       DataEncryptedForImpact.png
+|   |   |       DataEncryptedForImpact.png.import
+|   |   |       DataManipulation.png
+|   |   |       DataManipulation.png.import
+|   |   |       DataTransferSizeLimits.png
+|   |   |       DataTransferSizeLimits.png.import
+|   |   |       Debugger Evasion.png
+|   |   |       Debugger Evasion.png.import
+|   |   |       Defacement.png
+|   |   |       Defacement.png.import
+|   |   |       Deobfuscate or Decode Files.png
+|   |   |       Deobfuscate or Decode Files.png.import
+|   |   |       Deploy Container.png
+|   |   |       Deploy Container.png.import
+|   |   |       DeviceDriverDiscovery.png
+|   |   |       DeviceDriverDiscovery.png.import
+|   |   |       Direct Volume Access.png
+|   |   |       Direct Volume Access.png.import
+|   |   |       Disk Wipe.png
+|   |   |       Disk Wipe.png.import
+|   |   |       Domain or Tenant Policy Modification.png
+|   |   |       Domain or Tenant Policy Modification.png.import
+|   |   |       DomainTrustDiscovery.png
+|   |   |       DomainTrustDiscovery.png.import
+|   |   |       Drive-By Compromise.png
+|   |   |       Drive-By Compromise.png.import
+|   |   |       Dynamic Resolution.png
+|   |   |       Dynamic Resolution.png.import
+|   |   |       Email Collection.png
+|   |   |       Email Collection.png.import
+|   |   |       Encrypted Channel.png
+|   |   |       Encrypted Channel.png.import
+|   |   |       Endpoint Denial of Service.png
+|   |   |       Endpoint Denial of Service.png.import
+|   |   |       EscapeToHost.png
+|   |   |       EscapeToHost.png.import
+|   |   |       EventTriggeredExecution.png
+|   |   |       EventTriggeredExecution.png.import
+|   |   |       ExecutionGuardrails.png
+|   |   |       ExecutionGuardrails.png.import
+|   |   |       Exfiltration Over Alternate Protocol.png
+|   |   |       Exfiltration Over Alternate Protocol.png.import
+|   |   |       Exfiltration Over Other Network Medium.png
+|   |   |       Exfiltration Over Other Network Medium.png.import
+|   |   |       Exfiltration Over Other Physical Medium.png
+|   |   |       Exfiltration Over Other Physical Medium.png.import
+|   |   |       Exfiltration Over Web Service.png
+|   |   |       Exfiltration Over Web Service.png.import
+|   |   |       ExfiltrationOverC2Channel.png
+|   |   |       ExfiltrationOverC2Channel.png.import
+|   |   |       Exploitation for Credential Access.png
+|   |   |       Exploitation for Credential Access.png.import
+|   |   |       Exploitation for Defense Evasion.png
+|   |   |       Exploitation for Defense Evasion.png.import
+|   |   |       Exploitation for Privelige Escalation.png
+|   |   |       Exploitation for Privelige Escalation.png.import
+|   |   |       Exploitation of Remote Services.png
+|   |   |       Exploitation of Remote Services.png.import
+|   |   |       ExploitationForClientExecution.png
+|   |   |       ExploitationForClientExecution.png.import
+|   |   |       ExploitPublicFacing.png
+|   |   |       ExploitPublicFacing.png.import
+|   |   |       External Remote Services.png
+|   |   |       External Remote Services.png.import
+|   |   |       Fallback Channels.png
+|   |   |       Fallback Channels.png.import
+|   |   |       File and Directory Service.png
+|   |   |       File and Directory Service.png.import
+|   |   |       FileAndDirectoryPermissionModification.png
+|   |   |       FileAndDirectoryPermissionModification.png.import
+|   |   |       Financial Theft.png
+|   |   |       Financial Theft.png.import
+|   |   |       FirmwareCorruption.png
+|   |   |       FirmwareCorruption.png.import
+|   |   |       ForcedAuthentication.png
+|   |   |       ForcedAuthentication.png.import
+|   |   |       Forge Web Credentials.png
+|   |   |       Forge Web Credentials.png.import
+|   |   |       Group Policy Discovery.png
+|   |   |       Group Policy Discovery.png.import
+|   |   |       Hardware Addition.png
+|   |   |       Hardware Addition.png.import
+|   |   |       Hide Infrastructure.png
+|   |   |       Hide Infrastructure.png.import
+|   |   |       HideArtifacts.png
+|   |   |       HideArtifacts.png.import
+|   |   |       HijackExecutionFlow.png
+|   |   |       HijackExecutionFlow.png.import
+|   |   |       Impair Defenses.png
+|   |   |       Impair Defenses.png.import
+|   |   |       Impersonation.png
+|   |   |       Impersonation.png.import
+|   |   |       Implant Internal Image.png
+|   |   |       Implant Internal Image.png.import
+|   |   |       Indicator Removal.png
+|   |   |       Indicator Removal.png.import
+|   |   |       IndirectCommandExecution.png
+|   |   |       IndirectCommandExecution.png.import
+|   |   |       Ingress Tool Transfer.png
+|   |   |       Ingress Tool Transfer.png.import
+|   |   |       Inhibit System Recovery.png
+|   |   |       Inhibit System Recovery.png.import
+|   |   |       InputCapture.png
+|   |   |       InputCapture.png.import
+|   |   |       Inter-Processes Communication.png
+|   |   |       Inter-Processes Communication.png.import
+|   |   |       Internal Spearphishing.png
+|   |   |       Internal Spearphishing.png.import
+|   |   |       LateralToolTransfer.png
+|   |   |       LateralToolTransfer.png.import
+|   |   |       Log Enumeration.png
+|   |   |       Log Enumeration.png.import
+|   |   |       Masquerading.png
+|   |   |       Masquerading.png.import
+|   |   |       Modify Authentication Process.png
+|   |   |       Modify Authentication Process.png.import
+|   |   |       Modify Cloud Compute Infrastructure.png
+|   |   |       Modify Cloud Compute Infrastructure.png.import
+|   |   |       Modify Registry.png
+|   |   |       Modify Registry.png.import
+|   |   |       Modify System Process.png
+|   |   |       Modify System Process.png.import
+|   |   |       ModifySystemImage.png
+|   |   |       ModifySystemImage.png.import
+|   |   |       Multi Stage Channel.png
+|   |   |       Multi Stage Channel.png.import
+|   |   |       Multi-Factor Authentication Interception.png
+|   |   |       Multi-Factor Authentication Interception.png.import
+|   |   |       Multi-Factor Authentication Request Generation.png
+|   |   |       Multi-Factor Authentication Request Generation.png.import
+|   |   |       Native API.png
+|   |   |       Native API.png.import
+|   |   |       Network Boundary Bridging.png
+|   |   |       Network Boundary Bridging.png.import
+|   |   |       Network Denial of Services.png
+|   |   |       Network Denial of Services.png.import
+|   |   |       Network Service Discovery.png
+|   |   |       Network Service Discovery.png.import
+|   |   |       Network Sniffing.png
+|   |   |       Network Sniffing.png.import
+|   |   |       NetworkShareDiscovery.png
+|   |   |       NetworkShareDiscovery.png.import
+|   |   |       Non Application Layer Protocol.png
+|   |   |       Non Application Layer Protocol.png.import
+|   |   |       Non-Standard Port.png
+|   |   |       Non-Standard Port.png.import
+|   |   |       Obfuscated Files or Information.png
+|   |   |       Obfuscated Files or Information.png.import
+|   |   |       OfficeApplicationStartup.png
+|   |   |       OfficeApplicationStartup.png.import
+|   |   |       OSCredentialDumping.png
+|   |   |       OSCredentialDumping.png.import
+|   |   |       Password Policy Discovery.png
+|   |   |       Password Policy Discovery.png.import
+|   |   |       PeripheralDeviceDiscovery.png
+|   |   |       PeripheralDeviceDiscovery.png.import
+|   |   |       Permission Groups Discovery.png
+|   |   |       Permission Groups Discovery.png.import
+|   |   |       Phishing.png
+|   |   |       Phishing.png.import
+|   |   |       PlistFileModification.png
+|   |   |       PlistFileModification.png.import
+|   |   |       PowerSettings.png
+|   |   |       PowerSettings.png.import
+|   |   |       Pre-OS Boot.png
+|   |   |       Pre-OS Boot.png.import
+|   |   |       Process Injection.png
+|   |   |       Process Injection.png.import
+|   |   |       ProcessDiscovery.png
+|   |   |       ProcessDiscovery.png.import
+|   |   |       Protocol Tunneling.png
+|   |   |       Protocol Tunneling.png.import
+|   |   |       Proxy.png
+|   |   |       Proxy.png.import
+|   |   |       QueryRegistry.png
+|   |   |       QueryRegistry.png.import
+|   |   |       Range Domain Controller.png
+|   |   |       Range Domain Controller.png.import
+|   |   |       ReflectiveCodeLoading.png
+|   |   |       ReflectiveCodeLoading.png.import
+|   |   |       Remote Access Software.png
+|   |   |       Remote Access Software.png.import
+|   |   |       Remote Services.png
+|   |   |       Remote Services.png.import
+|   |   |       Remote System Discovery.png
+|   |   |       Remote System Discovery.png.import
+|   |   |       RemoteServiceSessionHijacking.png
+|   |   |       RemoteServiceSessionHijacking.png.import
+|   |   |       Replication Through Removable Media LM.png
+|   |   |       Replication Through Removable Media LM.png.import
+|   |   |       Replication Through Removable Media.png
+|   |   |       Replication Through Removable Media.png.import
+|   |   |       ResourceHijacking.png
+|   |   |       ResourceHijacking.png.import
+|   |   |       Rootkit x5.png
+|   |   |       Rootkit x5.png.import
+|   |   |       Saftware Discovery.png
+|   |   |       Saftware Discovery.png.import
+|   |   |       Scheduled Transfer.png
+|   |   |       Scheduled Transfer.png.import
+|   |   |       ScheduledTask_Job.png
+|   |   |       ScheduledTask_Job.png.import
+|   |   |       Screen Capture.png
+|   |   |       Screen Capture.png.import
+|   |   |       Server Software Component.png
+|   |   |       Server Software Component.png.import
+|   |   |       Serverless Execution.png
+|   |   |       Serverless Execution.png.import
+|   |   |       Service Stop.png
+|   |   |       Service Stop.png.import
+|   |   |       Shared Modules.png
+|   |   |       Shared Modules.png.import
+|   |   |       Software Deployment Tools.png
+|   |   |       Software Deployment Tools.png.import
+|   |   |       Steal Application Access Token.png
+|   |   |       Steal Application Access Token.png.import
+|   |   |       Steal or Forge Authentification Certificates.png
+|   |   |       Steal or Forge Authentification Certificates.png.import
+|   |   |       Steal Web Session Cookie.png
+|   |   |       Steal Web Session Cookie.png.import
+|   |   |       StealOrForgeKerberosTickets.png
+|   |   |       StealOrForgeKerberosTickets.png.import
+|   |   |       SubvertTrustControl.png
+|   |   |       SubvertTrustControl.png.import
+|   |   |       SupplyChainCompromise.png
+|   |   |       SupplyChainCompromise.png.import
+|   |   |       System Binary Proxy Execution.png
+|   |   |       System Binary Proxy Execution.png.import
+|   |   |       System Information Discovery.png
+|   |   |       System Information Discovery.png.import
+|   |   |       System Location Discovery.png
+|   |   |       System Location Discovery.png.import
+|   |   |       System Network Configuration Discovery.png
+|   |   |       System Network Configuration Discovery.png.import
+|   |   |       System Network Connections Discovery.png
+|   |   |       System Network Connections Discovery.png.import
+|   |   |       System Owner or User Discovery.png
+|   |   |       System Owner or User Discovery.png.import
+|   |   |       System Script Proxy Execution.png
+|   |   |       System Script Proxy Execution.png.import
+|   |   |       System Services.png
+|   |   |       System Services.png.import
+|   |   |       System Shutdown Reboot.png
+|   |   |       System Shutdown Reboot.png.import
+|   |   |       System Time Discovery.png
+|   |   |       System Time Discovery.png.import
+|   |   |       SystemServiceDiscovery.png
+|   |   |       SystemServiceDiscovery.png.import
+|   |   |       Taint Shared Content.png
+|   |   |       Taint Shared Content.png.import
+|   |   |       Template Injection.png
+|   |   |       Template Injection.png.import
+|   |   |       TrafficSignaling.png
+|   |   |       TrafficSignaling.png.import
+|   |   |       Transfer Data to Cloud Accounts.png
+|   |   |       Transfer Data to Cloud Accounts.png.import
+|   |   |       Trusted Developer Utilities Proxy Execution.png
+|   |   |       Trusted Developer Utilities Proxy Execution.png.import
+|   |   |       Trusted Relationship.png
+|   |   |       Trusted Relationship.png.import
+|   |   |       Unsecured Credentials.png
+|   |   |       Unsecured Credentials.png.import
+|   |   |       Unused or Unsupported Cloud Region.png
+|   |   |       Unused or Unsupported Cloud Region.png.import
+|   |   |       Use Alternate Authentication Material.png
+|   |   |       Use Alternate Authentication Material.png.import
+|   |   |       UserExecution.png
+|   |   |       UserExecution.png.import
+|   |   |       ValidAccounts - InitialAccess.png
+|   |   |       ValidAccounts - InitialAccess.png.import
+|   |   |       ValidAccounts - PE&Piv.png
+|   |   |       ValidAccounts - PE&Piv.png.import
+|   |   |       Video Capture.png
+|   |   |       Video Capture.png.import
+|   |   |       Virtulization Sandbox Evasion.png
+|   |   |       Virtulization Sandbox Evasion.png.import
+|   |   |       WeakenEncryption.png
+|   |   |       WeakenEncryption.png.import
+|   |   |       Web Service.png
+|   |   |       Web Service.png.import
+|   |   |       Windows Management Instrumentation.png
+|   |   |       Windows Management Instrumentation.png.import
+|   |   |       XSLScriptProcessing.png
+|   |   |       XSLScriptProcessing.png.import
+|   |   |       
+|   |   +---defense
+|   |   |       Account Locking.png
+|   |   |       Account Locking.png.import
+|   |   |       Administrative Network Activity Analysis.png
+|   |   |       Administrative Network Activity Analysis.png.import
+|   |   |       Application Configuration Hardening.png
+|   |   |       Application Configuration Hardening.png.import
+|   |   |       Authentication Cache Invalidation.png
+|   |   |       Authentication Cache Invalidation.png.import
+|   |   |       AuthenticationEventThreshold.png
+|   |   |       AuthenticationEventThreshold.png.import
+|   |   |       AuthorizationEventThresholding.png
+|   |   |       AuthorizationEventThresholding.png.import
+|   |   |       Biometric Authentication.png
+|   |   |       Biometric Authentication.png.import
+|   |   |       Bootloader Autentication.png.import
+|   |   |       Bootloader Authentication.png
+|   |   |       Bootloader Authentication.png.import
+|   |   |       BroadcastDomainIsolation.png
+|   |   |       BroadcastDomainIsolation.png.import
+|   |   |       Byte Sequence Emulation.png
+|   |   |       Byte Sequence Emulation.png.import
+|   |   |       Certificate Analysis.png
+|   |   |       Certificate Analysis.png.import
+|   |   |       Certificate Pinning.png
+|   |   |       Certificate Pinning.png.import
+|   |   |       Certificate-Based Authentication.png
+|   |   |       Certificate-Based Authentication.png.import
+|   |   |       ConnectedHoneynet.png
+|   |   |       ConnectedHoneynet.png.import
+|   |   |       Connection Attempt Analysis.png
+|   |   |       Connection Attempt Analysis.png.import
+|   |   |       Credential Compromise Scope Analysis.png
+|   |   |       Credential Compromise Scope Analysis.png.import
+|   |   |       Credential Revoking.png
+|   |   |       Credential Revoking.png.import
+|   |   |       Credential Rotation.png
+|   |   |       Credential Rotation.png.import
+|   |   |       Credential Transmission Scoping.png
+|   |   |       Credential Transmission Scoping.png.import
+|   |   |       Database Query String Analysis.png
+|   |   |       Database Query String Analysis.png.import
+|   |   |       DeadCodeElimination.png
+|   |   |       DeadCodeElimination.png.import
+|   |   |       Decoy File.png
+|   |   |       Decoy File.png.import
+|   |   |       Decoy Network Resource.png
+|   |   |       Decoy Network Resource.png.import
+|   |   |       DecoyPersona.png
+|   |   |       DecoyPersona.png.import
+|   |   |       DecoyPublicRelease.png
+|   |   |       DecoyPublicRelease.png.import
+|   |   |       DecoySessionToken.png
+|   |   |       DecoySessionToken.png.import
+|   |   |       DecoyUserCredentials.png
+|   |   |       DecoyUserCredentials.png.import
+|   |   |       DiskEncryption.png
+|   |   |       DiskEncryption.png.import
+|   |   |       DNSAllowList.png
+|   |   |       DNSAllowList.png.import
+|   |   |       DNSDenyList.png
+|   |   |       DNSDenyList.png.import
+|   |   |       DNSTrafficAnalysis.png
+|   |   |       DNSTrafficAnalysis.png.import
+|   |   |       Domain Trust Policy.png
+|   |   |       Domain Trust Policy.png.import
+|   |   |       DomainAccountMonitoring.png
+|   |   |       DomainAccountMonitoring.png.import
+|   |   |       Driver Load Integrity Checking.png
+|   |   |       Driver Load Integrity Checking.png.import
+|   |   |       Dynamic Analysis.png
+|   |   |       Dynamic Analysis.png.import
+|   |   |       EmulatedFileAnalysis.png
+|   |   |       EmulatedFileAnalysis.png.import
+|   |   |       Encrypted Tunnels.png
+|   |   |       Encrypted Tunnels.png.import
+|   |   |       Exception Handler Pointer Validation.png
+|   |   |       Exception Handler Pointer Validation.png.import
+|   |   |       Executable Deny List.png
+|   |   |       Executable Deny List.png.import
+|   |   |       ExecutableAllowlist.png
+|   |   |       ExecutableAllowlist.png.import
+|   |   |       File Access Pattern Analysis.png
+|   |   |       File Access Pattern Analysis.png.import
+|   |   |       File Encryption.png
+|   |   |       File Encryption.png.import
+|   |   |       File Removal.png
+|   |   |       File Removal.png.import
+|   |   |       FileCarving.png
+|   |   |       FileCarving.png.import
+|   |   |       FileContentAnalysis.png
+|   |   |       FileContentAnalysis.png.import
+|   |   |       FileHashing.png
+|   |   |       FileHashing.png.import
+|   |   |       FileIntegrityMonitoring.png
+|   |   |       FileIntegrityMonitoring.png.import
+|   |   |       Firmware Embedded Monitoring Code.png
+|   |   |       Firmware Embedded Monitoring Code.png.import
+|   |   |       FirmwareBehaviorAnalysis.png
+|   |   |       FirmwareBehaviorAnalysis.png.import
+|   |   |       FirmwareVerification.png
+|   |   |       FirmwareVerification.png.import
+|   |   |       Hardware Based Process Isolation.png
+|   |   |       Hardware Based Process Isolation.png.import
+|   |   |       Homoglyoh Detection.png
+|   |   |       Homoglyoh Detection.png.import
+|   |   |       Host Shutdown.png
+|   |   |       Host Shutdown.png.import
+|   |   |       Identifier Activity Analysis.png
+|   |   |       Identifier Activity Analysis.png.import
+|   |   |       Identifier Reputation Analysis.png
+|   |   |       Identifier Reputation Analysis.png.import
+|   |   |       InboundSessionVolumeAnalysis.png
+|   |   |       InboundSessionVolumeAnalysis.png.import
+|   |   |       IntegratedHoneynet.png
+|   |   |       IntegratedHoneynet.png.import
+|   |   |       IO Port Restriction.png
+|   |   |       IO Port Restriction.png.import
+|   |   |       IPCTrafficAnalysis.png
+|   |   |       IPCTrafficAnalysis.png.import
+|   |   |       JobFunctionAccessPatternAnalysis.png
+|   |   |       JobFunctionAccessPatternAnalysis.png.import
+|   |   |       Kernel-Based Process Isolation.png
+|   |   |       Kernel-Based Process Isolation.png.import
+|   |   |       LocalAccountMonitoring.png
+|   |   |       LocalAccountMonitoring.png.import
+|   |   |       LocalFilePermissions.png
+|   |   |       LocalFilePermissions.png.import
+|   |   |       Message Authentication.png
+|   |   |       Message Authentication.png.import
+|   |   |       Message Encryption Fixed.png
+|   |   |       Message Encryption Fixed.png.import
+|   |   |       Multifactor Authentication.png
+|   |   |       Multifactor Authentication.png.import
+|   |   |       Network Traffic Filtering.png
+|   |   |       Network Traffic Filtering.png.import
+|   |   |       NetworkTrafficCommunityDeviation.png
+|   |   |       NetworkTrafficCommunityDeviation.png.import
+|   |   |       One Time Password.png
+|   |   |       One Time Password.png.import
+|   |   |       Operating System Monitoring.png
+|   |   |       Operating System Monitoring.png.import
+|   |   |       PerHostDownloadUploadRatioAnalysis.png
+|   |   |       PerHostDownloadUploadRatioAnalysis.png.import
+|   |   |       PointerAuthentication.png
+|   |   |       PointerAuthentication.png.import
+|   |   |       Process Code Segment Verification.png
+|   |   |       Process Code Segment Verification.png.import
+|   |   |       Process Segment Execution Prevention.png
+|   |   |       Process Segment Execution Prevention.png.import
+|   |   |       Process Self-Modification Detection.png
+|   |   |       Process Self-Modification Detection.png.import
+|   |   |       Process Spawn Analysis.png
+|   |   |       Process Spawn Analysis.png.import
+|   |   |       Process Suspension.png
+|   |   |       Process Suspension.png.import
+|   |   |       Process Termination.png
+|   |   |       Process Termination.png.import
+|   |   |       Protocol Metadata Anomoly Detection.png
+|   |   |       Protocol Metadata Anomoly Detection.png.import
+|   |   |       Reissue Credential.png
+|   |   |       Reissue Credential.png.import
+|   |   |       RelayPatternAnalysis.png
+|   |   |       RelayPatternAnalysis.png.import
+|   |   |       RemoteTerminalSessionDetection.png
+|   |   |       RemoteTerminalSessionDetection.png.import
+|   |   |       ResourceAccessPatternAnalysis.png
+|   |   |       ResourceAccessPatternAnalysis.png.import
+|   |   |       Restore Database.png
+|   |   |       Restore Database.png.import
+|   |   |       Restore Disk Image.png
+|   |   |       Restore Disk Image.png.import
+|   |   |       Restore File.png
+|   |   |       Restore File.png.import
+|   |   |       Restore Network Access.png
+|   |   |       Restore Network Access.png.import
+|   |   |       Restore Software.png
+|   |   |       Restore Software.png.import
+|   |   |       Restore User Account Access.png
+|   |   |       Restore User Account Access.png.import
+|   |   |       RestoreConfiguration.png
+|   |   |       RestoreConfiguration.png.import
+|   |   |       RF Shielding.png
+|   |   |       RF Shielding.png.import
+|   |   |       RPCTrafficAnalysis.png
+|   |   |       RPCTrafficAnalysis.png.import
+|   |   |       ScriptExecutionAnalysis.png
+|   |   |       ScriptExecutionAnalysis.png.import
+|   |   |       Sement Address Offset Randomization.png
+|   |   |       Sement Address Offset Randomization.png.import
+|   |   |       Sender MTA Reputation Analysis.png
+|   |   |       Sender MTA Reputation Analysis.png.import
+|   |   |       Sender Reputation Analysis.png
+|   |   |       Sender Reputation Analysis.png.import
+|   |   |       SessionDurationAnalysis.png
+|   |   |       SessionDurationAnalysis.png.import
+|   |   |       Shadow Stack Comparisons.png
+|   |   |       Shadow Stack Comparisons.png.import
+|   |   |       SoftwareUpdate.png
+|   |   |       SoftwareUpdate.png.import
+|   |   |       StackFrameCanaryValidation.png
+|   |   |       StackFrameCanaryValidation.png.import
+|   |   |       Standalone Honeynet.png
+|   |   |       Standalone Honeynet.png.import
+|   |   |       Strong Password Policy.png
+|   |   |       Strong Password Policy.png.import
+|   |   |       System Configuration Permissions.png
+|   |   |       System Configuration Permissions.png.import
+|   |   |       SystemCallAnalysis.png
+|   |   |       SystemCallAnalysis.png.import
+|   |   |       TPM Boot Integrity.png
+|   |   |       TPM Boot Integrity.png.import
+|   |   |       Transfer Agent Authentication.png
+|   |   |       Transfer Agent Authentication.png.import
+|   |   |       URL Analysis.png
+|   |   |       URL Analysis.png.import
+|   |   |       User Account Permissions.png
+|   |   |       User Account Permissions.png.import
+|   |   |       UserDataTransferAnalysis.png
+|   |   |       UserDataTransferAnalysis.png.import
+|   |   |       UserGeolocationLogonPatternAnalysis.png
+|   |   |       UserGeolocationLogonPatternAnalysis.png.import
+|   |   |       WebSessionActivityAnalysis.png
+|   |   |       WebSessionActivityAnalysis.png.import
+|   |   |       
+|   |   \---general
+|   |           1 Dollar.png
+|   |           1 Dollar.png.import
+|   |           1 Star.png
+|   |           1 Star.png.import
+|   |           10 Dollars.png
+|   |           10 Dollars.png.import
+|   |           2 Dollars.png
+|   |           2 Dollars.png.import
+|   |           2 Stars.png
+|   |           2 Stars.png.import
+|   |           3 Dollars.png
+|   |           3 Dollars.png.import
+|   |           3 Stars.png
+|   |           3 Stars.png.import
+|   |           4 Dollars.png
+|   |           4 Dollars.png.import
+|   |           4 Stars.png
+|   |           4 Stars.png.import
+|   |           5 Dollars.png
+|   |           5 Dollars.png.import
+|   |           5 Stars.png
+|   |           5 Stars.png.import
+|   |           6 Dollars.png
+|   |           6 Dollars.png.import
+|   |           7 Dollars.png
+|   |           7 Dollars.png.import
+|   |           8 Dollars.png
+|   |           8 Dollars.png.import
+|   |           9 Dollars.png
+|   |           9 Dollars.png.import
+|   |           AttackCardBack.png
+|   |           AttackCardBack.png.import
+|   |           bluecard-back.png
+|   |           bluecard-back.png.import
+|   |           bluecard-front.png
+|   |           bluecard-front.png.import
+|   |           card_background.png
+|   |           card_background.png.import
+|   |           Clock.png
+|   |           Clock.png.import
+|   |           DefendCardBack.png
+|   |           DefendCardBack.png.import
+|   |           redcard-back.png
+|   |           redcard-back.png.import
+|   |           standardcard-back.png
+|   |           standardcard-back.png.import
+|   |           
+|   +---Logo
+|   |       SEACAT Logo.png
+|   |       SEACAT Logo.png.import
+|   |       SEACAT_nobg.png
+|   |       SEACAT_nobg.png.import
+|   |       SEACAT_nobgF.png
+|   |       SEACAT_nobgF.png.import
+|   |       SEACAT_nobgFS.png
+|   |       SEACAT_nobgFS.png.import
+|   |       
+|   \---UI_images
+|       |   air.png
+|       |   air.png.import
+|       |   close_button.png
+|       |   close_button.png.import
+|       |   comuuv.png
+|       |   comuuv.png.import
+|       |   dod.png
+|       |   dod.png.import
+|       |   expand_button.png
+|       |   expand_button.png.import
+|       |   fast_forward_button.png
+|       |   fast_forward_button.png.import
+|       |   flip_button.png
+|       |   flip_button.png.import
+|       |   godotlogo.png
+|       |   godotlogo.png.import
+|       |   keyport.jpg
+|       |   keyport.jpg.import
+|       |   land.png
+|       |   land.png.import
+|       |   mitre.png
+|       |   mitre.png.import
+|       |   mitre2.jpeg
+|       |   mitre2.jpeg.import
+|       |   navy.png
+|       |   navy.png.import
+|       |   pause_button.png
+|       |   pause_button.png.import
+|       |   play_button.png
+|       |   play_button.png.import
+|       |   sea.png
+|       |   sea.png.import
+|       |   shrink_button.png
+|       |   shrink_button.png.import
+|       |   Startscreen.png
+|       |   Startscreen.png.import
+|       |   Startscreen1.png
+|       |   Startscreen1.png.import
+|       |   startscreen_bg.png
+|       |   startscreen_bg.png.import
+|       |   temp_background.png
+|       |   temp_background.png.import
+|       |   
+|       \---progress_bar
+|           +---air
+|           |       Air Background.png
+|           |       Air Background.png.import
+|           |       airplane.png
+|           |       airplane.png.import
+|           |       air_background.png.import
+|           |       Cloud Bar.png
+|           |       Cloud Bar.png.import
+|           |       hotair baloom.png
+|           |       hotair baloom.png.import
+|           |       Tanks.png
+|           |       Tanks.png.import
+|           |       
+|           +---checkpoint
+|           |       checkpoint_text.png
+|           |       checkpoint_text.png.import
+|           |       
+|           +---land
+|           |       Land Background.png
+|           |       Land Background.png.import
+|           |       Surface.png
+|           |       Surface.png.import
+|           |       Tanks-Moving.png
+|           |       Tanks-Moving.png.import
+|           |       Tanks-Stationary.png
+|           |       Tanks-Stationary.png.import
+|           |       Tanks.png.import
+|           |       trees.png
+|           |       trees.png.import
+|           |       
+|           \---underwater
+|                   Left Seaweed.png
+|                   Left Seaweed.png.import
+|                   Mid Seaweed.png
+|                   Mid Seaweed.png.import
+|                   Right Seaweed.png
+|                   Right Seaweed.png.import
+|                   Submarine.png
+|                   Submarine.png.import
+|                   submarine_frames.png
+|                   submarine_frames.png.import
+|                   Underwater Progress Bar.png
+|                   Underwater Progress Bar.png.import
+|                   water_background.png
+|                   water_background.png.import
+|                   
++---Krishna test
+|       .csv
+|       .csv.import
+|       .Description.translation
+|       .Name.translation
+|       
++---misc tmp files
+|       carB4A3.tmp
+|       gam478F.tmp
+|       optD5B7.tmp
+|       
++---pixel font
+|       kongtext.ttf
+|       kongtext.ttf.import
+|       license.txt
+|       mid_font_theme.tres
+|       pixil-frame-0.png
+|       pixil-frame-0.png.import
+|       small_font_theme.tres
+|       
++---test_logic
+|   |   diceroll.py
+|   |   
+|   \---dice_png
+\---White paper
+        WhitePaperFinal.pdf
+        
