@@ -651,7 +651,7 @@ value = 1.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_bpgj4")
+&"": SubResource("AnimationLibrary_bpgj4")
 }
 
 [node name="close_button" type="Button" parent="."]

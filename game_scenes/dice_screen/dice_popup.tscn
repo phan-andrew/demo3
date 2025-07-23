@@ -1,0 +1,121 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0hbansyrqpso"]
+
+[ext_resource type="Script" uid="uid://o07chch86ppx" path="res://game_scenes/dice_screen/dice_popup.gd" id="1_b010v"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_acm4x"]
+
+[node name="dice_popup" type="Control"]
+custom_minimum_size = Vector2(600, 450)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_b010v")
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(600, 450)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HeaderContainer" type="HBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TitleLabel" type="Label" parent="Panel/HeaderContainer"]
+layout_mode = 2
+text = "🎲 Dice Roll"
+
+[node name="Spacer" type="Control" parent="Panel/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AdminButton" type="Button" parent="Panel/HeaderContainer"]
+layout_mode = 2
+text = "Admin"
+
+[node name="CloseButton" type="Button" parent="Panel/HeaderContainer"]
+layout_mode = 2
+text = "x"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AttackInfo" type="RichTextLabel" parent="Panel/InfoContainer"]
+layout_mode = 2
+
+[node name="DefenseInfo" type="RichTextLabel" parent="Panel/InfoContainer"]
+layout_mode = 2
+
+[node name="DiceContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DiceSprite" type="AnimatedSprite2D" parent="Panel/DiceContainer"]
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_acm4x")
+
+[node name="DiceResult" type="Label" parent="Panel/DiceContainer"]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="Panel/DiceContainer"]
+layout_mode = 2
+
+[node name="RollButton" type="Button" parent="Panel/DiceContainer/ButtonContainer"]
+layout_mode = 2
+text = "Roll Dice (3 Remaining)"
+
+[node name="ManualToggle" type="Button" parent="Panel/DiceContainer/ButtonContainer"]
+layout_mode = 2
+text = "Manual Entry"
+
+[node name="ManualEntry" type="SpinBox" parent="Panel/DiceContainer"]
+visible = false
+layout_mode = 2
+min_value = 1.0
+max_value = 10.0
+value = 5.0
+
+[node name="ManualSubmit" type="Button" parent="Panel/DiceContainer"]
+visible = false
+layout_mode = 2
+text = "Submit"
+
+[node name="StrengthContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="StrengthInfo" type="Label" parent="Panel/StrengthContainer"]
+layout_mode = 2
+
+[node name="StrengthBar" type="ColorRect" parent="Panel/StrengthContainer"]
+custom_minimum_size = Vector2(400, 30)
+layout_mode = 2
+color = Color(1, 1, 1, 0)
+
+[node name="RedSection" type="ColorRect" parent="Panel/StrengthContainer/StrengthBar"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(1, 0, 0, 1)
+
+[node name="BlueSection" type="ColorRect" parent="Panel/StrengthContainer/StrengthBar"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 0
+offset_left = 200.0
+offset_right = 400.0
+offset_bottom = 40.0
+color = Color(0, 0, 1, 1)
+
+[node name="ResultIndicator" type="ColorRect" parent="Panel/StrengthContainer/StrengthBar"]
+custom_minimum_size = Vector2(400, 30)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(1, 1, 1, 0)

@@ -1,0 +1,673 @@
+extends Node2D
+
+var aCards
+var dCards
+var buttons
+var attackbuttons
+var defendbuttons
+var timers
+var aPics
+var numA = 0
+var numD = 0
+var save_path = OS.get_user_data_dir() + "/game_data.txt"
+var successornah
+var sucornah = false
+var likelihood = 0
+var riskanalysis = 0
+var currenttimer
+var playIcon = preload("res://images/UI_images/play_button.png")
+var pauseIcon = preload("res://images/UI_images/pause_button.png")
+var card_expanded=-1
+var finalattack = false
+var timeTaken = 0
+var attackstringstart = ": $"
+var attackstringmid = ", "
+var attackstringend = " minutes"
+var defendstringstart = ": "
+var defendstringend = " stars"
+var variables=[0,0,0]
+
+# NEW: Dice system integration variables
+var use_dice_system = true  # Set to false to use original manual system
+var dice_popup_scene = preload("res://game_scenes/dice_screen/dice_popup.tscn")
+var dice_popup_instance = null
+var dice_overlay_active = false
+var overlay_background = null
+
+func _ready():
+	# NEW: Add to group for dice popup communication
+	add_to_group("main_game")
+	
+	aCards = [$a_1, $a_2, $a_3]
+	dCards = [$d_1, $d_2, $d_3]
+	attackbuttons = [$dropdown/attack_option, $AttackSubmit]
+	defendbuttons = [$dropdown/defend_option, $DefenseSubmit]
+	timers = [$Timer_Label, $Timer_Label2]
+	$a_1.cardType = "a"
+	$a_1/card/card_back.frame = 4
+	$a_2.cardType = "a"
+	$a_2/card/card_back.frame = 4
+	$a_3.cardType = "a"
+	$a_3/card/card_back.frame = 4
+	$d_1.cardType = "d"
+	$d_1/card/card_back.frame = 3
+	$d_2.cardType = "d"
+	$d_2/card/card_back.frame = 3
+	$d_3.cardType = "d"
+	$d_3/card/card_back.frame = 3
+	currenttimer = 0
+	disable_attack_buttons(true)
+	disable_defend_buttons(true)
+	$Timer_Label/pause.disabled = true
+	$Window.visible = false
+	$EndGame.visible = false
+	var initialTime = $Timer_Label.initialTime
+	var minutes = int(initialTime) / 60
+	var seconds = int(initialTime) % 60
+	if seconds < 10:
+		$Timer_Label.text = str(minutes) + ":0" + str(seconds)
+	else:
+		$Timer_Label.text = str(minutes) + ":" + str(seconds)
+	initialTime = $Timer_Label2.initialTime
+	minutes = int(initialTime) / 60
+	seconds = int(initialTime) % 60
+	if seconds < 10:
+		$Timer_Label2.text = str(minutes) + ":0" + str(seconds)
+	else:
+		$Timer_Label2.text = str(minutes) + ":" + str(seconds)
+	Music.play_music()
+	var file = FileAccess.open(save_path,FileAccess.WRITE)
+	if file:
+		file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood","Risk Analysis","D1 APL", "D2 APL", "D3 APL"])
+		file.close()
+	
+	# NEW: Connect dice system
+	if GameData:
+		GameData.dice_roll_completed_signal.connect(_on_dice_roll_completed)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	for card in aCards:
+		if card.reset_dropdown:
+			$dropdown/attack_option.select(-1)
+			card.reset_dropdown = false
+			
+	for card in dCards:
+		if card.reset_dropdown:
+			$dropdown/defend_option.select(-1)
+			card.reset_dropdown = false
+	
+	if $dropdown.generateACard:
+		for card in aCards:
+			if $dropdown.generateACard:
+				if !card.inPlay:
+					card.setCard(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0]))
+					card.setText(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0]))
+					card.setTimeValue(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][2]))
+					card.setCost(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][1]))
+					card.play()
+					$dropdown.generateACard = false
+	if $a_1.expanded:
+		alock_expands(0)
+	if $a_2.expanded:
+		alock_expands(1)
+	if $a_3.expanded:
+		alock_expands(2)
+	else:
+		areset_expands()
+	if $dropdown.generateDCard:
+		for card in dCards:
+			if $dropdown.generateDCard:
+				if !card.inPlay:
+					card.setCard(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
+					card.setText(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
+					card.setMaturity(int(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][1]))
+					card.play()
+					$dropdown.generateDCard = false
+	if $d_1.expanded:
+		dlock_expands(0)
+	if $d_2.expanded:
+		dlock_expands(1)
+	if $d_3.expanded:
+		dlock_expands(2)
+	else:
+		dreset_expands()			
+					
+	if Input.is_action_just_pressed("exit"):
+		get_tree().quit()
+
+	
+	if $Timer_Label.play == true:
+		currenttimer = 0
+	elif $Timer_Label2.play == true:
+		currenttimer = 1
+	
+	if $Timer_Label.play == true || $Timer_Label2.play == true:
+		$Timer_Label/pause.icon = pauseIcon
+	else:
+		$Timer_Label/pause.icon = playIcon
+	
+	# End Game when out of time or out of rounds. 
+	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.current_round >= Mitre.timeline_dict.size():
+		_on_quit_button_pressed()
+		
+	if Settings.theme == 0:
+		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png")
+	if Settings.theme == 1:
+		$background.texture = load("res://images/UI_images/progress_bar/air/Air Background.png")
+	if Settings.theme == 2:
+		$background.texture = load("res://images/UI_images/progress_bar/land/Land Background.png")
+	$Window/Button.disabled = !sucornah
+	
+	# NEW: Allow ESC to close dice popup
+	if dice_overlay_active and Input.is_action_just_pressed("ui_cancel"):
+		_on_dice_popup_cancelled()
+	
+	# NEW: Debug key for toggling dice system
+	if OS.is_debug_build() and Input.is_action_just_pressed("ui_accept"):
+		if Input.is_key_pressed(KEY_F1):
+			toggle_dice_system()
+
+func disable_attack_buttons(state):
+	for button in attackbuttons:
+		button.disabled = state
+	for card in aCards:
+		if card.inPlay:
+			card.disable_buttons(state)
+	
+
+func disable_defend_buttons(state):
+	for button in defendbuttons:
+		button.disabled = state
+	for card in dCards:
+		card.disable_buttons(state)
+
+func _on_pause_pressed():
+	if currenttimer == 0:
+		$Timer_Label.play = !$Timer_Label.play
+		if !$Timer_Label.play:
+			disable_attack_buttons(true)
+			disable_defend_buttons(true)
+		else:
+			disable_attack_buttons(false)
+	elif currenttimer == 1:
+		$Timer_Label2.play = !$Timer_Label2.play
+		if !$Timer_Label2.play:
+			disable_attack_buttons(true)
+			disable_defend_buttons(true)
+		else:
+			disable_defend_buttons(false)
+
+func _on_start_game_pressed():
+	$Timer_Label.play = true
+	disable_attack_buttons(false)
+	for card in aCards:
+		card.disable_buttons(true)
+	$Timer_Label/pause.disabled = false
+	$CanvasLayer/StartGame.visible = false
+	$CanvasLayer/ColorRect.visible = false
+	$EndGame.visible = true
+
+func _on_end_game_pressed():
+	_on_pause_pressed()
+	$EndGame.disabled = true
+	$Timer_Label/pause.disabled = true
+	$Window2.visible=true
+	
+func _on_quit_button_pressed():
+	Music.mouse_click()
+	get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
+	hide()
+
+func _on_continue_button_pressed():
+	_on_pause_pressed()
+	$EndGame.disabled = false
+	$Timer_Label/pause.disabled = false
+	$Window2.visible=false
+
+func _on_attack_submit_pressed():
+	var attackpresent = false
+	for card in aCards:
+		if card.card_index != -1:
+			attackpresent = true
+		if card.expanded:	
+			card.make_small_again()
+	for card in dCards:
+		if card.expanded:
+			card.make_small_again()
+	if attackpresent:
+		$Timer_Label.play = false
+		$Timer_Label2.play = true
+		disable_attack_buttons(true)
+		disable_defend_buttons(false)
+		for card in dCards:
+				card.disable_buttons(true)
+		$DefenseSubmit.disabled = false
+
+# UPDATED: Defense submit with dice popup integration
+func _on_defense_submit_pressed():
+	var defensepresent = false
+	for card in dCards:
+		if card.card_index != -1:
+			defensepresent = true
+		if card.expanded:
+			card.make_small_again()
+	for card in aCards:
+		if card.expanded:	
+			card.make_small_again()
+	if defensepresent:
+		$Timer_Label2.play = false
+		disable_defend_buttons(true)
+		$Timer_Label/pause.disabled = true
+		
+		# NEW: Show dice popup instead of manual window if dice system enabled
+		if use_dice_system and has_active_attacks():
+			GameData.capture_current_cards(aCards, dCards)
+			show_dice_popup()
+		else:
+			# Original manual system fallback
+			$Window/OptionButton.select(-1)
+			$Window/SpinBox.value = 0
+			$Window.visible = true
+
+# NEW: Popup management functions
+func show_dice_popup():
+	"""Show dice rolling popup overlay"""
+	if dice_overlay_active:
+		return
+		
+	# Create semi-transparent background
+	overlay_background = ColorRect.new()
+	overlay_background.name = "dice_overlay_bg"
+	overlay_background.color = Color(0, 0, 0, 0.6)
+	overlay_background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay_background.z_index = 15
+	add_child(overlay_background)
+	
+	# Create popup instance
+	dice_popup_instance = dice_popup_scene.instantiate()
+	add_child(dice_popup_instance)
+	dice_popup_instance.z_index = 20
+	
+	# Center the popup
+	dice_popup_instance.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	
+	# Connect signals
+	dice_popup_instance.dice_completed.connect(_on_dice_popup_completed)
+	dice_popup_instance.dice_cancelled.connect(_on_dice_popup_cancelled)
+	
+	# Animate popup appearance
+	dice_popup_instance.modulate.a = 0.0
+	dice_popup_instance.scale = Vector2(0.8, 0.8)
+	
+	var appear_tween = create_tween()
+	appear_tween.parallel().tween_property(dice_popup_instance, "modulate:a", 1.0, 0.3)
+	appear_tween.parallel().tween_property(dice_popup_instance, "scale", Vector2(1.0, 1.0), 0.3)
+	
+	dice_overlay_active = true
+
+func _on_dice_popup_completed(result: int, success: bool):
+	"""Handle dice completion"""
+	# Record results in GameData
+	GameData.record_dice_result(result, success)
+	
+	# Apply to existing manual system variables
+	if success:
+		successornah = "Success"
+		$Window/OptionButton.select(0)
+	else:
+		successornah = "Failure"
+		$Window/OptionButton.select(1)
+	
+	likelihood = GameData.get_manual_likelihood()
+	$Window/SpinBox.value = likelihood
+	sucornah = true
+	
+	# Show brief feedback
+	show_dice_result_feedback()
+	
+	# Close popup
+	close_dice_popup()
+	
+	# Continue with existing game flow
+	_on_button_pressed()
+
+func _on_dice_popup_cancelled():
+	"""Handle dice cancellation"""
+	close_dice_popup()
+	
+	# Fallback to manual system
+	$Window/OptionButton.select(-1)
+	$Window/SpinBox.value = 0
+	$Window.visible = true
+	
+	# Re-enable buttons
+	disable_defend_buttons(false)
+	$Timer_Label/pause.disabled = false
+
+func close_dice_popup():
+	"""Close and cleanup dice popup"""
+	if dice_popup_instance:
+		# Animate popup disappearance
+		var disappear_tween = create_tween()
+		disappear_tween.parallel().tween_property(dice_popup_instance, "modulate:a", 0.0, 0.3)
+		disappear_tween.parallel().tween_property(dice_popup_instance, "scale", Vector2(0.8, 0.8), 0.3)
+		
+		await disappear_tween.finished
+		
+		dice_popup_instance.queue_free()
+		dice_popup_instance = null
+	
+	# Remove background overlay
+	if overlay_background:
+		overlay_background.queue_free()
+		overlay_background = null
+	
+	dice_overlay_active = false
+
+# NEW: Submarine control during dice popup
+func get_submarine_reference():
+	"""Get reference to existing submarine"""
+	return $timeline/sub
+
+func set_submarine_dice_mode(is_rolling: bool):
+	"""Update submarine animation during dice rolling"""
+	var submarine = get_submarine_reference()
+	if submarine and submarine.has_method("play"):
+		if is_rolling:
+			submarine.play("move")  # Excited during roll
+		else:
+			submarine.play("hover")  # Normal state
+
+# NEW: Check if dice system should be used
+func has_active_attacks() -> bool:
+	"""Check if any attack cards are in play"""
+	var active_count = 0
+	for card in aCards:
+		if card.inPlay and card.card_index != -1:
+			active_count += 1
+			
+	if active_count == 0:
+		print("No active attack cards found - falling back to manual system")
+		return false
+		
+	print("Found ", active_count, " active attack cards - using dice system")
+	return true
+
+# NEW: Show dice result feedback
+func show_dice_result_feedback():
+	"""Display brief feedback about dice results"""
+	var feedback_label = Label.new()
+	feedback_label.text = "Dice Result: " + str(GameData.last_dice_result) + " - " + ("SUCCESS" if GameData.last_attack_success else "FAILURE")
+	feedback_label.position = Vector2(500, 300)
+	feedback_label.theme = load("res://pixel font/mid_font_theme.tres")
+	
+	if GameData.last_attack_success:
+		feedback_label.modulate = Color.GREEN
+	else:
+		feedback_label.modulate = Color.RED
+		
+	add_child(feedback_label)
+	
+	# Fade out after 2 seconds
+	var feedback_tween = create_tween()
+	feedback_tween.tween_delay(2.0)
+	feedback_tween.tween_property(feedback_label, "modulate:a", 0.0, 1.0)
+	await feedback_tween.finished
+	feedback_label.queue_free()
+
+# NEW: Toggle dice system for testing
+func toggle_dice_system():
+	"""Toggle dice system on/off for testing purposes"""
+	use_dice_system = !use_dice_system
+	print("Dice system: ", "ENABLED" if use_dice_system else "DISABLED")
+	
+	# Show UI feedback
+	var toggle_label = Label.new()
+	toggle_label.text = "Dice System: " + ("ON" if use_dice_system else "OFF")
+	toggle_label.position = Vector2(10, 10)
+	toggle_label.theme = load("res://pixel font/small_font_theme.tres")
+	add_child(toggle_label)
+	
+	# Auto-remove after 3 seconds
+	var remove_timer = Timer.new()
+	remove_timer.wait_time = 3.0
+	remove_timer.one_shot = true
+	remove_timer.timeout.connect(func(): toggle_label.queue_free(); remove_timer.queue_free())
+	add_child(remove_timer)
+	remove_timer.start()
+
+# NEW: Enhanced dice roll completion handler
+func _on_dice_roll_completed():
+	"""Handle return from dice scene with enhanced state management"""
+	if GameData.dice_roll_completed:
+		# Apply dice results to manual system variables
+		if GameData.last_attack_success:
+			successornah = "Success"
+			$Window/OptionButton.select(0)
+		else:
+			successornah = "Failure" 
+			$Window/OptionButton.select(1)
+		
+		# Set likelihood from dice calculation
+		likelihood = GameData.get_manual_likelihood()
+		$Window/SpinBox.value = likelihood
+		sucornah = true
+		
+		# Add visual feedback for dice result
+		show_dice_result_feedback()
+		
+		# Continue with existing game flow
+		_on_button_pressed()
+
+func _on_option_button_item_selected(index):
+	if index==0:
+		successornah="Success"
+	else:
+		successornah="Failure"
+	sucornah = true
+
+func _on_spin_box_value_changed(value):
+	likelihood=value
+
+func _on_spin_box_2_value_changed(value):
+	riskanalysis=value
+func _on_var_1_value_changed(value):
+	value=value/100
+	variables[0]=[value]
+func _on_var_2_value_changed(value):
+	value=value/100
+	variables[1]=[value]
+func _on_var_3_value_changed(value):
+	value=value/100
+	variables[2]=[value]
+func _on_button_pressed():
+	if sucornah:
+		for card in aCards:
+			if card.inPlay:
+				timeTaken += card.getTimeValue()
+		
+		var row=[Time.get_time_string_from_system()]
+		for card in aCards:
+			if card.card_index != -1:
+				row += [card.getString()]
+				if card.expanded:
+					card.make_small_again()
+				card.reset_card()
+			else:
+				row+=["---"]
+		for card in dCards:
+			if card.card_index != -1:
+				row+=[card.getString()]
+				if card.expanded:
+					card.make_small_again()
+			else:
+				row+=["---"]
+		row += [successornah]
+		row += [likelihood]
+		row += ["---"]
+		var i=0
+		var ASP="sigma"
+		for card in dCards:
+			if card.card_index != -1:
+				ASP=1-(int(card.getMaturityValue())*0.2)*variables[i]
+				print(ASP)
+				row+=[ASP]
+				card.reset_card()
+			else:
+				row+=["---"]
+			i+=1
+		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+		file.seek_end()
+		file.store_csv_line(row)
+		file.close()
+		for card in aCards:
+			if int(Mitre.attack_dict[int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0])+1][5]) == 3:
+				finalattack = true
+		# Come back and check this if and else.
+		if finalattack:
+			load_previous_attacks(save_path)
+			$Window3.visible  = true
+			$Window.visible = false
+		else:
+			$Window.visible = false
+			disable_attack_buttons(false)
+			for card in aCards:
+				card.disable_buttons(true)
+			$Timer_Label/pause.disabled = false
+			$Timer_Label.play = true
+			$timeline._progress(timeTaken * 25)
+
+			$dropdown/attack_option.select(-1)
+			$dropdown/defend_option.select(-1)	
+			$timeline.increase_time()
+			timeTaken = 0
+		sucornah = false
+		finalattack = false
+		
+		# NEW: Reset GameData for next round
+		GameData.reset_round_data()
+
+func _on_final_continue_pressed():
+	var row=[Time.get_time_string_from_system()]
+	for i in range(8):
+		row += ["---"]
+	row += [riskanalysis]
+	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+	file.seek_end()
+	file.store_csv_line(row)
+	file.close()
+	$Window3.visible = false
+	disable_attack_buttons(false)
+	$Timer_Label/pause.disabled = false
+	$Timer_Label.play = true
+	$dropdown/attack_option.select(-1)
+	$dropdown/defend_option.select(-1)
+	$timeline._progress(timeTaken * 25)
+	$timeline.increase_time()
+	timeTaken = 0
+
+# Error with CSV formatting. 
+func load_previous_attacks(path):
+	var file = FileAccess.open(path, FileAccess.READ)
+	if file:
+		var content = file.get_as_text()
+		file.close()
+		#var formatted_text = format_csv(content)
+		#$Window3/TextEdit.text = formatted_text
+
+func format_csv(content):
+	var rows = content.split("\n")
+	var columns = []
+	
+	for row in rows:
+		var cells = row.split(",")
+		columns.append(cells)
+
+	var col_width = []
+	for i in range(columns[0].size()):
+		if i != 2 && i != 3 && i != 5 && i != 6:
+			var max_width = 0
+			for row in columns:
+				if i != 1 && i != 4:
+					if(row.size() > 1):
+						if row[i].length() > max_width:
+							max_width = row[i].length()
+				else:
+					if(row.size()>1):
+						for j in range(3):
+							if row[i+j].length() > max_width:
+								max_width = row[i+j].length()
+			col_width.append(max_width)
+		else:
+			col_width.append(0)
+	var formatted_text = ""
+	for row in columns:
+		if row.size() > 1:
+			for i in range(row.size()):
+				if i != 2 && i != 3 && i != 5 && i != 6:
+					var cell = row[i]
+					formatted_text += pad_string(cell, col_width[i] + 5)
+			if row[9] == "---":
+				formatted_text += "\n"
+				formatted_text += pad_string("", col_width[0] + 5)
+				formatted_text += pad_string(row[2], col_width[1] + 5)
+				formatted_text += pad_string(row[5], col_width[4] + 5)
+				formatted_text += pad_string("", col_width[7] + 5)
+				formatted_text += pad_string("", col_width[8] + 5)
+				formatted_text += pad_string("", col_width[9] + 5)
+				formatted_text += "\n"
+				formatted_text += pad_string("", col_width[0] + 5)
+				formatted_text += pad_string(row[3], col_width[1] + 5)
+				formatted_text += pad_string(row[6], col_width[4] + 5)
+				formatted_text += pad_string("", col_width[7] + 5)
+				formatted_text += pad_string("", col_width[8] + 5)
+				formatted_text += pad_string("", col_width[9] + 5)
+		formatted_text += "\n"
+		formatted_text += "\n"
+	
+	return formatted_text
+
+func pad_string(text: String, width: int):
+	var padded_text = text
+	while padded_text.length() < width:
+		padded_text += " "
+	return padded_text
+
+func alock_expands(expanded):
+	if expanded==0:
+		$a_2.disable_expand(true)
+		$a_3.disable_expand(true)
+	if expanded==1:
+		$a_1.disable_expand(true)
+		$a_3.disable_expand(true)
+	if expanded==2:
+		$a_1.disable_expand(true)
+		$a_2.disable_expand(true)
+func areset_expands():
+	for card in aCards:
+		if card.inPlay:
+			card.disable_expand(false)
+			card.disable_flip(false)
+		
+func dlock_expands(expanded):
+	if expanded==0:
+		$d_2.disable_expand(true)
+		$d_3.disable_expand(true)
+	if expanded==1:
+		$d_1.disable_expand(true)
+		$d_3.disable_expand(true)
+	if expanded==2:
+		$d_1.disable_expand(true)
+		$d_2.disable_expand(true)
+func dreset_expands():
+	for card in dCards:
+		if card.inPlay:
+			card.disable_expand(false)
+			card.disable_flip(false)
+
+func _on_help_pressed():
+	$Window5.visible = true
+
+func _on_window_close_requested():
+	$Window5.visible = false
