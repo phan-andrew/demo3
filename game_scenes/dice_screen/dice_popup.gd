@@ -16,11 +16,11 @@ var roll_duration: float = 2.0
 var cup_lift_delay: float = 1.5
 var result_display_delay: float = 0.5
 
-# UI References - these nodes exist in the dice popup scene
+# UI References - Updated to match actual scene structure
 @onready var dice_sprite: AnimatedSprite2D = $Panel/DiceContainer/DiceSprite
 @onready var dice_number_label: Label = $Panel/DiceContainer/DiceSprite/NumberLabel
 @onready var cup_sprite: Sprite2D = $Panel/DiceContainer/CupSprite
-@onready var background_sprite: Sprite2D = $Panel/BackgroundSprite
+@onready var background_sprite: TextureRect = $UnderwaterDiceScene2  # Updated reference
 @onready var dice_result_label: Label = $Panel/DiceContainer/DiceResult
 @onready var roll_button: Button = $Panel/DiceContainer/ButtonContainer/RollButton
 @onready var manual_toggle: Button = $Panel/DiceContainer/ButtonContainer/ManualToggle
@@ -37,10 +37,6 @@ var result_display_delay: float = 0.5
 @onready var blue_section: ColorRect = $Panel/StrengthContainer/StrengthBar/BlueSection
 @onready var result_indicator: ColorRect = $Panel/StrengthContainer/StrengthBar/ResultIndicator
 
-# Hover tooltip
-@onready var hover_tooltip: Panel = $Panel/DiceContainer/HoverTooltip
-@onready var tooltip_label: Label = $Panel/DiceContainer/HoverTooltip/TooltipLabel
-
 # Animation effects
 var roll_tween: Tween
 var shake_intensity: float = 5.0
@@ -54,7 +50,6 @@ func _ready():
 	setup_strength_display()
 	display_current_situation()
 	connect_signals()
-	setup_hover_system()
 
 func setup_ui():
 	"""Initialize UI components and layout"""
@@ -63,12 +58,6 @@ func setup_ui():
 	panel.custom_minimum_size = Vector2(700, 500)
 	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	
-	# Layout containers
-	setup_header_container()
-	setup_info_container()
-	setup_dice_container()
-	setup_strength_container()
-	
 	# Initial button states
 	if manual_entry:
 		manual_entry.visible = false
@@ -76,65 +65,20 @@ func setup_ui():
 		manual_submit.visible = false
 	update_roll_button_text()
 
-func setup_header_container():
-	"""Setup the header with title and buttons"""
-	var header = get_node_or_null("Panel/HeaderContainer")
-	if header:
-		header.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-		header.add_theme_constant_override("separation", 10)
-	
-	var title_label = get_node_or_null("Panel/HeaderContainer/TitleLabel")
-	if title_label:
-		title_label.text = "🎲 Attack Resolution Dice Roll"
-	
-	# Admin button for manual override
-	if admin_button:
-		admin_button.text = "Admin Override"
-		admin_button.visible = OS.is_debug_build()  # Only show in debug builds
-
-func setup_info_container():
-	"""Setup attack and defense information display"""
-	var info_container = get_node_or_null("Panel/InfoContainer")
-	if info_container:
-		info_container.position = Vector2(20, 60)
-		info_container.size = Vector2(660, 120)
-
-func setup_dice_container():
-	"""Setup dice rolling area"""
-	var dice_container = get_node_or_null("Panel/DiceContainer")
-	if dice_container:
-		dice_container.position = Vector2(20, 190)
-		dice_container.size = Vector2(660, 200)
-		dice_container.add_theme_constant_override("separation", 10)
-
-func setup_strength_container():
-	"""Setup team strength visualization"""
-	var strength_container = get_node_or_null("Panel/StrengthContainer")
-	if strength_container:
-		strength_container.position = Vector2(20, 400)
-		strength_container.size = Vector2(660, 80)
-
-func setup_hover_system():
-	"""Setup the hover tooltip for dice"""
-	if hover_tooltip:
-		hover_tooltip.visible = false
-		hover_tooltip.z_index = 10
-	
-	# Connect mouse events for dice area
-	var dice_area = get_node_or_null("Panel/DiceContainer/DiceArea")
-	if dice_area:
-		dice_area.mouse_entered.connect(_on_dice_area_mouse_entered)
-		dice_area.mouse_exited.connect(_on_dice_area_mouse_exited)
-		dice_area.gui_input.connect(_on_dice_area_input)
-
 func load_dice_assets():
-	"""Load dice and cup sprite assets from your structure"""
+	"""Load dice and cup sprite assets"""
 	
-	# Load the single dice image
+	# Load the single dice image - check if it exists first
 	var dice_path = "res://game_scenes/dice_screen/Dice.png"
 	if ResourceLoader.exists(dice_path) and dice_sprite:
-		dice_sprite.texture = load(dice_path)
+		var dice_texture = load(dice_path)
+		# Since it's an AnimatedSprite2D, we need to create SpriteFrames
+		if not dice_sprite.sprite_frames:
+			dice_sprite.sprite_frames = SpriteFrames.new()
+			dice_sprite.sprite_frames.add_animation("default")
+			dice_sprite.sprite_frames.add_frame("default", dice_texture)
 		dice_sprite.scale = Vector2(4, 4)  # Scale up for visibility
+		dice_sprite.play("default")
 	else:
 		print("Warning: Dice.png not found at ", dice_path, " or dice_sprite is null")
 	
@@ -166,18 +110,18 @@ func load_themed_background():
 	var bg_path = ""
 	match theme_index:
 		0:  # Underwater
-			bg_path = "res://game_scenes/dice_screen/Underwater/Underwater/UnderwaterDiceScene.png"
+			bg_path = "res://game_scenes/dice_screen/UnderwaterDiceScene.png"
 		1:  # Air
-			bg_path = "res://game_scenes/dice_screen/Air/air/AirDiceScene.png"
+			bg_path = "res://game_scenes/dice_screen/AirDiceScene.png"
 		2:  # Surface/Land
-			bg_path = "res://game_scenes/dice_screen/Surface/Surface/SurfaceDiceScene.png"
+			bg_path = "res://game_scenes/dice_screen/SurfaceDiceScene.png"
 	
 	# Try to load the themed background
 	if ResourceLoader.exists(bg_path) and background_sprite:
 		background_sprite.texture = load(bg_path)
 		print("Loaded themed background: ", bg_path)
 	else:
-		print("Themed background not found: ", bg_path, " or background_sprite is null")
+		print("Themed background not found: ", bg_path, " - using default")
 
 func setup_strength_display():
 	"""Setup the team strength visualization bar"""
@@ -312,16 +256,17 @@ func perform_dice_roll():
 		roll_tween.set_loops()
 		
 		# Shake the dice under the cup
+		var original_pos = dice_sprite.position
 		for i in range(int(roll_duration * 10)):  # 10 shakes per second
 			var shake_x = randf_range(-shake_intensity, shake_intensity)
 			var shake_y = randf_range(-shake_intensity, shake_intensity)
-			roll_tween.tween_property(dice_sprite, "position", dice_sprite.position + Vector2(shake_x, shake_y), 0.1)
+			roll_tween.tween_property(dice_sprite, "position", original_pos + Vector2(shake_x, shake_y), 0.1)
 			await get_tree().create_timer(0.1).timeout
 		
 		# Stop shaking and return to center
 		if roll_tween:
 			roll_tween.kill()
-		dice_sprite.position = Vector2(330, 75)  # Reset to center
+		dice_sprite.position = original_pos  # Reset to original position
 	
 	# Step 3: Determine result
 	current_roll_result = randi_range(1, 10)
@@ -354,34 +299,6 @@ func perform_dice_roll():
 		var result_position = (current_roll_result / 10.0) * 400
 		result_indicator.position.x = result_position - 2
 		result_indicator.color = result_color
-
-# Hover system for dice
-func _on_dice_area_mouse_entered():
-	"""Show tooltip when hovering over dice area"""
-	if current_roll_result > 0 and dice_number_label and dice_number_label.visible:
-		show_hover_tooltip()
-
-func _on_dice_area_mouse_exited():
-	"""Hide tooltip when leaving dice area"""
-	hide_hover_tooltip()
-
-func _on_dice_area_input(event):
-	"""Handle mouse movement for tooltip positioning"""
-	if event is InputEventMouseMotion and hover_tooltip and hover_tooltip.visible:
-		# Position tooltip near mouse cursor
-		var mouse_pos = event.position
-		hover_tooltip.position = mouse_pos + Vector2(10, -30)
-
-func show_hover_tooltip():
-	"""Show the hover tooltip with dice result"""
-	if current_roll_result > 0 and hover_tooltip and tooltip_label:
-		tooltip_label.text = "Dice Result: " + str(current_roll_result)
-		hover_tooltip.visible = true
-
-func hide_hover_tooltip():
-	"""Hide the hover tooltip"""
-	if hover_tooltip:
-		hover_tooltip.visible = false
 
 func complete_dice_roll():
 	"""Complete the dice rolling process"""
