@@ -1,18 +1,94 @@
-[gd_scene load_steps=3 format=3 uid="uid://b0hbansyrqpso"]
+[gd_scene load_steps=8 format=3 uid="uid://b0hbansyrqpso"]
 
 [ext_resource type="Script" uid="uid://o07chch86ppx" path="res://game_scenes/dice_screen/dice_popup.gd" id="1_b010v"]
+[ext_resource type="Texture2D" uid="uid://lgl6156cilrx" path="res://game_scenes/dice_screen/UnderwaterDiceScene.png" id="2_acm4x"]
+[ext_resource type="Texture2D" uid="uid://xjyxv5rhk75d" path="res://game_scenes/dice_screen/Cup.png" id="3_1t5kw"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_acm4x"]
+
+[sub_resource type="Animation" id="Animation_tjbuc"]
+resource_name = "cuo_reveal"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CupSprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-328, 440), Vector2(-318, 440), Vector2(-338, 440), Vector2(-318, 440), Vector2(-328, 440), Vector2(-328, 435), Vector2(-328, 420), Vector2(-328, 405), Vector2(-318, 350), Vector2(-308, 310), Vector2(-270, 220)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CupSprite:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0872665, 0.174533]
+}
+
+[sub_resource type="Animation" id="Animation_0rb3b"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CupSprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-328, 440)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CupSprite:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dq7c0"]
+_data = {
+&"RESET": SubResource("Animation_0rb3b"),
+&"cuo_reveal": SubResource("Animation_tjbuc")
+}
 
 [node name="dice_popup" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_b010v")
 
+[node name="UnderwaterDiceScene2" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 115.0
+offset_bottom = 65.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(10.0174, 9.96923)
+texture = ExtResource("2_acm4x")
+
 [node name="Panel" type="Panel" parent="."]
-custom_minimum_size = Vector2(600, 450)
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+offset_left = 904.0
+offset_top = 16.0
+offset_right = 1104.0
+offset_bottom = 184.0
 
 [node name="HeaderContainer" type="HBoxContainer" parent="Panel"]
 layout_mode = 0
@@ -86,6 +162,14 @@ layout_mode = 2
 text = "Submit"
 
 [node name="CupSprite" type="Sprite2D" parent="Panel/DiceContainer"]
+position = Vector2(-328, 440)
+scale = Vector2(8, 8)
+texture = ExtResource("3_1t5kw")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Panel/DiceContainer"]
+libraries = {
+&"": SubResource("AnimationLibrary_dq7c0")
+}
 
 [node name="StrengthContainer" type="VBoxContainer" parent="Panel"]
 layout_mode = 0
