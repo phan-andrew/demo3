@@ -19,7 +19,6 @@ var time_value = 0
 var cost_value = 1
 var maturity_level = 1
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$card.z_index = -1
@@ -29,8 +28,6 @@ func _ready():
 	disable_buttons(true)
 	$card/sliders.hide()
 	$card/Clock.hide()
-
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -52,15 +49,13 @@ func _process(_delta):
 			$card/Clock.play("nothing")
 			$card/Maturity.texture = load(maturity[$card/sliders/maturity_slider.value-1])
 			maturity_level = $card/sliders/maturity_slider.value
-			
-			
 	
 func setCard(index):
 	if cardType == "a":
-		$card.texture = load(Mitre.attack_dict[index+1][4])
+		$card.texture = load(Mitre.attack_dict[index+1][4])  # Attack: index 4 = image path
 		$card/sliders/maturity_slider.hide()
 	if cardType == "d":
-		$card.texture = load(Mitre.defend_dict[int(index)+1][4])
+		$card.texture = load(Mitre.defend_dict[int(index)+1][5])  # Defense: index 5 = image path
 		$card/sliders/cost_slider.hide()
 		$card/sliders/time_slider.hide()
 		$card/Clock.hide()
@@ -69,7 +64,10 @@ func setCard(index):
 func play():
 	$AnimationPlayer.play("start_flip")
 	inPlay = true
-	Music.flip_card()
+	if has_node("/root/Music"):
+		var music = get_node("/root/Music")
+		if music.has_method("flip_card"):
+			music.flip_card()
 	disable_buttons(false)
 
 func _on_expand_button_pressed():
@@ -128,8 +126,10 @@ func reset_card():
 	$AnimationPlayer.play("end_flip")
 	time_value = 0
 	card_index = -1
-	Music.flip_card()
-
+	if has_node("/root/Music"):
+		var music = get_node("/root/Music")
+		if music.has_method("flip_card"):
+			music.flip_card()
 
 func disable_buttons(state):
 	$close_button.disabled = state
@@ -147,10 +147,12 @@ func disable_flip(state):
 	
 func setText(index):
 	if cardType=="a":
+		# Attack cards: index 3 = Description
 		$card/definition.text=(Mitre.attack_dict[index+1][3])
 		$card/definition.hide()
 	if cardType=="d":
-		$card/definition.text=(Mitre.defend_dict[int(index)+1][3])
+		# Defense cards: index 4 = Description (index 3 = Name)
+		$card/definition.text=(Mitre.defend_dict[int(index)+1][4])
 		$card/definition.hide()
 
 func setCost(Cost):
@@ -160,9 +162,7 @@ func setCost(Cost):
 func setMaturity(Maturity):
 	if cardType=="d":
 		$card/sliders/maturity_slider.value = Maturity
-		
 
-		
 func setTimeValue(value):
 	if cardType == "a":
 		$card/sliders/time_slider.value = value
@@ -178,25 +178,30 @@ func getMaturityValue():
 
 func getString():
 	if cardType == "a":
+		# Attack cards: index 2 = Name
 		var printable = Mitre.attack_dict[card_index+1][2] + ": $" + str(cost_value) + " " + str(time_value) + " minutes"
 		return printable
 	if cardType == "d":
-		var printable = Mitre.defend_dict[card_index+1][2] + ": " + str(maturity_level) + " stars"
+		# Defense cards: index 3 = Name (NOT index 2!)
+		var printable = Mitre.defend_dict[card_index+1][3] + ": " + str(maturity_level) + " stars"
 		return printable
-
 
 func _on_flip_button_pressed():
 	if flipped:
 		$AnimationPlayer.play_backwards("card_flip")
 		flipped = false
-		Music.flip_card()
+		if has_node("/root/Music"):
+			var music = get_node("/root/Music")
+			if music.has_method("flip_card"):
+				music.flip_card()
 	else :
 		if cardType == "a":
 			$card/card_back.frame = 1
 		if cardType == "d":
 			$card/card_back.frame = 2
 		$AnimationPlayer.play("card_flip")
-		#while $AnimationPlayer.current_animation_position < 0.2:
 		flipped = true
-		Music.flip_card()
-	
+		if has_node("/root/Music"):
+			var music = get_node("/root/Music")
+			if music.has_method("flip_card"):
+				music.flip_card()

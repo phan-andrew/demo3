@@ -1,0 +1,47 @@
+ Volume in drive C has no label.
+ Volume Serial Number is B846-D22E
+
+ Directory of C:\Users\Admin\SEACAT
+
+07/23/2025  09:53 PM    <DIR>          .
+07/23/2025  09:53 PM    <DIR>          ..
+06/06/2025  08:44 AM                80 .gitattributes
+06/06/2025  09:02 AM                64 .gitignore
+07/23/2025  09:49 PM    <DIR>          .godot
+06/27/2025  03:53 PM    <DIR>          addons
+07/23/2025  03:10 PM    <DIR>          audio
+07/23/2025  09:34 PM    <DIR>          card_scenes
+07/23/2025  03:10 PM    <DIR>          data
+07/23/2025  03:10 PM    <DIR>          default
+06/06/2025  08:31 AM               370 default_bus_layout.tres
+06/06/2025  08:31 AM             1,027 dropdown.gd
+06/06/2025  08:31 AM                19 dropdown.gd.uid
+06/06/2025  08:31 AM             2,272 export_presets.cfg
+06/06/2025  08:31 AM                 1 Game Manual
+06/06/2025  08:31 AM    <DIR>          Game Manuel
+07/23/2025  03:58 PM             9,673 GameData.gd
+07/23/2025  03:10 PM                20 GameData.gd.uid
+07/23/2025  03:10 PM    <DIR>          game_scenes
+07/16/2025  12:35 PM    <DIR>          good_screen
+07/16/2025  12:41 PM    <DIR>          good_screen_backup
+06/06/2025  08:31 AM               949 icon.svg
+07/17/2025  01:42 PM               842 icon.svg.import
+07/23/2025  12:41 PM    <DIR>          images
+07/23/2025  03:10 PM    <DIR>          Krishna test
+06/06/2025  08:31 AM    <DIR>          misc tmp files
+07/23/2025  03:10 PM             4,027 Mitre.gd
+06/06/2025  08:31 AM                20 Mitre.gd.uid
+07/23/2025  03:10 PM                66 node_2d.gd
+06/06/2025  08:31 AM                19 node_2d.gd.uid
+07/17/2025  01:42 PM    <DIR>          pixel font
+07/23/2025  03:14 PM             2,114 project.godot
+07/23/2025  03:10 PM                 9 README.md
+06/06/2025  08:31 AM        18,805,308 SEACAT Graphics.mp4
+07/23/2025  03:10 PM               240 settings.gd
+06/06/2025  08:31 AM                19 settings.gd.uid
+06/06/2025  08:31 AM               238 Textbox.gd
+06/06/2025  08:31 AM                20 Textbox.gd.uid
+07/23/2025  09:53 PM                 0 tree.txt
+06/06/2025  08:31 AM    <DIR>          White paper
+              23 File(s)     18,827,397 bytes
+              17 Dir(s)  184,213,098,496 bytes free

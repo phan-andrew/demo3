@@ -5,16 +5,12 @@
 [sub_resource type="SpriteFrames" id="SpriteFrames_acm4x"]
 
 [node name="dice_popup" type="Control"]
-custom_minimum_size = Vector2(600, 450)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 script = ExtResource("1_b010v")
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(600, 450)
-layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
@@ -59,6 +55,10 @@ offset_bottom = 40.0
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_acm4x")
 
+[node name="NumberLabel" type="Label" parent="Panel/DiceContainer/DiceSprite"]
+offset_right = 40.0
+offset_bottom = 23.0
+
 [node name="DiceResult" type="Label" parent="Panel/DiceContainer"]
 layout_mode = 2
 
@@ -84,6 +84,8 @@ value = 5.0
 visible = false
 layout_mode = 2
 text = "Submit"
+
+[node name="CupSprite" type="Sprite2D" parent="Panel/DiceContainer"]
 
 [node name="StrengthContainer" type="VBoxContainer" parent="Panel"]
 layout_mode = 0

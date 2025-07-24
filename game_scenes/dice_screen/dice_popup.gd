@@ -1,673 +1,463 @@
-extends Node2D
+extends Control
 
-var aCards
-var dCards
-var buttons
-var attackbuttons
-var defendbuttons
-var timers
-var aPics
-var numA = 0
-var numD = 0
-var save_path = OS.get_user_data_dir() + "/game_data.txt"
-var successornah
-var sucornah = false
-var likelihood = 0
-var riskanalysis = 0
-var currenttimer
-var playIcon = preload("res://images/UI_images/play_button.png")
-var pauseIcon = preload("res://images/UI_images/pause_button.png")
-var card_expanded=-1
-var finalattack = false
-var timeTaken = 0
-var attackstringstart = ": $"
-var attackstringmid = ", "
-var attackstringend = " minutes"
-var defendstringstart = ": "
-var defendstringend = " stars"
-var variables=[0,0,0]
+# Signals for communication with main game
+signal dice_completed(result: int, success: bool)
+signal dice_cancelled
 
-# NEW: Dice system integration variables
-var use_dice_system = true  # Set to false to use original manual system
-var dice_popup_scene = preload("res://game_scenes/dice_screen/dice_popup.tscn")
-var dice_popup_instance = null
-var dice_overlay_active = false
-var overlay_background = null
+# Dice system variables
+var current_roll_result: int = 0
+var success_threshold: int = 5
+var rolls_remaining: int = 3
+var is_rolling: bool = false
+var is_manual_mode: bool = false
+
+# Animation and timing
+var roll_duration: float = 2.0
+var cup_lift_delay: float = 1.5
+var result_display_delay: float = 0.5
+
+# UI References - these nodes exist in the dice popup scene
+@onready var dice_sprite: AnimatedSprite2D = $Panel/DiceContainer/DiceSprite
+@onready var dice_number_label: Label = $Panel/DiceContainer/DiceSprite/NumberLabel
+@onready var cup_sprite: Sprite2D = $Panel/DiceContainer/CupSprite
+@onready var background_sprite: Sprite2D = $Panel/BackgroundSprite
+@onready var dice_result_label: Label = $Panel/DiceContainer/DiceResult
+@onready var roll_button: Button = $Panel/DiceContainer/ButtonContainer/RollButton
+@onready var manual_toggle: Button = $Panel/DiceContainer/ButtonContainer/ManualToggle
+@onready var manual_entry: SpinBox = $Panel/DiceContainer/ManualEntry
+@onready var manual_submit: Button = $Panel/DiceContainer/ManualSubmit
+@onready var close_button: Button = $Panel/HeaderContainer/CloseButton
+@onready var admin_button: Button = $Panel/HeaderContainer/AdminButton
+
+# Info display
+@onready var attack_info: RichTextLabel = $Panel/InfoContainer/AttackInfo
+@onready var defense_info: RichTextLabel = $Panel/InfoContainer/DefenseInfo
+@onready var strength_info: Label = $Panel/StrengthContainer/StrengthInfo
+@onready var red_section: ColorRect = $Panel/StrengthContainer/StrengthBar/RedSection
+@onready var blue_section: ColorRect = $Panel/StrengthContainer/StrengthBar/BlueSection
+@onready var result_indicator: ColorRect = $Panel/StrengthContainer/StrengthBar/ResultIndicator
+
+# Hover tooltip
+@onready var hover_tooltip: Panel = $Panel/DiceContainer/HoverTooltip
+@onready var tooltip_label: Label = $Panel/DiceContainer/HoverTooltip/TooltipLabel
+
+# Animation effects
+var roll_tween: Tween
+var shake_intensity: float = 5.0
 
 func _ready():
-	# NEW: Add to group for dice popup communication
-	add_to_group("main_game")
+	# Wait a frame for all nodes to be ready
+	await get_tree().process_frame
 	
-	aCards = [$a_1, $a_2, $a_3]
-	dCards = [$d_1, $d_2, $d_3]
-	attackbuttons = [$dropdown/attack_option, $AttackSubmit]
-	defendbuttons = [$dropdown/defend_option, $DefenseSubmit]
-	timers = [$Timer_Label, $Timer_Label2]
-	$a_1.cardType = "a"
-	$a_1/card/card_back.frame = 4
-	$a_2.cardType = "a"
-	$a_2/card/card_back.frame = 4
-	$a_3.cardType = "a"
-	$a_3/card/card_back.frame = 4
-	$d_1.cardType = "d"
-	$d_1/card/card_back.frame = 3
-	$d_2.cardType = "d"
-	$d_2/card/card_back.frame = 3
-	$d_3.cardType = "d"
-	$d_3/card/card_back.frame = 3
-	currenttimer = 0
-	disable_attack_buttons(true)
-	disable_defend_buttons(true)
-	$Timer_Label/pause.disabled = true
-	$Window.visible = false
-	$EndGame.visible = false
-	var initialTime = $Timer_Label.initialTime
-	var minutes = int(initialTime) / 60
-	var seconds = int(initialTime) % 60
-	if seconds < 10:
-		$Timer_Label.text = str(minutes) + ":0" + str(seconds)
+	setup_ui()
+	load_dice_assets()
+	setup_strength_display()
+	display_current_situation()
+	connect_signals()
+	setup_hover_system()
+
+func setup_ui():
+	"""Initialize UI components and layout"""
+	# Set up the main panel
+	var panel = $Panel
+	panel.custom_minimum_size = Vector2(700, 500)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	
+	# Layout containers
+	setup_header_container()
+	setup_info_container()
+	setup_dice_container()
+	setup_strength_container()
+	
+	# Initial button states
+	if manual_entry:
+		manual_entry.visible = false
+	if manual_submit:
+		manual_submit.visible = false
+	update_roll_button_text()
+
+func setup_header_container():
+	"""Setup the header with title and buttons"""
+	var header = get_node_or_null("Panel/HeaderContainer")
+	if header:
+		header.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+		header.add_theme_constant_override("separation", 10)
+	
+	var title_label = get_node_or_null("Panel/HeaderContainer/TitleLabel")
+	if title_label:
+		title_label.text = "🎲 Attack Resolution Dice Roll"
+	
+	# Admin button for manual override
+	if admin_button:
+		admin_button.text = "Admin Override"
+		admin_button.visible = OS.is_debug_build()  # Only show in debug builds
+
+func setup_info_container():
+	"""Setup attack and defense information display"""
+	var info_container = get_node_or_null("Panel/InfoContainer")
+	if info_container:
+		info_container.position = Vector2(20, 60)
+		info_container.size = Vector2(660, 120)
+
+func setup_dice_container():
+	"""Setup dice rolling area"""
+	var dice_container = get_node_or_null("Panel/DiceContainer")
+	if dice_container:
+		dice_container.position = Vector2(20, 190)
+		dice_container.size = Vector2(660, 200)
+		dice_container.add_theme_constant_override("separation", 10)
+
+func setup_strength_container():
+	"""Setup team strength visualization"""
+	var strength_container = get_node_or_null("Panel/StrengthContainer")
+	if strength_container:
+		strength_container.position = Vector2(20, 400)
+		strength_container.size = Vector2(660, 80)
+
+func setup_hover_system():
+	"""Setup the hover tooltip for dice"""
+	if hover_tooltip:
+		hover_tooltip.visible = false
+		hover_tooltip.z_index = 10
+	
+	# Connect mouse events for dice area
+	var dice_area = get_node_or_null("Panel/DiceContainer/DiceArea")
+	if dice_area:
+		dice_area.mouse_entered.connect(_on_dice_area_mouse_entered)
+		dice_area.mouse_exited.connect(_on_dice_area_mouse_exited)
+		dice_area.gui_input.connect(_on_dice_area_input)
+
+func load_dice_assets():
+	"""Load dice and cup sprite assets from your structure"""
+	
+	# Load the single dice image
+	var dice_path = "res://game_scenes/dice_screen/Dice.png"
+	if ResourceLoader.exists(dice_path) and dice_sprite:
+		dice_sprite.texture = load(dice_path)
+		dice_sprite.scale = Vector2(4, 4)  # Scale up for visibility
 	else:
-		$Timer_Label.text = str(minutes) + ":" + str(seconds)
-	initialTime = $Timer_Label2.initialTime
-	minutes = int(initialTime) / 60
-	seconds = int(initialTime) % 60
-	if seconds < 10:
-		$Timer_Label2.text = str(minutes) + ":0" + str(seconds)
+		print("Warning: Dice.png not found at ", dice_path, " or dice_sprite is null")
+	
+	# Load the cup image
+	var cup_path = "res://game_scenes/dice_screen/Cup.png"
+	if ResourceLoader.exists(cup_path) and cup_sprite:
+		cup_sprite.texture = load(cup_path)
+		cup_sprite.scale = Vector2(4, 4)  # Scale up for visibility
+		cup_sprite.z_index = 1  # Above dice
 	else:
-		$Timer_Label2.text = str(minutes) + ":" + str(seconds)
-	Music.play_music()
-	var file = FileAccess.open(save_path,FileAccess.WRITE)
-	if file:
-		file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood","Risk Analysis","D1 APL", "D2 APL", "D3 APL"])
-		file.close()
+		print("Warning: Cup.png not found at ", cup_path, " or cup_sprite is null")
 	
-	# NEW: Connect dice system
-	if GameData:
-		GameData.dice_roll_completed_signal.connect(_on_dice_roll_completed)
+	# Load themed background based on current settings
+	load_themed_background()
+	
+	# Initially hide the number label
+	if dice_number_label:
+		dice_number_label.visible = false
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	for card in aCards:
-		if card.reset_dropdown:
-			$dropdown/attack_option.select(-1)
-			card.reset_dropdown = false
-			
-	for card in dCards:
-		if card.reset_dropdown:
-			$dropdown/defend_option.select(-1)
-			card.reset_dropdown = false
+func load_themed_background():
+	"""Load the appropriate background based on current theme"""
+	var theme_index = 0  # Default to underwater
 	
-	if $dropdown.generateACard:
-		for card in aCards:
-			if $dropdown.generateACard:
-				if !card.inPlay:
-					card.setCard(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0]))
-					card.setText(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0]))
-					card.setTimeValue(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][2]))
-					card.setCost(int(Mitre.opforprof_dict[$dropdown.attack_choice+2][1]))
-					card.play()
-					$dropdown.generateACard = false
-	if $a_1.expanded:
-		alock_expands(0)
-	if $a_2.expanded:
-		alock_expands(1)
-	if $a_3.expanded:
-		alock_expands(2)
+	# Get current theme from Settings
+	if has_node("/root/Settings"):
+		var settings = get_node("/root/Settings")
+		theme_index = settings.theme
+	
+	var bg_path = ""
+	match theme_index:
+		0:  # Underwater
+			bg_path = "res://game_scenes/dice_screen/Underwater/Underwater/UnderwaterDiceScene.png"
+		1:  # Air
+			bg_path = "res://game_scenes/dice_screen/Air/air/AirDiceScene.png"
+		2:  # Surface/Land
+			bg_path = "res://game_scenes/dice_screen/Surface/Surface/SurfaceDiceScene.png"
+	
+	# Try to load the themed background
+	if ResourceLoader.exists(bg_path) and background_sprite:
+		background_sprite.texture = load(bg_path)
+		print("Loaded themed background: ", bg_path)
 	else:
-		areset_expands()
-	if $dropdown.generateDCard:
-		for card in dCards:
-			if $dropdown.generateDCard:
-				if !card.inPlay:
-					card.setCard(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
-					card.setText(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][0])
-					card.setMaturity(int(Mitre.d3fendprof_dict[$dropdown.defend_choice+2][1]))
-					card.play()
-					$dropdown.generateDCard = false
-	if $d_1.expanded:
-		dlock_expands(0)
-	if $d_2.expanded:
-		dlock_expands(1)
-	if $d_3.expanded:
-		dlock_expands(2)
-	else:
-		dreset_expands()			
-					
-	if Input.is_action_just_pressed("exit"):
-		get_tree().quit()
+		print("Themed background not found: ", bg_path, " or background_sprite is null")
 
-	
-	if $Timer_Label.play == true:
-		currenttimer = 0
-	elif $Timer_Label2.play == true:
-		currenttimer = 1
-	
-	if $Timer_Label.play == true || $Timer_Label2.play == true:
-		$Timer_Label/pause.icon = pauseIcon
-	else:
-		$Timer_Label/pause.icon = playIcon
-	
-	# End Game when out of time or out of rounds. 
-	if $Timer_Label.initialTime <= 0 || $Timer_Label2.initialTime <= 0 || $timeline.current_round >= Mitre.timeline_dict.size():
-		_on_quit_button_pressed()
-		
-	if Settings.theme == 0:
-		$background.texture = load("res://images/UI_images/progress_bar/underwater/water_background.png")
-	if Settings.theme == 1:
-		$background.texture = load("res://images/UI_images/progress_bar/air/Air Background.png")
-	if Settings.theme == 2:
-		$background.texture = load("res://images/UI_images/progress_bar/land/Land Background.png")
-	$Window/Button.disabled = !sucornah
-	
-	# NEW: Allow ESC to close dice popup
-	if dice_overlay_active and Input.is_action_just_pressed("ui_cancel"):
-		_on_dice_popup_cancelled()
-	
-	# NEW: Debug key for toggling dice system
-	if OS.is_debug_build() and Input.is_action_just_pressed("ui_accept"):
-		if Input.is_key_pressed(KEY_F1):
-			toggle_dice_system()
-
-func disable_attack_buttons(state):
-	for button in attackbuttons:
-		button.disabled = state
-	for card in aCards:
-		if card.inPlay:
-			card.disable_buttons(state)
-	
-
-func disable_defend_buttons(state):
-	for button in defendbuttons:
-		button.disabled = state
-	for card in dCards:
-		card.disable_buttons(state)
-
-func _on_pause_pressed():
-	if currenttimer == 0:
-		$Timer_Label.play = !$Timer_Label.play
-		if !$Timer_Label.play:
-			disable_attack_buttons(true)
-			disable_defend_buttons(true)
-		else:
-			disable_attack_buttons(false)
-	elif currenttimer == 1:
-		$Timer_Label2.play = !$Timer_Label2.play
-		if !$Timer_Label2.play:
-			disable_attack_buttons(true)
-			disable_defend_buttons(true)
-		else:
-			disable_defend_buttons(false)
-
-func _on_start_game_pressed():
-	$Timer_Label.play = true
-	disable_attack_buttons(false)
-	for card in aCards:
-		card.disable_buttons(true)
-	$Timer_Label/pause.disabled = false
-	$CanvasLayer/StartGame.visible = false
-	$CanvasLayer/ColorRect.visible = false
-	$EndGame.visible = true
-
-func _on_end_game_pressed():
-	_on_pause_pressed()
-	$EndGame.disabled = true
-	$Timer_Label/pause.disabled = true
-	$Window2.visible=true
-	
-func _on_quit_button_pressed():
-	Music.mouse_click()
-	get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
-	hide()
-
-func _on_continue_button_pressed():
-	_on_pause_pressed()
-	$EndGame.disabled = false
-	$Timer_Label/pause.disabled = false
-	$Window2.visible=false
-
-func _on_attack_submit_pressed():
-	var attackpresent = false
-	for card in aCards:
-		if card.card_index != -1:
-			attackpresent = true
-		if card.expanded:	
-			card.make_small_again()
-	for card in dCards:
-		if card.expanded:
-			card.make_small_again()
-	if attackpresent:
-		$Timer_Label.play = false
-		$Timer_Label2.play = true
-		disable_attack_buttons(true)
-		disable_defend_buttons(false)
-		for card in dCards:
-				card.disable_buttons(true)
-		$DefenseSubmit.disabled = false
-
-# UPDATED: Defense submit with dice popup integration
-func _on_defense_submit_pressed():
-	var defensepresent = false
-	for card in dCards:
-		if card.card_index != -1:
-			defensepresent = true
-		if card.expanded:
-			card.make_small_again()
-	for card in aCards:
-		if card.expanded:	
-			card.make_small_again()
-	if defensepresent:
-		$Timer_Label2.play = false
-		disable_defend_buttons(true)
-		$Timer_Label/pause.disabled = true
-		
-		# NEW: Show dice popup instead of manual window if dice system enabled
-		if use_dice_system and has_active_attacks():
-			GameData.capture_current_cards(aCards, dCards)
-			show_dice_popup()
-		else:
-			# Original manual system fallback
-			$Window/OptionButton.select(-1)
-			$Window/SpinBox.value = 0
-			$Window.visible = true
-
-# NEW: Popup management functions
-func show_dice_popup():
-	"""Show dice rolling popup overlay"""
-	if dice_overlay_active:
+func setup_strength_display():
+	"""Setup the team strength visualization bar"""
+	if not has_node("/root/GameData"):
+		print("GameData not found, using default values")
 		return
 		
-	# Create semi-transparent background
-	overlay_background = ColorRect.new()
-	overlay_background.name = "dice_overlay_bg"
-	overlay_background.color = Color(0, 0, 0, 0.6)
-	overlay_background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	overlay_background.z_index = 15
-	add_child(overlay_background)
+	var game_data = get_node("/root/GameData")
+	var red_weight = game_data.red_team_weight
+	var blue_weight = game_data.blue_team_weight
+	var total_weight = red_weight + blue_weight
 	
-	# Create popup instance
-	dice_popup_instance = dice_popup_scene.instantiate()
-	add_child(dice_popup_instance)
-	dice_popup_instance.z_index = 20
+	if total_weight == 0:
+		total_weight = 2  # Fallback
+		red_weight = 1
+		blue_weight = 1
 	
-	# Center the popup
-	dice_popup_instance.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	# Calculate bar sections
+	var bar_width = 400
+	var red_width = (red_weight / float(total_weight)) * bar_width
+	var blue_width = bar_width - red_width
 	
-	# Connect signals
-	dice_popup_instance.dice_completed.connect(_on_dice_popup_completed)
-	dice_popup_instance.dice_cancelled.connect(_on_dice_popup_cancelled)
+	if red_section:
+		red_section.size.x = red_width
+	if blue_section:
+		blue_section.position.x = red_width
+		blue_section.size.x = blue_width
 	
-	# Animate popup appearance
-	dice_popup_instance.modulate.a = 0.0
-	dice_popup_instance.scale = Vector2(0.8, 0.8)
-	
-	var appear_tween = create_tween()
-	appear_tween.parallel().tween_property(dice_popup_instance, "modulate:a", 1.0, 0.3)
-	appear_tween.parallel().tween_property(dice_popup_instance, "scale", Vector2(1.0, 1.0), 0.3)
-	
-	dice_overlay_active = true
+	# Success threshold indicator
+	success_threshold = game_data.get_dice_success_threshold()
+	var threshold_position = (success_threshold / 10.0) * bar_width
+	if result_indicator:
+		result_indicator.position.x = threshold_position - 2
+		result_indicator.size = Vector2(4, 30)
+		result_indicator.color = Color.WHITE
 
-func _on_dice_popup_completed(result: int, success: bool):
-	"""Handle dice completion"""
-	# Record results in GameData
-	GameData.record_dice_result(result, success)
+func display_current_situation():
+	"""Display current attack and defense information"""
+	if not has_node("/root/GameData"):
+		if attack_info:
+			attack_info.text = "[b]Current Attack:[/b]\nGameData not available"
+		if defense_info:
+			defense_info.text = "[b]Active Defenses:[/b]\nGameData not available"
+		return
 	
-	# Apply to existing manual system variables
-	if success:
-		successornah = "Success"
-		$Window/OptionButton.select(0)
+	var game_data = get_node("/root/GameData")
+	
+	# Display attack info
+	var attack_info_text = "[b]Current Attack:[/b]\n"
+	var attack_info_dict = game_data.get_current_attack_info()
+	if attack_info_dict.names.size() > 0:
+		attack_info_text += attack_info_dict.combined_name + "\n"
+		attack_info_text += "Cost: " + str(attack_info_dict.cost) + " | Time: " + str(attack_info_dict.time)
 	else:
-		successornah = "Failure"
-		$Window/OptionButton.select(1)
+		attack_info_text += "No attacks selected"
 	
-	likelihood = GameData.get_manual_likelihood()
-	$Window/SpinBox.value = likelihood
-	sucornah = true
+	if attack_info:
+		attack_info.text = attack_info_text
 	
-	# Show brief feedback
-	show_dice_result_feedback()
-	
-	# Close popup
-	close_dice_popup()
-	
-	# Continue with existing game flow
-	_on_button_pressed()
-
-func _on_dice_popup_cancelled():
-	"""Handle dice cancellation"""
-	close_dice_popup()
-	
-	# Fallback to manual system
-	$Window/OptionButton.select(-1)
-	$Window/SpinBox.value = 0
-	$Window.visible = true
-	
-	# Re-enable buttons
-	disable_defend_buttons(false)
-	$Timer_Label/pause.disabled = false
-
-func close_dice_popup():
-	"""Close and cleanup dice popup"""
-	if dice_popup_instance:
-		# Animate popup disappearance
-		var disappear_tween = create_tween()
-		disappear_tween.parallel().tween_property(dice_popup_instance, "modulate:a", 0.0, 0.3)
-		disappear_tween.parallel().tween_property(dice_popup_instance, "scale", Vector2(0.8, 0.8), 0.3)
-		
-		await disappear_tween.finished
-		
-		dice_popup_instance.queue_free()
-		dice_popup_instance = null
-	
-	# Remove background overlay
-	if overlay_background:
-		overlay_background.queue_free()
-		overlay_background = null
-	
-	dice_overlay_active = false
-
-# NEW: Submarine control during dice popup
-func get_submarine_reference():
-	"""Get reference to existing submarine"""
-	return $timeline/sub
-
-func set_submarine_dice_mode(is_rolling: bool):
-	"""Update submarine animation during dice rolling"""
-	var submarine = get_submarine_reference()
-	if submarine and submarine.has_method("play"):
-		if is_rolling:
-			submarine.play("move")  # Excited during roll
-		else:
-			submarine.play("hover")  # Normal state
-
-# NEW: Check if dice system should be used
-func has_active_attacks() -> bool:
-	"""Check if any attack cards are in play"""
-	var active_count = 0
-	for card in aCards:
-		if card.inPlay and card.card_index != -1:
-			active_count += 1
-			
-	if active_count == 0:
-		print("No active attack cards found - falling back to manual system")
-		return false
-		
-	print("Found ", active_count, " active attack cards - using dice system")
-	return true
-
-# NEW: Show dice result feedback
-func show_dice_result_feedback():
-	"""Display brief feedback about dice results"""
-	var feedback_label = Label.new()
-	feedback_label.text = "Dice Result: " + str(GameData.last_dice_result) + " - " + ("SUCCESS" if GameData.last_attack_success else "FAILURE")
-	feedback_label.position = Vector2(500, 300)
-	feedback_label.theme = load("res://pixel font/mid_font_theme.tres")
-	
-	if GameData.last_attack_success:
-		feedback_label.modulate = Color.GREEN
+	# Display defense info
+	var defense_info_text = "[b]Active Defenses:[/b]\n"
+	var defense_list = game_data.get_current_defense_info()
+	if defense_list.size() > 0:
+		for defense in defense_list:
+			defense_info_text += "• " + defense.name + " (Maturity: " + str(defense.maturity) + ")\n"
 	else:
-		feedback_label.modulate = Color.RED
-		
-	add_child(feedback_label)
+		defense_info_text += "No defenses active"
 	
-	# Fade out after 2 seconds
-	var feedback_tween = create_tween()
-	feedback_tween.tween_delay(2.0)
-	feedback_tween.tween_property(feedback_label, "modulate:a", 0.0, 1.0)
-	await feedback_tween.finished
-	feedback_label.queue_free()
-
-# NEW: Toggle dice system for testing
-func toggle_dice_system():
-	"""Toggle dice system on/off for testing purposes"""
-	use_dice_system = !use_dice_system
-	print("Dice system: ", "ENABLED" if use_dice_system else "DISABLED")
+	if defense_info:
+		defense_info.text = defense_info_text
 	
-	# Show UI feedback
-	var toggle_label = Label.new()
-	toggle_label.text = "Dice System: " + ("ON" if use_dice_system else "OFF")
-	toggle_label.position = Vector2(10, 10)
-	toggle_label.theme = load("res://pixel font/small_font_theme.tres")
-	add_child(toggle_label)
+	# Display success information
+	var success_rate = game_data.get_attack_success_rate()
+	if strength_info:
+		strength_info.text = "Success Rate: " + str(int(success_rate * 100)) + "% | Roll " + str(success_threshold) + " or lower to succeed"
+
+func connect_signals():
+	"""Connect UI signals"""
+	if roll_button:
+		roll_button.pressed.connect(_on_roll_button_pressed)
+	if manual_toggle:
+		manual_toggle.pressed.connect(_on_manual_toggle_pressed)
+	if manual_submit:
+		manual_submit.pressed.connect(_on_manual_submit_pressed)
+	if close_button:
+		close_button.pressed.connect(_on_close_button_pressed)
+	if admin_button:
+		admin_button.pressed.connect(_on_admin_button_pressed)
+
+func _on_roll_button_pressed():
+	"""Handle dice roll button press"""
+	if is_rolling or rolls_remaining <= 0:
+		return
 	
-	# Auto-remove after 3 seconds
-	var remove_timer = Timer.new()
-	remove_timer.wait_time = 3.0
-	remove_timer.one_shot = true
-	remove_timer.timeout.connect(func(): toggle_label.queue_free(); remove_timer.queue_free())
-	add_child(remove_timer)
-	remove_timer.start()
-
-# NEW: Enhanced dice roll completion handler
-func _on_dice_roll_completed():
-	"""Handle return from dice scene with enhanced state management"""
-	if GameData.dice_roll_completed:
-		# Apply dice results to manual system variables
-		if GameData.last_attack_success:
-			successornah = "Success"
-			$Window/OptionButton.select(0)
-		else:
-			successornah = "Failure" 
-			$Window/OptionButton.select(1)
-		
-		# Set likelihood from dice calculation
-		likelihood = GameData.get_manual_likelihood()
-		$Window/SpinBox.value = likelihood
-		sucornah = true
-		
-		# Add visual feedback for dice result
-		show_dice_result_feedback()
-		
-		# Continue with existing game flow
-		_on_button_pressed()
-
-func _on_option_button_item_selected(index):
-	if index==0:
-		successornah="Success"
+	is_rolling = true
+	if roll_button:
+		roll_button.disabled = true
+	if manual_toggle:
+		manual_toggle.disabled = true
+	
+	await perform_dice_roll()
+	
+	rolls_remaining -= 1
+	update_roll_button_text()
+	
+	if rolls_remaining <= 0:
+		# Force completion after max rolls
+		await get_tree().create_timer(1.0).timeout
+		complete_dice_roll()
 	else:
-		successornah="Failure"
-	sucornah = true
+		if roll_button:
+			roll_button.disabled = false
+		if manual_toggle:
+			manual_toggle.disabled = false
+		is_rolling = false
 
-func _on_spin_box_value_changed(value):
-	likelihood=value
-
-func _on_spin_box_2_value_changed(value):
-	riskanalysis=value
-func _on_var_1_value_changed(value):
-	value=value/100
-	variables[0]=[value]
-func _on_var_2_value_changed(value):
-	value=value/100
-	variables[1]=[value]
-func _on_var_3_value_changed(value):
-	value=value/100
-	variables[2]=[value]
-func _on_button_pressed():
-	if sucornah:
-		for card in aCards:
-			if card.inPlay:
-				timeTaken += card.getTimeValue()
-		
-		var row=[Time.get_time_string_from_system()]
-		for card in aCards:
-			if card.card_index != -1:
-				row += [card.getString()]
-				if card.expanded:
-					card.make_small_again()
-				card.reset_card()
-			else:
-				row+=["---"]
-		for card in dCards:
-			if card.card_index != -1:
-				row+=[card.getString()]
-				if card.expanded:
-					card.make_small_again()
-			else:
-				row+=["---"]
-		row += [successornah]
-		row += [likelihood]
-		row += ["---"]
-		var i=0
-		var ASP="sigma"
-		for card in dCards:
-			if card.card_index != -1:
-				ASP=1-(int(card.getMaturityValue())*0.2)*variables[i]
-				print(ASP)
-				row+=[ASP]
-				card.reset_card()
-			else:
-				row+=["---"]
-			i+=1
-		var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
-		file.seek_end()
-		file.store_csv_line(row)
-		file.close()
-		for card in aCards:
-			if int(Mitre.attack_dict[int(Mitre.opforprof_dict[$dropdown.attack_choice+2][0])+1][5]) == 3:
-				finalattack = true
-		# Come back and check this if and else.
-		if finalattack:
-			load_previous_attacks(save_path)
-			$Window3.visible  = true
-			$Window.visible = false
-		else:
-			$Window.visible = false
-			disable_attack_buttons(false)
-			for card in aCards:
-				card.disable_buttons(true)
-			$Timer_Label/pause.disabled = false
-			$Timer_Label.play = true
-			$timeline._progress(timeTaken * 25)
-
-			$dropdown/attack_option.select(-1)
-			$dropdown/defend_option.select(-1)	
-			$timeline.increase_time()
-			timeTaken = 0
-		sucornah = false
-		finalattack = false
-		
-		# NEW: Reset GameData for next round
-		GameData.reset_round_data()
-
-func _on_final_continue_pressed():
-	var row=[Time.get_time_string_from_system()]
-	for i in range(8):
-		row += ["---"]
-	row += [riskanalysis]
-	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
-	file.seek_end()
-	file.store_csv_line(row)
-	file.close()
-	$Window3.visible = false
-	disable_attack_buttons(false)
-	$Timer_Label/pause.disabled = false
-	$Timer_Label.play = true
-	$dropdown/attack_option.select(-1)
-	$dropdown/defend_option.select(-1)
-	$timeline._progress(timeTaken * 25)
-	$timeline.increase_time()
-	timeTaken = 0
-
-# Error with CSV formatting. 
-func load_previous_attacks(path):
-	var file = FileAccess.open(path, FileAccess.READ)
-	if file:
-		var content = file.get_as_text()
-		file.close()
-		#var formatted_text = format_csv(content)
-		#$Window3/TextEdit.text = formatted_text
-
-func format_csv(content):
-	var rows = content.split("\n")
-	var columns = []
+func perform_dice_roll():
+	"""Perform the animated dice roll sequence"""
+	# Step 1: Cup covers dice
+	if cup_sprite:
+		cup_sprite.visible = true
+	if dice_number_label:
+		dice_number_label.visible = false
+	if dice_result_label:
+		dice_result_label.text = "Rolling..."
 	
-	for row in rows:
-		var cells = row.split(",")
-		columns.append(cells)
-
-	var col_width = []
-	for i in range(columns[0].size()):
-		if i != 2 && i != 3 && i != 5 && i != 6:
-			var max_width = 0
-			for row in columns:
-				if i != 1 && i != 4:
-					if(row.size() > 1):
-						if row[i].length() > max_width:
-							max_width = row[i].length()
-				else:
-					if(row.size()>1):
-						for j in range(3):
-							if row[i+j].length() > max_width:
-								max_width = row[i+j].length()
-			col_width.append(max_width)
-		else:
-			col_width.append(0)
-	var formatted_text = ""
-	for row in columns:
-		if row.size() > 1:
-			for i in range(row.size()):
-				if i != 2 && i != 3 && i != 5 && i != 6:
-					var cell = row[i]
-					formatted_text += pad_string(cell, col_width[i] + 5)
-			if row[9] == "---":
-				formatted_text += "\n"
-				formatted_text += pad_string("", col_width[0] + 5)
-				formatted_text += pad_string(row[2], col_width[1] + 5)
-				formatted_text += pad_string(row[5], col_width[4] + 5)
-				formatted_text += pad_string("", col_width[7] + 5)
-				formatted_text += pad_string("", col_width[8] + 5)
-				formatted_text += pad_string("", col_width[9] + 5)
-				formatted_text += "\n"
-				formatted_text += pad_string("", col_width[0] + 5)
-				formatted_text += pad_string(row[3], col_width[1] + 5)
-				formatted_text += pad_string(row[6], col_width[4] + 5)
-				formatted_text += pad_string("", col_width[7] + 5)
-				formatted_text += pad_string("", col_width[8] + 5)
-				formatted_text += pad_string("", col_width[9] + 5)
-		formatted_text += "\n"
-		formatted_text += "\n"
+	await get_tree().create_timer(0.5).timeout
 	
-	return formatted_text
-
-func pad_string(text: String, width: int):
-	var padded_text = text
-	while padded_text.length() < width:
-		padded_text += " "
-	return padded_text
-
-func alock_expands(expanded):
-	if expanded==0:
-		$a_2.disable_expand(true)
-		$a_3.disable_expand(true)
-	if expanded==1:
-		$a_1.disable_expand(true)
-		$a_3.disable_expand(true)
-	if expanded==2:
-		$a_1.disable_expand(true)
-		$a_2.disable_expand(true)
-func areset_expands():
-	for card in aCards:
-		if card.inPlay:
-			card.disable_expand(false)
-			card.disable_flip(false)
+	# Step 2: Shake effect while rolling
+	if dice_sprite:
+		roll_tween = create_tween()
+		roll_tween.set_loops()
 		
-func dlock_expands(expanded):
-	if expanded==0:
-		$d_2.disable_expand(true)
-		$d_3.disable_expand(true)
-	if expanded==1:
-		$d_1.disable_expand(true)
-		$d_3.disable_expand(true)
-	if expanded==2:
-		$d_1.disable_expand(true)
-		$d_2.disable_expand(true)
-func dreset_expands():
-	for card in dCards:
-		if card.inPlay:
-			card.disable_expand(false)
-			card.disable_flip(false)
+		# Shake the dice under the cup
+		for i in range(int(roll_duration * 10)):  # 10 shakes per second
+			var shake_x = randf_range(-shake_intensity, shake_intensity)
+			var shake_y = randf_range(-shake_intensity, shake_intensity)
+			roll_tween.tween_property(dice_sprite, "position", dice_sprite.position + Vector2(shake_x, shake_y), 0.1)
+			await get_tree().create_timer(0.1).timeout
+		
+		# Stop shaking and return to center
+		if roll_tween:
+			roll_tween.kill()
+		dice_sprite.position = Vector2(330, 75)  # Reset to center
+	
+	# Step 3: Determine result
+	current_roll_result = randi_range(1, 10)
+	
+	await get_tree().create_timer(cup_lift_delay).timeout
+	
+	# Step 4: Cup disappears to reveal result
+	if cup_sprite:
+		var cup_tween = create_tween()
+		cup_tween.tween_property(cup_sprite, "modulate:a", 0.0, 0.5)
+		await cup_tween.finished
+		cup_sprite.visible = false
+		cup_sprite.modulate.a = 1.0  # Reset for next time
+	
+	await get_tree().create_timer(result_display_delay).timeout
+	
+	# Step 5: Show number on dice and display result
+	if dice_number_label:
+		dice_number_label.text = str(current_roll_result)
+		dice_number_label.visible = true
+	
+	var is_success = current_roll_result <= success_threshold
+	var result_color = Color.GREEN if is_success else Color.RED
+	if dice_result_label:
+		dice_result_label.text = "Rolled: " + str(current_roll_result) + " - " + ("SUCCESS!" if is_success else "FAILURE!")
+		dice_result_label.modulate = result_color
+	
+	# Update strength bar with result indicator
+	if result_indicator:
+		var result_position = (current_roll_result / 10.0) * 400
+		result_indicator.position.x = result_position - 2
+		result_indicator.color = result_color
 
-func _on_help_pressed():
-	$Window5.visible = true
+# Hover system for dice
+func _on_dice_area_mouse_entered():
+	"""Show tooltip when hovering over dice area"""
+	if current_roll_result > 0 and dice_number_label and dice_number_label.visible:
+		show_hover_tooltip()
 
-func _on_window_close_requested():
-	$Window5.visible = false
+func _on_dice_area_mouse_exited():
+	"""Hide tooltip when leaving dice area"""
+	hide_hover_tooltip()
+
+func _on_dice_area_input(event):
+	"""Handle mouse movement for tooltip positioning"""
+	if event is InputEventMouseMotion and hover_tooltip and hover_tooltip.visible:
+		# Position tooltip near mouse cursor
+		var mouse_pos = event.position
+		hover_tooltip.position = mouse_pos + Vector2(10, -30)
+
+func show_hover_tooltip():
+	"""Show the hover tooltip with dice result"""
+	if current_roll_result > 0 and hover_tooltip and tooltip_label:
+		tooltip_label.text = "Dice Result: " + str(current_roll_result)
+		hover_tooltip.visible = true
+
+func hide_hover_tooltip():
+	"""Hide the hover tooltip"""
+	if hover_tooltip:
+		hover_tooltip.visible = false
+
+func complete_dice_roll():
+	"""Complete the dice rolling process"""
+	var is_success = current_roll_result <= success_threshold
+	emit_signal("dice_completed", current_roll_result, is_success)
+
+func _on_manual_toggle_pressed():
+	"""Toggle manual entry mode"""
+	is_manual_mode = !is_manual_mode
+	
+	if is_manual_mode:
+		if manual_entry:
+			manual_entry.visible = true
+		if manual_submit:
+			manual_submit.visible = true
+		if roll_button:
+			roll_button.visible = false
+		if manual_toggle:
+			manual_toggle.text = "Use Dice"
+		if dice_result_label:
+			dice_result_label.text = "Enter manual result (1-10):"
+	else:
+		if manual_entry:
+			manual_entry.visible = false
+		if manual_submit:
+			manual_submit.visible = false
+		if roll_button:
+			roll_button.visible = true
+		if manual_toggle:
+			manual_toggle.text = "Manual Entry"
+		if dice_result_label:
+			dice_result_label.text = "Ready to roll..."
+
+func _on_manual_submit_pressed():
+	"""Handle manual entry submission"""
+	if manual_entry:
+		current_roll_result = int(manual_entry.value)
+	var is_success = current_roll_result <= success_threshold
+	
+	# Show the number on the dice
+	if dice_number_label:
+		dice_number_label.text = str(current_roll_result)
+		dice_number_label.visible = true
+	if cup_sprite:
+		cup_sprite.visible = false
+	
+	if dice_result_label:
+		dice_result_label.text = "Manual: " + str(current_roll_result) + " - " + ("SUCCESS!" if is_success else "FAILURE!")
+		dice_result_label.modulate = Color.GREEN if is_success else Color.RED
+	
+	await get_tree().create_timer(1.0).timeout
+	complete_dice_roll()
+
+func _on_admin_button_pressed():
+	"""Admin override for testing"""
+	if OS.is_debug_build():
+		current_roll_result = success_threshold  # Force success
+		complete_dice_roll()
+
+func _on_close_button_pressed():
+	"""Handle popup cancellation"""
+	emit_signal("dice_cancelled")
+
+func update_roll_button_text():
+	"""Update roll button text with remaining rolls"""
+	if not roll_button:
+		return
+		
+	if rolls_remaining > 0:
+		roll_button.text = "Roll Dice (" + str(rolls_remaining) + " Remaining)"
+		roll_button.disabled = false
+	else:
+		roll_button.text = "Max Rolls Used"
+		roll_button.disabled = true
+
+func _input(event):
+	"""Handle input events"""
+	if event.is_action_pressed("ui_cancel"):
+		_on_close_button_pressed()

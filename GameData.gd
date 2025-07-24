@@ -1,5 +1,8 @@
 extends Node
 
+# Enhanced GameData - Integrates with existing Mitre system
+# Add this as AutoLoad: GameData
+
 # Current attack/defense data (integrates with existing card system)
 var current_attack_cards = []  # From aCards in game_screen
 var current_defense_cards = []  # From dCards in game_screen
@@ -16,7 +19,7 @@ var dice_roll_completed: bool = false
 var red_team_weight: int = 1
 var blue_team_weight: int = 1
 
-# Attack success rate table (cost vs time combinations)
+# Attack success rate table (your provided data)
 var attack_success_table = {
 	"c1t1": {"time": 1, "cost": 1, "rate": 5, "likelihood": 90},
 	"c1t2": {"time": 1, "cost": 2, "rate": 5, "likelihood": 85},
@@ -64,8 +67,18 @@ func reset_round_data():
 
 func capture_current_cards(attack_cards: Array, defense_cards: Array):
 	"""Capture current state from game_screen cards"""
-	current_attack_cards = attack_cards.duplicate()
-	current_defense_cards = defense_cards.duplicate()
+	current_attack_cards.clear()
+	current_defense_cards.clear()
+	
+	# Safely copy attack cards
+	for card in attack_cards:
+		if card:
+			current_attack_cards.append(card)
+	
+	# Safely copy defense cards  
+	for card in defense_cards:
+		if card:
+			current_defense_cards.append(card)
 	
 	calculate_attack_parameters()
 	calculate_defense_effectiveness()
@@ -78,9 +91,16 @@ func calculate_attack_parameters():
 	var card_count = 0
 	
 	for card in current_attack_cards:
-		if card.inPlay and card.card_index != -1:
-			total_cost += card.getCostValue()
-			total_time += card.getTimeValue()
+		if card and card.get("inPlay") == true and card.get("card_index") != -1:
+			if card.has_method("getCostValue"):
+				total_cost += card.getCostValue()
+			else:
+				total_cost += 1  # Default fallback
+				
+			if card.has_method("getTimeValue"):
+				total_time += card.getTimeValue()
+			else:
+				total_time += 1  # Default fallback
 			card_count += 1
 	
 	if card_count > 0:
@@ -97,8 +117,11 @@ func calculate_defense_effectiveness():
 	var card_count = 0
 	
 	for card in current_defense_cards:
-		if card.inPlay and card.card_index != -1:
-			total_defense_maturity += card.getMaturityValue()
+		if card and card.get("inPlay") == true and card.get("card_index") != -1:
+			if card.has_method("getMaturityValue"):
+				total_defense_maturity += card.getMaturityValue()
+			else:
+				total_defense_maturity += 1.0  # Default fallback
 			card_count += 1
 	
 	if card_count > 0:
@@ -113,9 +136,15 @@ func calculate_team_weights():
 	var attack_count = 0
 	
 	for card in current_attack_cards:
-		if card.inPlay and card.card_index != -1:
-			var cost = card.getCostValue()
-			var time_factor = card.getTimeValue() / 24.0  # Normalize time to reasonable scale
+		if card and card.get("inPlay") == true and card.get("card_index") != -1:
+			var cost = 1
+			var time_factor = 1
+			
+			if card.has_method("getCostValue"):
+				cost = card.getCostValue()
+			if card.has_method("getTimeValue"):
+				time_factor = card.getTimeValue() / 24.0  # Normalize time to reasonable scale
+			
 			var efficiency = 6 - (cost + time_factor)  # Lower cost/time = higher efficiency
 			attack_efficiency += efficiency
 			attack_count += 1
@@ -147,6 +176,10 @@ func get_dice_success_threshold() -> int:
 	var threshold = int((1.0 - success_rate) * 10)
 	return clamp(threshold, 1, 9)
 
+func request_dice_roll():
+	"""Request transition to dice rolling scene"""
+	emit_signal("dice_roll_requested")
+
 func record_dice_result(result: int, success: bool):
 	"""Record dice roll results"""
 	last_dice_result = result
@@ -158,8 +191,16 @@ func get_current_attack_info() -> Dictionary:
 	"""Get info about current attack for display"""
 	var attack_names = []
 	for card in current_attack_cards:
-		if card.inPlay and card.card_index != -1:
-			attack_names.append(Mitre.attack_dict[card.card_index + 1][2])
+		if card and card.get("inPlay") == true and card.get("card_index") != -1:
+			# Safe access to Mitre data - Attack cards: index 2 = Name
+			if has_node("/root/Mitre"):
+				var mitre = get_node("/root/Mitre")
+				if mitre.attack_dict.has(card.card_index + 1):
+					attack_names.append(mitre.attack_dict[card.card_index + 1][2])  # Attack: index 2 = Name
+				else:
+					attack_names.append("Unknown Attack")
+			else:
+				attack_names.append("Attack Card")
 	
 	return {
 		"names": attack_names,
@@ -172,13 +213,64 @@ func get_current_defense_info() -> Array:
 	"""Get info about current defenses for display"""
 	var defense_info = []
 	for card in current_defense_cards:
-		if card.inPlay and card.card_index != -1:
+		if card and card.get("inPlay") == true and card.get("card_index") != -1:
+			var defense_name = "Defense Card"
+			var maturity = 1
+			
+			# Safe access to Mitre data - Defense cards: index 3 = Name (NOT index 2!)
+			if has_node("/root/Mitre"):
+				var mitre = get_node("/root/Mitre")
+				if mitre.defend_dict.has(card.card_index + 1):
+					defense_name = mitre.defend_dict[card.card_index + 1][3]  # Defense: index 3 = Name
+			
+			if card.has_method("getMaturityValue"):
+				maturity = card.getMaturityValue()
+				
 			defense_info.append({
-				"name": Mitre.defend_dict[card.card_index + 1][2],
-				"maturity": card.getMaturityValue()
+				"name": defense_name,
+				"maturity": maturity
 			})
 	return defense_info
+
+func should_use_dice_system() -> bool:
+	"""Check if conditions are met to use automated dice system"""
+	# Use dice system if we have at least one attack card
+	for card in current_attack_cards:
+		if card and card.get("inPlay") == true and card.get("card_index") != -1:
+			return true
+	return false
 
 func get_manual_likelihood() -> int:
 	"""Convert current success rate to likelihood percentage for manual system fallback"""
 	return int(get_attack_success_rate() * 100)
+
+func export_to_csv_format() -> Array:
+	"""Export current state in format compatible with existing CSV system"""
+	var row = []
+	
+	# Attack cards
+	for card in current_attack_cards:
+		if card and card.get("card_index") != -1:
+			if card.has_method("getString"):
+				row.append(card.getString())
+			else:
+				row.append("Attack Card")
+		else:
+			row.append("---")
+	
+	# Defense cards  
+	for card in current_defense_cards:
+		if card and card.get("card_index") != -1:
+			if card.has_method("getString"):
+				row.append(card.getString())
+			else:
+				row.append("Defense Card")
+		else:
+			row.append("---")
+	
+	# Results
+	row.append("Success" if last_attack_success else "Failure")
+	row.append(get_manual_likelihood())
+	row.append("---")  # Risk analysis placeholder
+	
+	return row
