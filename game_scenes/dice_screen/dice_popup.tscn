@@ -18,23 +18,12 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-328, 440)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CupSprite:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
+"values": [Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_tjbuc"]
-resource_name = "cuo_reveal"
+resource_name = "cup_reveal"
+length = 2.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -42,33 +31,37 @@ tracks/0/path = NodePath("CupSprite:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-328, 440), Vector2(-318, 440), Vector2(-338, 440), Vector2(-318, 440), Vector2(-328, 440), Vector2(-328, 435), Vector2(-328, 420), Vector2(-328, 405), Vector2(-318, 350), Vector2(-308, 310), Vector2(-270, 220)]
+"values": [Vector2(0, 0), Vector2(5, 0), Vector2(-5, 0), Vector2(3, 0), Vector2(-3, 0), Vector2(0, -5), Vector2(0, -15), Vector2(0, -30), Vector2(-10, -50), Vector2(-20, -80), Vector2(-50, -120)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CupSprite:rotation")
+tracks/1/path = NodePath("CupSprite:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0872665, 0.174533]
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dq7c0"]
 _data = {
 &"RESET": SubResource("Animation_0rb3b"),
-&"cuo_reveal": SubResource("Animation_tjbuc")
+&"cup_reveal": SubResource("Animation_tjbuc")
 }
 
 [node name="dice_popup" type="Control"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_b010v")
 
 [node name="UnderwaterDiceScene2" type="TextureRect" parent="."]
@@ -76,132 +69,226 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 115.0
-offset_bottom = 65.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(10.0174, 9.96923)
 texture = ExtResource("2_acm4x")
+expand_mode = 1
+stretch_mode = 6
 
-[node name="Panel" type="Panel" parent="."]
+[node name="BackgroundLayer" type="Control" parent="."]
 layout_mode = 1
-offset_left = 904.0
-offset_top = 16.0
-offset_right = 1104.0
-offset_bottom = 184.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
-[node name="HeaderContainer" type="HBoxContainer" parent="Panel"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="ColorOverlay" type="ColorRect" parent="BackgroundLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
 
-[node name="TitleLabel" type="Label" parent="Panel/HeaderContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="CenterContainer"]
+custom_minimum_size = Vector2(800, 600)
 layout_mode = 2
-text = "🎲 Dice Roll"
 
-[node name="Spacer" type="Control" parent="Panel/HeaderContainer"]
+[node name="HeaderContainer" type="HBoxContainer" parent="CenterContainer/Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = -20.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/Panel/HeaderContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "🎲 Attack Resolution - Dice Roll"
+
+[node name="Spacer" type="Control" parent="CenterContainer/Panel/HeaderContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AdminButton" type="Button" parent="Panel/HeaderContainer"]
+[node name="AdminButton" type="Button" parent="CenterContainer/Panel/HeaderContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Admin"
 
-[node name="CloseButton" type="Button" parent="Panel/HeaderContainer"]
+[node name="CloseButton" type="Button" parent="CenterContainer/Panel/HeaderContainer"]
 layout_mode = 2
-text = "x"
+theme_override_font_sizes/font_size = 18
+text = "✕"
 
-[node name="InfoContainer" type="VBoxContainer" parent="Panel"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="InfoContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 30.0
+offset_top = 70.0
+offset_right = -30.0
+offset_bottom = 220.0
+grow_horizontal = 2
 
-[node name="AttackInfo" type="RichTextLabel" parent="Panel/InfoContainer"]
+[node name="AttackInfo" type="RichTextLabel" parent="CenterContainer/Panel/InfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+text = "[b]Current Attack:[/b]
+Loading attack information..."
+
+[node name="DefenseInfo" type="RichTextLabel" parent="CenterContainer/Panel/InfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+text = "[b]Active Defenses:[/b]
+Loading defense information..."
+
+[node name="DiceContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiceArea" type="Control" parent="CenterContainer/Panel/DiceContainer"]
+custom_minimum_size = Vector2(400, 150)
 layout_mode = 2
 
-[node name="DefenseInfo" type="RichTextLabel" parent="Panel/InfoContainer"]
-layout_mode = 2
-
-[node name="DiceContainer" type="VBoxContainer" parent="Panel"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="DiceSprite" type="AnimatedSprite2D" parent="Panel/DiceContainer"]
+[node name="DiceSprite" type="AnimatedSprite2D" parent="CenterContainer/Panel/DiceContainer/DiceArea"]
+z_index = 1
+position = Vector2(200, 75)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_acm4x")
 
-[node name="NumberLabel" type="Label" parent="Panel/DiceContainer/DiceSprite"]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="NumberLabel" type="Label" parent="CenterContainer/Panel/DiceContainer/DiceArea/DiceSprite"]
+z_index = 2
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -15.0
+offset_right = 20.0
+offset_bottom = 15.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="DiceResult" type="Label" parent="Panel/DiceContainer"]
+[node name="CupSprite" type="Sprite2D" parent="CenterContainer/Panel/DiceContainer/DiceArea"]
+z_index = 3
+scale = Vector2(4, 4)
+texture = ExtResource("3_1t5kw")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CenterContainer/Panel/DiceContainer/DiceArea"]
+libraries = {
+&"": SubResource("AnimationLibrary_dq7c0")
+}
+
+[node name="DiceResult" type="Label" parent="CenterContainer/Panel/DiceContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Ready to roll the dice..."
+horizontal_alignment = 1
 
-[node name="ButtonContainer" type="HBoxContainer" parent="Panel/DiceContainer"]
+[node name="ButtonContainer" type="HBoxContainer" parent="CenterContainer/Panel/DiceContainer"]
 layout_mode = 2
+alignment = 1
 
-[node name="RollButton" type="Button" parent="Panel/DiceContainer/ButtonContainer"]
+[node name="RollButton" type="Button" parent="CenterContainer/Panel/DiceContainer/ButtonContainer"]
 layout_mode = 2
-text = "Roll Dice (3 Remaining)"
+theme_override_font_sizes/font_size = 16
+text = "🎲 Roll Dice (3 Remaining)"
 
-[node name="ManualToggle" type="Button" parent="Panel/DiceContainer/ButtonContainer"]
+[node name="ManualToggle" type="Button" parent="CenterContainer/Panel/DiceContainer/ButtonContainer"]
 layout_mode = 2
-text = "Manual Entry"
+theme_override_font_sizes/font_size = 16
+text = "✏️ Manual Entry"
 
-[node name="ManualEntry" type="SpinBox" parent="Panel/DiceContainer"]
+[node name="ManualEntry" type="SpinBox" parent="CenterContainer/Panel/DiceContainer"]
 visible = false
 layout_mode = 2
 min_value = 1.0
 max_value = 10.0
 value = 5.0
+alignment = 1
 
-[node name="ManualSubmit" type="Button" parent="Panel/DiceContainer"]
+[node name="ManualSubmit" type="Button" parent="CenterContainer/Panel/DiceContainer"]
 visible = false
 layout_mode = 2
-text = "Submit"
+text = "Submit Manual Roll"
 
-[node name="CupSprite" type="Sprite2D" parent="Panel/DiceContainer"]
-position = Vector2(-328, 440)
-scale = Vector2(8, 8)
-texture = ExtResource("3_1t5kw")
+[node name="StrengthContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -150.0
+offset_right = -50.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Panel/DiceContainer"]
-libraries = {
-&"": SubResource("AnimationLibrary_dq7c0")
-}
-
-[node name="StrengthContainer" type="VBoxContainer" parent="Panel"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="StrengthInfo" type="Label" parent="Panel/StrengthContainer"]
+[node name="StrengthInfo" type="Label" parent="CenterContainer/Panel/StrengthContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Success Rate: 50% | Roll 5 or lower to succeed"
+horizontal_alignment = 1
 
-[node name="StrengthBar" type="ColorRect" parent="Panel/StrengthContainer"]
-custom_minimum_size = Vector2(400, 30)
+[node name="StrengthBar" type="ColorRect" parent="CenterContainer/Panel/StrengthContainer"]
+custom_minimum_size = Vector2(500, 40)
 layout_mode = 2
-color = Color(1, 1, 1, 0)
+size_flags_horizontal = 4
+color = Color(0.2, 0.2, 0.2, 0.8)
 
-[node name="RedSection" type="ColorRect" parent="Panel/StrengthContainer/StrengthBar"]
-custom_minimum_size = Vector2(200, 30)
+[node name="RedSection" type="ColorRect" parent="CenterContainer/Panel/StrengthContainer/StrengthBar"]
 layout_mode = 0
-offset_right = 40.0
+offset_right = 250.0
 offset_bottom = 40.0
-color = Color(1, 0, 0, 1)
+color = Color(0.8, 0.2, 0.2, 0.9)
 
-[node name="BlueSection" type="ColorRect" parent="Panel/StrengthContainer/StrengthBar"]
-custom_minimum_size = Vector2(200, 30)
+[node name="BlueSection" type="ColorRect" parent="CenterContainer/Panel/StrengthContainer/StrengthBar"]
 layout_mode = 0
-offset_left = 200.0
-offset_right = 400.0
+offset_left = 250.0
+offset_right = 500.0
 offset_bottom = 40.0
-color = Color(0, 0, 1, 1)
+color = Color(0.2, 0.2, 0.8, 0.9)
 
-[node name="ResultIndicator" type="ColorRect" parent="Panel/StrengthContainer/StrengthBar"]
-custom_minimum_size = Vector2(400, 30)
+[node name="ResultIndicator" type="ColorRect" parent="CenterContainer/Panel/StrengthContainer/StrengthBar"]
 layout_mode = 0
-offset_right = 40.0
+offset_left = 248.0
+offset_right = 252.0
 offset_bottom = 40.0
-color = Color(1, 1, 1, 0)
