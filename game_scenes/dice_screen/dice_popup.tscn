@@ -56,15 +56,25 @@ _data = {
 }
 
 [node name="dice_popup" type="Control"]
+process_mode = 3
 layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+script = ExtResource("1_b010v")
+
+[node name="FullScreenBackground" type="ColorRect" parent="."]
+z_index = -2
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_b010v")
+color = Color(0, 0, 0, 0.5)
 
-[node name="UnderwaterDiceScene2" type="TextureRect" parent="."]
+[node name="BackgroundSprite" type="TextureRect" parent="."]
+z_index = -1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -75,77 +85,62 @@ texture = ExtResource("2_acm4x")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="BackgroundLayer" type="Control" parent="."]
+[node name="DialogPanel" type="Panel" parent="."]
+z_index = 1
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="ColorOverlay" type="ColorRect" parent="BackgroundLayer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.3)
-
-[node name="CenterContainer" type="CenterContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="CenterContainer"]
-custom_minimum_size = Vector2(800, 600)
-layout_mode = 2
-
-[node name="HeaderContainer" type="HBoxContainer" parent="CenterContainer/Panel"]
+[node name="HeaderContainer" type="HBoxContainer" parent="DialogPanel"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 20.0
-offset_top = 10.0
+offset_top = 15.0
 offset_right = -20.0
-offset_bottom = 60.0
+offset_bottom = 65.0
 grow_horizontal = 2
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/Panel/HeaderContainer"]
+[node name="TitleLabel" type="Label" parent="DialogPanel/HeaderContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "🎲 Attack Resolution - Dice Roll"
 
-[node name="Spacer" type="Control" parent="CenterContainer/Panel/HeaderContainer"]
+[node name="Spacer" type="Control" parent="DialogPanel/HeaderContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AdminButton" type="Button" parent="CenterContainer/Panel/HeaderContainer"]
+[node name="AdminButton" type="Button" parent="DialogPanel/HeaderContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "Admin"
 
-[node name="CloseButton" type="Button" parent="CenterContainer/Panel/HeaderContainer"]
+[node name="CloseButton" type="Button" parent="DialogPanel/HeaderContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "✕"
 
-[node name="InfoContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
+[node name="InfoContainer" type="VBoxContainer" parent="DialogPanel"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 30.0
-offset_top = 70.0
+offset_top = 75.0
 offset_right = -30.0
-offset_bottom = 220.0
+offset_bottom = 225.0
 grow_horizontal = 2
 
-[node name="AttackInfo" type="RichTextLabel" parent="CenterContainer/Panel/InfoContainer"]
+[node name="AttackInfo" type="RichTextLabel" parent="DialogPanel/InfoContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(1, 1, 1, 1)
@@ -154,7 +149,7 @@ bbcode_enabled = true
 text = "[b]Current Attack:[/b]
 Loading attack information..."
 
-[node name="DefenseInfo" type="RichTextLabel" parent="CenterContainer/Panel/InfoContainer"]
+[node name="DefenseInfo" type="RichTextLabel" parent="DialogPanel/InfoContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(1, 1, 1, 1)
@@ -163,7 +158,7 @@ bbcode_enabled = true
 text = "[b]Active Defenses:[/b]
 Loading defense information..."
 
-[node name="DiceContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
+[node name="DiceContainer" type="VBoxContainer" parent="DialogPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -171,23 +166,23 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -200.0
-offset_top = -100.0
+offset_top = -80.0
 offset_right = 200.0
-offset_bottom = 100.0
+offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DiceArea" type="Control" parent="CenterContainer/Panel/DiceContainer"]
+[node name="DiceArea" type="Control" parent="DialogPanel/DiceContainer"]
 custom_minimum_size = Vector2(400, 150)
 layout_mode = 2
 
-[node name="DiceSprite" type="AnimatedSprite2D" parent="CenterContainer/Panel/DiceContainer/DiceArea"]
+[node name="DiceSprite" type="AnimatedSprite2D" parent="DialogPanel/DiceContainer/DiceArea"]
 z_index = 1
 position = Vector2(200, 75)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_acm4x")
 
-[node name="NumberLabel" type="Label" parent="CenterContainer/Panel/DiceContainer/DiceArea/DiceSprite"]
+[node name="NumberLabel" type="Label" parent="DialogPanel/DiceContainer/DiceArea/DiceSprite"]
 z_index = 2
 anchors_preset = 8
 anchor_left = 0.5
@@ -204,38 +199,38 @@ text = "5"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CupSprite" type="Sprite2D" parent="CenterContainer/Panel/DiceContainer/DiceArea"]
+[node name="CupSprite" type="Sprite2D" parent="DialogPanel/DiceContainer/DiceArea"]
 z_index = 3
 scale = Vector2(4, 4)
 texture = ExtResource("3_1t5kw")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CenterContainer/Panel/DiceContainer/DiceArea"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DialogPanel/DiceContainer/DiceArea"]
 libraries = {
 &"": SubResource("AnimationLibrary_dq7c0")
 }
 
-[node name="DiceResult" type="Label" parent="CenterContainer/Panel/DiceContainer"]
+[node name="DiceResult" type="Label" parent="DialogPanel/DiceContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "Ready to roll the dice..."
 horizontal_alignment = 1
 
-[node name="ButtonContainer" type="HBoxContainer" parent="CenterContainer/Panel/DiceContainer"]
+[node name="ButtonContainer" type="HBoxContainer" parent="DialogPanel/DiceContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="RollButton" type="Button" parent="CenterContainer/Panel/DiceContainer/ButtonContainer"]
+[node name="RollButton" type="Button" parent="DialogPanel/DiceContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "🎲 Roll Dice (3 Remaining)"
 
-[node name="ManualToggle" type="Button" parent="CenterContainer/Panel/DiceContainer/ButtonContainer"]
+[node name="ManualToggle" type="Button" parent="DialogPanel/DiceContainer/ButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "✏️ Manual Entry"
 
-[node name="ManualEntry" type="SpinBox" parent="CenterContainer/Panel/DiceContainer"]
+[node name="ManualEntry" type="SpinBox" parent="DialogPanel/DiceContainer"]
 visible = false
 layout_mode = 2
 min_value = 1.0
@@ -243,51 +238,51 @@ max_value = 10.0
 value = 5.0
 alignment = 1
 
-[node name="ManualSubmit" type="Button" parent="CenterContainer/Panel/DiceContainer"]
+[node name="ManualSubmit" type="Button" parent="DialogPanel/DiceContainer"]
 visible = false
 layout_mode = 2
 text = "Submit Manual Roll"
 
-[node name="StrengthContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
+[node name="StrengthContainer" type="VBoxContainer" parent="DialogPanel"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 50.0
-offset_top = -150.0
+offset_top = -120.0
 offset_right = -50.0
-offset_bottom = -30.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="StrengthInfo" type="Label" parent="CenterContainer/Panel/StrengthContainer"]
+[node name="StrengthInfo" type="Label" parent="DialogPanel/StrengthContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "Success Rate: 50% | Roll 5 or lower to succeed"
 horizontal_alignment = 1
 
-[node name="StrengthBar" type="ColorRect" parent="CenterContainer/Panel/StrengthContainer"]
+[node name="StrengthBar" type="ColorRect" parent="DialogPanel/StrengthContainer"]
 custom_minimum_size = Vector2(500, 40)
 layout_mode = 2
 size_flags_horizontal = 4
 color = Color(0.2, 0.2, 0.2, 0.8)
 
-[node name="RedSection" type="ColorRect" parent="CenterContainer/Panel/StrengthContainer/StrengthBar"]
+[node name="RedSection" type="ColorRect" parent="DialogPanel/StrengthContainer/StrengthBar"]
 layout_mode = 0
 offset_right = 250.0
 offset_bottom = 40.0
 color = Color(0.8, 0.2, 0.2, 0.9)
 
-[node name="BlueSection" type="ColorRect" parent="CenterContainer/Panel/StrengthContainer/StrengthBar"]
+[node name="BlueSection" type="ColorRect" parent="DialogPanel/StrengthContainer/StrengthBar"]
 layout_mode = 0
 offset_left = 250.0
 offset_right = 500.0
 offset_bottom = 40.0
 color = Color(0.2, 0.2, 0.8, 0.9)
 
-[node name="ResultIndicator" type="ColorRect" parent="CenterContainer/Panel/StrengthContainer/StrengthBar"]
+[node name="ResultIndicator" type="ColorRect" parent="DialogPanel/StrengthContainer/StrengthBar"]
 layout_mode = 0
 offset_left = 248.0
 offset_right = 252.0

@@ -16,27 +16,27 @@ var roll_duration: float = 2.0
 var cup_lift_delay: float = 1.0
 var result_display_delay: float = 0.5
 
-# UI References - Updated to match CenterContainer structure
-@onready var dice_sprite: AnimatedSprite2D = $CenterContainer/Panel/DiceContainer/DiceArea/DiceSprite
-@onready var dice_number_label: Label = $CenterContainer/Panel/DiceContainer/DiceArea/DiceSprite/NumberLabel
-@onready var cup_sprite: Sprite2D = $CenterContainer/Panel/DiceContainer/DiceArea/CupSprite
-@onready var animation_player: AnimationPlayer = $CenterContainer/Panel/DiceContainer/DiceArea/AnimationPlayer
-@onready var background_sprite: TextureRect = $BackgroundLayer/UnderwaterDiceScene2
-@onready var dice_result_label: Label = $CenterContainer/Panel/DiceContainer/DiceResult
-@onready var roll_button: Button = $CenterContainer/Panel/DiceContainer/ButtonContainer/RollButton
-@onready var manual_toggle: Button = $CenterContainer/Panel/DiceContainer/ButtonContainer/ManualToggle
-@onready var manual_entry: SpinBox = $CenterContainer/Panel/DiceContainer/ManualEntry
-@onready var manual_submit: Button = $CenterContainer/Panel/DiceContainer/ManualSubmit
-@onready var close_button: Button = $CenterContainer/Panel/HeaderContainer/CloseButton
-@onready var admin_button: Button = $CenterContainer/Panel/HeaderContainer/AdminButton
+# UI References - Updated to match robust structure
+@onready var dice_sprite: AnimatedSprite2D = $DialogPanel/DiceContainer/DiceArea/DiceSprite
+@onready var dice_number_label: Label = $DialogPanel/DiceContainer/DiceArea/DiceSprite/NumberLabel
+@onready var cup_sprite: Sprite2D = $DialogPanel/DiceContainer/DiceArea/CupSprite
+@onready var animation_player: AnimationPlayer = $DialogPanel/DiceContainer/DiceArea/AnimationPlayer
+@onready var background_sprite: TextureRect = $BackgroundSprite
+@onready var dice_result_label: Label = $DialogPanel/DiceContainer/DiceResult
+@onready var roll_button: Button = $DialogPanel/DiceContainer/ButtonContainer/RollButton
+@onready var manual_toggle: Button = $DialogPanel/DiceContainer/ButtonContainer/ManualToggle
+@onready var manual_entry: SpinBox = $DialogPanel/DiceContainer/ManualEntry
+@onready var manual_submit: Button = $DialogPanel/DiceContainer/ManualSubmit
+@onready var close_button: Button = $DialogPanel/HeaderContainer/CloseButton
+@onready var admin_button: Button = $DialogPanel/HeaderContainer/AdminButton
 
 # Info display
-@onready var attack_info: RichTextLabel = $CenterContainer/Panel/InfoContainer/AttackInfo
-@onready var defense_info: RichTextLabel = $CenterContainer/Panel/InfoContainer/DefenseInfo
-@onready var strength_info: Label = $CenterContainer/Panel/StrengthContainer/StrengthInfo
-@onready var red_section: ColorRect = $CenterContainer/Panel/StrengthContainer/StrengthBar/RedSection
-@onready var blue_section: ColorRect = $CenterContainer/Panel/StrengthContainer/StrengthBar/BlueSection
-@onready var result_indicator: ColorRect = $CenterContainer/Panel/StrengthContainer/StrengthBar/ResultIndicator
+@onready var attack_info: RichTextLabel = $DialogPanel/InfoContainer/AttackInfo
+@onready var defense_info: RichTextLabel = $DialogPanel/InfoContainer/DefenseInfo
+@onready var strength_info: Label = $DialogPanel/StrengthContainer/StrengthInfo
+@onready var red_section: ColorRect = $DialogPanel/StrengthContainer/StrengthBar/RedSection
+@onready var blue_section: ColorRect = $DialogPanel/StrengthContainer/StrengthBar/BlueSection
+@onready var result_indicator: ColorRect = $DialogPanel/StrengthContainer/StrengthBar/ResultIndicator
 
 # Animation effects
 var roll_tween: Tween
@@ -45,16 +45,49 @@ var dice_original_position: Vector2
 var cup_original_position: Vector2
 
 func _ready():
+	print("Dice popup initializing...")
+	
+	# Force full screen size regardless of parent
+	force_full_screen_size()
+	
 	# Wait a frame for all nodes to be ready
 	await get_tree().process_frame
 	
-	print("Dice popup initializing...")
 	setup_initial_state()
 	load_dice_assets()
 	setup_strength_display()
 	display_current_situation()
 	connect_signals()
 	print("Dice popup ready!")
+
+func force_full_screen_size():
+	"""Force the popup to take the full viewport size when instantiated as child"""
+	# Get the actual viewport size
+	var viewport = get_viewport()
+	if viewport:
+		var viewport_size = viewport.get_visible_rect().size
+		print("Viewport size: ", viewport_size)
+		
+		# Force this control to fill the entire viewport
+		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		position = Vector2.ZERO
+		size = viewport_size
+		
+		# Ensure background elements also fill the screen
+		var full_bg = get_node_or_null("FullScreenBackground")
+		var bg_sprite = get_node_or_null("BackgroundSprite")
+		
+		if full_bg:
+			full_bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			full_bg.size = viewport_size
+		
+		if bg_sprite:
+			bg_sprite.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			bg_sprite.size = viewport_size
+		
+		print("Forced popup to full screen size: ", size)
+	else:
+		print("Warning: Could not get viewport for sizing")
 
 func setup_initial_state():
 	"""Initialize the dice popup visual state"""
@@ -196,13 +229,13 @@ func create_fallback_background():
 	print("Creating fallback background...")
 	if background_sprite:
 		var fallback_texture = ImageTexture.new()
-		var image = Image.create(256, 256, false, Image.FORMAT_RGB8)
+		var image = Image.create(512, 512, false, Image.FORMAT_RGB8)
 		
 		# Create a simple blue gradient (underwater theme)
-		for y in range(256):
-			var blue_intensity = 0.2 + (y / 256.0) * 0.6  # Darker at top, lighter at bottom
+		for y in range(512):
+			var blue_intensity = 0.2 + (y / 512.0) * 0.6  # Darker at top, lighter at bottom
 			var color = Color(0.1, 0.3, blue_intensity)
-			for x in range(256):
+			for x in range(512):
 				image.set_pixel(x, y, color)
 		
 		fallback_texture.set_image(image)
@@ -228,7 +261,7 @@ func setup_strength_display():
 		red_weight = 1
 		blue_weight = 1
 	
-	# Calculate bar sections (now 500px wide)
+	# Calculate bar sections (500px wide)
 	var bar_width = 500
 	var red_width = (red_weight / float(total_weight)) * bar_width
 	var blue_width = bar_width - red_width
@@ -409,7 +442,7 @@ func perform_dice_roll():
 		dice_result_label.text = result_text
 		dice_result_label.modulate = result_color
 	
-	# Update strength bar with result indicator (500px wide now)
+	# Update strength bar with result indicator
 	if result_indicator:
 		var result_position = (current_roll_result / 10.0) * 500
 		result_indicator.position.x = result_position - 2
