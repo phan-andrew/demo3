@@ -1,7 +1,7 @@
 extends Node2D
 
 var vehicle
-var current_round = 2
+var current_round = 0
 var round_end = Mitre.timeline_dict.size()-2
 
 func _ready():

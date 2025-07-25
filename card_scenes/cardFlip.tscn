@@ -628,7 +628,7 @@ offset_top = 150.0
 offset_right = -25.0
 offset_bottom = 350.0
 min_value = 1.0
-max_value = 10.0
+max_value = 5.0
 value = 1.0
 
 [node name="time_slider" type="VSlider" parent="card/sliders"]
@@ -637,8 +637,7 @@ offset_left = 225.0
 offset_top = 150.0
 offset_right = 275.0
 offset_bottom = 350.0
-max_value = 120.0
-step = 5.0
+max_value = 5.0
 
 [node name="maturity_slider" type="VSlider" parent="card/sliders"]
 offset_left = 125.0

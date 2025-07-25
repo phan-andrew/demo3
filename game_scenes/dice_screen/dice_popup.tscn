@@ -3,8 +3,7 @@
 [ext_resource type="Script" uid="uid://o07chch86ppx" path="res://game_scenes/dice_screen/dice_popup.gd" id="1_b010v"]
 [ext_resource type="Texture2D" uid="uid://lgl6156cilrx" path="res://game_scenes/dice_screen/UnderwaterDiceScene.png" id="2_acm4x"]
 [ext_resource type="Texture2D" uid="uid://xjyxv5rhk75d" path="res://game_scenes/dice_screen/Cup.png" id="3_1t5kw"]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_acm4x"]
+[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="3_tjbuc"]
 
 [sub_resource type="Animation" id="Animation_0rb3b"]
 length = 0.001
@@ -20,6 +19,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [Vector2(0, 0)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CupSprite:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_tjbuc"]
 resource_name = "cup_reveal"
@@ -31,10 +42,10 @@ tracks/0/path = NodePath("CupSprite:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(5, 0), Vector2(-5, 0), Vector2(3, 0), Vector2(-3, 0), Vector2(0, -5), Vector2(0, -15), Vector2(0, -30), Vector2(-10, -50), Vector2(-20, -80), Vector2(-50, -120)]
+"values": [Vector2(0, 0), Vector2(5, 0), Vector2(-5, 0), Vector2(3, 0), Vector2(-3, 0), Vector2(0, -5), Vector2(0, -15), Vector2(-10, -22.5), Vector2(-25, -30), Vector2(-40, -40), Vector2(-55, -50), Vector2(-70, -65), Vector2(-85, -80), Vector2(-100, -100), Vector2(-115, -120)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -47,6 +58,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CupSprite:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 1.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.326377]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dq7c0"]
@@ -93,9 +116,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -400.0
+offset_left = -457.0
 offset_top = -300.0
-offset_right = 400.0
+offset_right = 452.0
 offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -113,6 +136,7 @@ grow_horizontal = 2
 [node name="TitleLabel" type="Label" parent="DialogPanel/HeaderContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_tjbuc")
 theme_override_font_sizes/font_size = 24
 text = "🎲 Attack Resolution - Dice Roll"
 
@@ -122,8 +146,10 @@ size_flags_horizontal = 3
 
 [node name="AdminButton" type="Button" parent="DialogPanel/HeaderContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_tjbuc")
 theme_override_font_sizes/font_size = 14
-text = "Admin"
+text = "Exit ND
+"
 
 [node name="CloseButton" type="Button" parent="DialogPanel/HeaderContainer"]
 layout_mode = 2
@@ -144,6 +170,11 @@ grow_horizontal = 2
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_fonts/normal_font = ExtResource("3_tjbuc")
+theme_override_fonts/mono_font = ExtResource("3_tjbuc")
+theme_override_fonts/italics_font = ExtResource("3_tjbuc")
+theme_override_fonts/bold_italics_font = ExtResource("3_tjbuc")
+theme_override_fonts/bold_font = ExtResource("3_tjbuc")
 theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
 text = "[b]Current Attack:[/b]
@@ -153,6 +184,11 @@ Loading attack information..."
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_fonts/normal_font = ExtResource("3_tjbuc")
+theme_override_fonts/mono_font = ExtResource("3_tjbuc")
+theme_override_fonts/italics_font = ExtResource("3_tjbuc")
+theme_override_fonts/bold_italics_font = ExtResource("3_tjbuc")
+theme_override_fonts/bold_font = ExtResource("3_tjbuc")
 theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
 text = "[b]Active Defenses:[/b]
@@ -176,11 +212,11 @@ grow_vertical = 2
 custom_minimum_size = Vector2(400, 150)
 layout_mode = 2
 
-[node name="DiceSprite" type="AnimatedSprite2D" parent="DialogPanel/DiceContainer/DiceArea"]
+[node name="DiceSprite" type="Sprite2D" parent="DialogPanel/DiceContainer/DiceArea"]
 z_index = 1
 position = Vector2(200, 75)
 scale = Vector2(4, 4)
-sprite_frames = SubResource("SpriteFrames_acm4x")
+offset = Vector2(40, 0)
 
 [node name="NumberLabel" type="Label" parent="DialogPanel/DiceContainer/DiceArea/DiceSprite"]
 z_index = 2
@@ -194,6 +230,7 @@ offset_top = -15.0
 offset_right = 20.0
 offset_bottom = 15.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_tjbuc")
 theme_override_font_sizes/font_size = 28
 text = "5"
 horizontal_alignment = 1
@@ -203,6 +240,7 @@ vertical_alignment = 1
 z_index = 3
 scale = Vector2(4, 4)
 texture = ExtResource("3_1t5kw")
+offset = Vector2(80, 25)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="DialogPanel/DiceContainer/DiceArea"]
 libraries = {
@@ -212,6 +250,7 @@ libraries = {
 [node name="DiceResult" type="Label" parent="DialogPanel/DiceContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_tjbuc")
 theme_override_font_sizes/font_size = 18
 text = "Ready to roll the dice..."
 horizontal_alignment = 1
@@ -222,11 +261,13 @@ alignment = 1
 
 [node name="RollButton" type="Button" parent="DialogPanel/DiceContainer/ButtonContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_tjbuc")
 theme_override_font_sizes/font_size = 16
 text = "🎲 Roll Dice (3 Remaining)"
 
 [node name="ManualToggle" type="Button" parent="DialogPanel/DiceContainer/ButtonContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_tjbuc")
 theme_override_font_sizes/font_size = 16
 text = "✏️ Manual Entry"
 
@@ -259,6 +300,7 @@ grow_vertical = 0
 [node name="StrengthInfo" type="Label" parent="DialogPanel/StrengthContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_tjbuc")
 theme_override_font_sizes/font_size = 18
 text = "Success Rate: 50% | Roll 5 or lower to succeed"
 horizontal_alignment = 1

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqjsbshfrly0j"]
+
+[ext_resource type="Script" uid="uid://dnf1xgboximqf" path="res://game_scenes/game_screen/ScrollingLabelRoot.gd" id="1_k3kj5"]
+[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="2_fhfff"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_k3kj5")
+
+[node name="ScrollingLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(303, 40)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("2_fhfff")
+text = "ffff"
+vertical_alignment = 1

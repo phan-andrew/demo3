@@ -51,15 +51,36 @@ func _process(_delta):
 			maturity_level = $card/sliders/maturity_slider.value
 	
 func setCard(index):
+	card_index = int(index)
+
 	if cardType == "a":
-		$card.texture = load(Mitre.attack_dict[index+1][4])  # Attack: index 4 = image path
+		var attack = Mitre.attack_dict[index + 1]
+		$card.texture = load(attack[4])
 		$card/sliders/maturity_slider.hide()
+
+		var cost = 1
+		if attack.size() > 5:
+			cost = int(attack[5])
+
+		var time = 1
+		if attack.size() > 6:
+			time = int(attack[6])
+
+		setCost(cost)
+		setTimeValue(time)
+
 	if cardType == "d":
-		$card.texture = load(Mitre.defend_dict[int(index)+1][5])  # Defense: index 5 = image path
+		var defend = Mitre.defend_dict[int(index) + 1]
+		$card.texture = load(defend[5])
 		$card/sliders/cost_slider.hide()
 		$card/sliders/time_slider.hide()
 		$card/Clock.hide()
-	card_index = int(index)
+
+		var maturity = 2
+		if defend.size() > 6:
+			maturity = int(defend[6])
+
+		setMaturity(maturity)
 
 func play():
 	$AnimationPlayer.play("start_flip")
@@ -156,16 +177,31 @@ func setText(index):
 		$card/definition.hide()
 
 func setCost(Cost):
-	if cardType=="a":
+	if cardType == "a":
+		cost_value = Cost
 		$card/sliders/cost_slider.value = Cost
-
-func setMaturity(Maturity):
-	if cardType=="d":
-		$card/sliders/maturity_slider.value = Maturity
+		$card/Dollar.texture = load(cost[Cost - 1])
 
 func setTimeValue(value):
 	if cardType == "a":
+		time_value = value
 		$card/sliders/time_slider.value = value
+		$card/Time.text = str(value) + " min"
+
+		if value > 90:
+			$card/Clock.play("full")
+		elif value > 60:
+			$card/Clock.play("0.75")
+		elif value > 30:
+			$card/Clock.play("0.25")
+		else:
+			$card/Clock.play("none")
+
+func setMaturity(Maturity):
+	if cardType == "d":
+		maturity_level = Maturity
+		$card/sliders/maturity_slider.value = Maturity
+		$card/Maturity.texture = load(maturity[Maturity - 1])
 
 func getTimeValue():
 	return time_value

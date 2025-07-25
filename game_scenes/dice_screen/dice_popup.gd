@@ -17,7 +17,7 @@ var cup_lift_delay: float = 1.0
 var result_display_delay: float = 0.5
 
 # UI References - Updated to match robust structure
-@onready var dice_sprite: AnimatedSprite2D = $DialogPanel/DiceContainer/DiceArea/DiceSprite
+@onready var dice_sprite: Sprite2D = $DialogPanel/DiceContainer/DiceArea/DiceSprite
 @onready var dice_number_label: Label = $DialogPanel/DiceContainer/DiceArea/DiceSprite/NumberLabel
 @onready var cup_sprite: Sprite2D = $DialogPanel/DiceContainer/DiceArea/CupSprite
 @onready var animation_player: AnimationPlayer = $DialogPanel/DiceContainer/DiceArea/AnimationPlayer
@@ -115,6 +115,7 @@ func setup_initial_state():
 
 func load_dice_assets():
 	"""Load dice and cup sprite assets"""
+	
 	print("Loading dice assets...")
 	
 	# First, try to load and set the background
@@ -126,12 +127,7 @@ func load_dice_assets():
 		var dice_texture = load(dice_path)
 		if dice_texture:
 			# Create SpriteFrames for AnimatedSprite2D
-			if not dice_sprite.sprite_frames:
-				dice_sprite.sprite_frames = SpriteFrames.new()
-			dice_sprite.sprite_frames.clear_all()
-			dice_sprite.sprite_frames.add_animation("default")
-			dice_sprite.sprite_frames.add_frame("default", dice_texture)
-			dice_sprite.play("default")
+			dice_sprite.texture = dice_texture
 			print("Dice texture loaded successfully")
 		else:
 			print("Failed to load dice texture")
@@ -381,22 +377,7 @@ func perform_dice_roll():
 	
 	await get_tree().create_timer(0.5).timeout
 	
-	# Step 2: Shake effect while rolling
-	if dice_sprite:
-		roll_tween = create_tween()
-		roll_tween.set_loops(int(roll_duration * 3))  # 3 shakes per second
-		
-		for i in range(int(roll_duration * 3)):
-			var shake_x = randf_range(-shake_intensity, shake_intensity)
-			var shake_y = randf_range(-shake_intensity, shake_intensity)
-			var target_pos = dice_original_position + Vector2(shake_x, shake_y)
-			roll_tween.tween_property(dice_sprite, "position", target_pos, 0.33)
-			await get_tree().create_timer(0.33).timeout
-		
-		# Return to original position
-		dice_sprite.position = dice_original_position
-		if roll_tween:
-			roll_tween.kill()
+
 	
 	# Step 3: Determine result
 	current_roll_result = randi_range(1, 10)
