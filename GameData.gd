@@ -1,42 +1,29 @@
 extends Node
 
-# Enhanced GameData - Attack Chain Progression System
-# Handles 1:1 card pairing, dice calculations, and attack chain progression
+# Enhanced GameData - Connected Attack Chain Progression System
+# Each position progresses through IA → PEP → E/E independently but connectedly
 
 # Attack chain progression system
 enum AttackStep {
-	IA,   # Initial Access (Step 1)
-	PEP,  # Privilege Escalation/Persistence (Step 2) 
-	E_E   # Execution/Exfiltration (Step 3) - WIN
+	EMPTY,  # No foothold
+	IA,     # Initial Access established 
+	PEP,    # Privilege Escalation/Persistence established
+	E_E     # Execution/Exfiltration achieved - WIN CONDITION
 }
 
-# Attack line progress tracking
-var attack_lines = [
-	{"step": AttackStep.IA, "card_index": -1, "active": false},
-	{"step": AttackStep.IA, "card_index": -1, "active": false},
-	{"step": AttackStep.IA, "card_index": -1, "active": false}
+# Position tracking - 3 independent positions that can progress
+var attack_positions = [
+	{"state": AttackStep.EMPTY, "name": "Position 1"},
+	{"state": AttackStep.EMPTY, "name": "Position 2"}, 
+	{"state": AttackStep.EMPTY, "name": "Position 3"}
 ]
 
 # Current round data
 var current_attack_cards = []
 var current_defense_cards = []
-var total_defense_maturity: float = 0.0
+var round_number = 1
 
-# Team weights (calculated from cards) - for compatibility
-var red_team_weight: int = 1
-var blue_team_weight: int = 1
-
-# Legacy compatibility variables
-var current_attack_cost: int = 1
-var current_attack_time: int = 1
-var last_dice_result: int = 0
-var last_attack_success: bool = false
-
-# Dice roll results for current round
-var current_round_results = []
-var dice_roll_completed: bool = false
-
-# Attack success rate table
+# Attack success rate table with individual calculations
 var attack_success_table = {
 	"c1t1": {"time": 1, "cost": 1, "rate": 5, "likelihood": 90},
 	"c1t2": {"time": 1, "cost": 2, "rate": 5, "likelihood": 85},
@@ -65,192 +52,318 @@ var attack_success_table = {
 	"c5t5": {"time": 5, "cost": 5, "rate": 1, "likelihood": 20}
 }
 
+# Game state tracking for data export
+var game_history = []
+var current_round_data = {}
+
 # Signals
 signal dice_roll_completed_signal
-signal defense_reallocation_needed
-signal attack_chain_victory  # Red team wins - all attacks reach E/E
+signal attack_chain_victory  # Red team wins - any position reaches E/E
 signal timeline_victory      # Blue team wins - time/timeline ends
-signal dice_roll_requested   # Legacy compatibility
+signal discussion_time_needed(results: Array)  # Pause for discussion
 
 func _ready():
 	reset_attack_chains()
 
 func reset_attack_chains():
-	"""Reset all attack chains to IA step"""
+	"""Reset all attack positions to EMPTY state"""
 	for i in range(3):
-		attack_lines[i] = {"step": AttackStep.IA, "card_index": -1, "active": false}
-	current_round_results.clear()
-	dice_roll_completed = false
-	# Reset legacy compatibility variables
-	red_team_weight = 1
-	blue_team_weight = 1
-	current_attack_cost = 1
-	current_attack_time = 1
-	last_dice_result = 0
-	last_attack_success = false
+		attack_positions[i]["state"] = AttackStep.EMPTY
+	round_number = 1
+	game_history.clear()
+	current_round_data.clear()
 
 func capture_current_cards(attack_cards: Array, defense_cards: Array):
-	"""Capture current round cards and update attack line tracking"""
+	"""Capture current round cards with individual calculations"""
 	current_attack_cards.clear()
 	current_defense_cards.clear()
 	
-	print("Capturing cards - Attack cards: ", attack_cards.size(), " Defense cards: ", defense_cards.size())
+	print("=== ROUND ", round_number, " CARD CAPTURE ===")
 	
-	# Update attack lines and capture active cards
+	# Capture attack cards with their individual properties
 	for i in range(min(attack_cards.size(), 3)):
 		var card = attack_cards[i]
 		if card and card.inPlay == true and card.card_index != -1:
-			current_attack_cards.append(card)
-			attack_lines[i]["active"] = true
-			attack_lines[i]["card_index"] = card.card_index
-			print("Attack ", i + 1, " active: ", get_attack_name(card))
-		else:
-			attack_lines[i]["active"] = false
-			attack_lines[i]["card_index"] = -1
+			var card_data = {
+				"card": card,
+				"position_index": i,
+				"cost": card.getCostValue() if card.has_method("getCostValue") else 1,
+				"time": card.getTimeValue() if card.has_method("getTimeValue") else 1,
+				"name": get_attack_name(card),
+				"card_type": get_attack_type(card)  # IA, PEP, or E/E type
+			}
+			current_attack_cards.append(card_data)
+			print("Attack ", i + 1, ": ", card_data.name, " (Cost: ", card_data.cost, ", Time: ", card_data.time, ")")
 	
 	# Capture defense cards with 1:1 mapping
 	for i in range(min(defense_cards.size(), 3)):
 		var card = defense_cards[i]
 		if card and card.inPlay == true and card.card_index != -1:
-			current_defense_cards.append(card)
-			print("Defense ", i + 1, " active: ", get_defense_name(card))
+			var card_data = {
+				"card": card,
+				"position_index": i,
+				"maturity": card.getMaturityValue() if card.has_method("getMaturityValue") else 1,
+				"name": get_defense_name(card),
+				"is_eviction": is_eviction_card(card)  # Check if it's an eviction card
+			}
+			current_defense_cards.append(card_data)
+			print("Defense ", i + 1, ": ", card_data.name, " (Maturity: ", card_data.maturity, ")")
 		else:
 			current_defense_cards.append(null)
 	
-	calculate_defense_effectiveness()
-	calculate_team_weights()
-	calculate_attack_parameters()
+	# Store current round start state
+	current_round_data = {
+		"round_number": round_number,
+		"starting_positions": get_position_states_snapshot(),
+		"attack_cards": current_attack_cards.duplicate(),
+		"defense_cards": current_defense_cards.duplicate(),
+		"timestamp": Time.get_time_string_from_system()
+	}
 
 func get_card_pairing_info() -> Array:
-	"""Get 1:1 card pairing information for dice rolling"""
+	"""Get individual card pairing information with proper calculations"""
 	var pairings = []
 	
-	print("Creating card pairings...")
+	print("=== CREATING INDIVIDUAL CARD PAIRINGS ===")
 	
-	# Check active attacks and defenses
-	var active_attacks = []
-	var active_defenses = []
-	
-	for i in range(3):
-		if attack_lines[i]["active"]:
-			active_attacks.append(i)
-		if i < current_defense_cards.size() and current_defense_cards[i] != null:
-			active_defenses.append(i)
-	
-	print("Active attacks: ", active_attacks.size(), " Active defenses: ", active_defenses.size())
-	
-	# Handle defense reallocation if needed
-	if active_defenses.size() > active_attacks.size() and active_attacks.size() > 0:
-		print("Defense reallocation needed - more defenses than attacks")
-		emit_signal("defense_reallocation_needed")
-		return []  # Wait for reallocation
-	
-	# Create 1:1 pairings
-	for i in range(3):
-		if attack_lines[i]["active"]:
-			var attack_card = get_attack_card_by_index(i)
-			var defense_card = null
-			if i < current_defense_cards.size():
-				defense_card = current_defense_cards[i]
-			
-			var pairing = create_card_pairing(i, attack_card, defense_card)
-			pairings.append(pairing)
-			print("Created pairing for attack ", i + 1, ": ", pairing.attack_name, " vs ", pairing.defense_name)
+	# Create pairing for each attack card individually
+	for attack_data in current_attack_cards:
+		var position_index = attack_data.position_index
+		var defense_data = null
+		if position_index < current_defense_cards.size():
+			defense_data = current_defense_cards[position_index]
+		
+		var pairing = create_individual_card_pairing(attack_data, defense_data, position_index)
+		pairings.append(pairing)
+		
+		print("Pairing ", position_index + 1, ":")
+		print("  Attack: ", pairing.attack_name, " (", pairing.intended_step, ")")
+		print("  Defense: ", pairing.defense_name)
+		print("  Individual Success Rate: ", pairing.success_percentage, "% -> Threshold: ", pairing.dice_threshold)
+		print("  Valid Play: ", pairing.is_valid_play, " | Auto Success: ", pairing.auto_success)
 	
 	return pairings
 
-func get_attack_card_by_index(index: int):
-	"""Get attack card by its position index"""
-	if index >= current_attack_cards.size():
-		return null
+func create_individual_card_pairing(attack_data: Dictionary, defense_data, position_index: int) -> Dictionary:
+	"""Create pairing with individual card calculations"""
+	var current_position_state = attack_positions[position_index]["state"]
+	var intended_step = determine_intended_step(attack_data.card_type, current_position_state)
 	
-	# Find the card at the specific index position
-	var cards_found = 0
-	for i in range(3):
-		if attack_lines[i]["active"]:
-			if cards_found == index:
-				# Find the actual card with this card_index
-				for card in current_attack_cards:
-					if card and card.card_index == attack_lines[i]["card_index"]:
-						return card
-			cards_found += 1
-	
-	return null
-
-func create_card_pairing(attack_index: int, attack_card, defense_card) -> Dictionary:
-	"""Create a pairing between attack and defense card"""
 	var pairing = {
-		"attack_index": attack_index,
-		"attack_name": "Unknown Attack",
-		"defense_name": "No Defense",
-		"success_percentage": 50.0,
-		"rounded_percentage": 50,
-		"dice_threshold": 5,
+		"attack_index": position_index,
+		"attack_name": attack_data.name,
+		"defense_name": "No Defense" if defense_data == null else defense_data.name,
+		"individual_cost": attack_data.cost,
+		"individual_time": attack_data.time,
+		"current_position_state": get_step_name(current_position_state),
+		"intended_step": intended_step,
+		"is_valid_play": is_valid_attack_play(attack_data.card_type, current_position_state),
 		"auto_success": false,
-		"current_step": get_step_name(attack_lines[attack_index]["step"])
+		"success_percentage": 0.0,
+		"rounded_percentage": 0,
+		"dice_threshold": 10
 	}
 	
-	# Get attack info
-	if attack_card:
-		pairing["attack_name"] = get_attack_name(attack_card)
+	# Check if this is a valid play
+	if not pairing.is_valid_play:
+		pairing.success_percentage = 0.0
+		pairing.rounded_percentage = 0
+		pairing.dice_threshold = 10
+		pairing.invalid_play = true
+		print("INVALID PLAY: Cannot play ", attack_data.card_type, " when position is at ", get_step_name(current_position_state))
+		return pairing
+	
+	# Calculate individual success rate
+	var base_rate = calculate_individual_attack_success_rate(attack_data.cost, attack_data.time)
+	
+	if defense_data == null:
+		# No defense - auto success
+		pairing.auto_success = true
+		pairing.success_percentage = 100.0
+		pairing.rounded_percentage = 100
+		pairing.dice_threshold = 10
+	else:
+		# Apply defense modifiers
+		var defense_modifier = calculate_defense_modifier(defense_data.maturity)
 		
-		# Calculate base success rate from table
-		var base_rate = calculate_attack_success_rate(attack_card)
-		print("Base success rate from table: ", base_rate * 100, "%")
+		# Special case: Eviction cards
+		if defense_data.is_eviction and current_position_state != AttackStep.EMPTY:
+			defense_modifier += 0.2  # 20% bonus against established positions
 		
-		if defense_card == null:
-			# No defense - auto success
-			pairing["auto_success"] = true
-			pairing["defense_name"] = "UNDEFENDED"
-			pairing["success_percentage"] = 100.0
-			pairing["rounded_percentage"] = 100
-			pairing["dice_threshold"] = 10
-			print("No defense - auto success")
-		else:
-			# Calculate success rate vs defense
-			pairing["defense_name"] = get_defense_name(defense_card)
-			var defense_modifier = calculate_defense_modifier(defense_card)
-			var final_rate = base_rate * (1.0 - defense_modifier)
-			
-			pairing["success_percentage"] = final_rate * 100.0
-			pairing["rounded_percentage"] = round_to_nearest_ten(pairing["success_percentage"])
-			pairing["dice_threshold"] = pairing["rounded_percentage"] / 10
-			
-			print("Defense modifier: ", defense_modifier, " Final rate: ", final_rate * 100, "% Rounded: ", pairing["rounded_percentage"], "% Threshold: ", pairing["dice_threshold"])
+		var final_rate = base_rate * (1.0 - defense_modifier)
+		pairing.success_percentage = final_rate * 100.0
+		pairing.rounded_percentage = round_to_nearest_ten(pairing.success_percentage)
+		pairing.dice_threshold = pairing.rounded_percentage / 10
 	
 	return pairing
 
-func calculate_attack_success_rate(attack_card) -> float:
-	"""Calculate base attack success rate from attack card using the success table"""
-	var cost = 1
-	var time = 1
+func determine_intended_step(card_type: String, current_state: AttackStep) -> String:
+	"""Determine what step this card is trying to achieve"""
+	match card_type:
+		"IA":
+			return "IA"
+		"PEP": 
+			if current_state >= AttackStep.IA:
+				return "PEP"
+			else:
+				return "INVALID - No IA foothold"
+		"E/E":
+			if current_state >= AttackStep.PEP:
+				return "E/E"
+			else:
+				return "INVALID - No PEP foothold"
+		_:
+			return "Unknown"
+
+func is_valid_attack_play(card_type: String, current_state: AttackStep) -> bool:
+	"""Check if an attack card can be played in the current position state"""
+	match card_type:
+		"IA":
+			return true  # IA can always be played (establish or re-establish foothold)
+		"PEP":
+			return current_state >= AttackStep.IA  # Need IA foothold first
+		"E/E":
+			return current_state >= AttackStep.PEP  # Need PEP foothold first
+		_:
+			return false
+
+func calculate_individual_attack_success_rate(cost: int, time: int) -> float:
+	"""Calculate success rate for individual card"""
+	var clamped_cost = clamp(cost, 1, 5)
+	var clamped_time = clamp(int(time / 24), 1, 5)  # Convert minutes to 1-5 scale
 	
-	if attack_card.has_method("getCostValue"):
-		cost = clamp(attack_card.getCostValue(), 1, 5)
-	if attack_card.has_method("getTimeValue"):
-		time = clamp(int(attack_card.getTimeValue() / 24), 1, 5)  # Convert to 1-5 scale
-	
-	var key = "c" + str(cost) + "t" + str(time)
+	var key = "c" + str(clamped_cost) + "t" + str(clamped_time)
 	var attack_data = attack_success_table.get(key, {"likelihood": 50})
 	var base_rate = attack_data.likelihood / 100.0
 	
-	print("Attack success calculation - Cost: ", cost, " Time: ", time, " Key: ", key, " Base Rate: ", base_rate * 100, "%")
-	
+	print("Individual calculation - Cost: ", clamped_cost, " Time: ", clamped_time, " -> ", base_rate * 100, "%")
 	return base_rate
 
-func calculate_defense_modifier(defense_card) -> float:
+func calculate_defense_modifier(maturity: int) -> float:
 	"""Calculate defense effectiveness modifier (0.0 to 0.4)"""
-	var maturity = 1
-	if defense_card.has_method("getMaturityValue"):
-		maturity = defense_card.getMaturityValue()
-	
-	# Convert maturity (1-5) to modifier (0-40% reduction)
 	return (maturity - 1.0) / 4.0 * 0.4
 
 func round_to_nearest_ten(percentage: float) -> int:
 	"""Round percentage to nearest 10 for dice threshold"""
 	return int(round(percentage / 10.0) * 10)
 
+func record_dice_results(results: Array):
+	"""Record dice results and process connected attack chain logic"""
+	print("=== PROCESSING DICE RESULTS ===")
+	
+	var round_results = []
+	
+	# Process each individual result
+	for result in results:
+		var position_index = result.attack_index
+		var success = result.success
+		var attack_data = current_attack_cards[position_index] if position_index < current_attack_cards.size() else null
+		
+		if not attack_data:
+			continue
+			
+		var result_data = {
+			"position_index": position_index,
+			"attack_name": result.attack_name,
+			"defense_name": result.defense_name,
+			"success": success,
+			"roll_result": result.roll_result,
+			"auto_success": result.get("auto_success", false),
+			"invalid_play": result.get("invalid_play", false),
+			"previous_state": get_step_name(attack_positions[position_index]["state"]),
+			"intended_step": attack_data.card_type if attack_data else "Unknown"
+		}
+		
+		# Apply results to connected attack chain
+		if success and not result.get("invalid_play", false):
+			var previous_state = attack_positions[position_index]["state"]
+			advance_position_state(position_index, attack_data.card_type)
+			result_data["new_state"] = get_step_name(attack_positions[position_index]["state"])
+			print("Position ", position_index + 1, " advanced from ", result_data.previous_state, " to ", result_data.new_state)
+		else:
+			result_data["new_state"] = result_data.previous_state
+			if result.get("invalid_play", false):
+				print("Position ", position_index + 1, " - INVALID PLAY: ", result.attack_name)
+			else:
+				print("Position ", position_index + 1, " - FAILED: ", result.attack_name)
+		
+		round_results.append(result_data)
+	
+	# Process defense evictions
+	process_defense_evictions()
+	
+	# Save round data to history
+	current_round_data["results"] = round_results
+	current_round_data["ending_positions"] = get_position_states_snapshot()
+	game_history.append(current_round_data.duplicate())
+	
+	# Check win conditions
+	if check_red_team_victory():
+		print("RED TEAM VICTORY - Position reached E/E!")
+		emit_signal("attack_chain_victory")
+		return
+	
+	# Emit discussion time signal
+	emit_signal("discussion_time_needed", round_results)
+
+func advance_position_state(position_index: int, card_type: String):
+	"""Advance a position state based on successful attack"""
+	var current_state = attack_positions[position_index]["state"]
+	
+	match card_type:
+		"IA":
+			attack_positions[position_index]["state"] = AttackStep.IA
+		"PEP":
+			if current_state >= AttackStep.IA:
+				attack_positions[position_index]["state"] = AttackStep.PEP
+		"E/E":
+			if current_state >= AttackStep.PEP:
+				attack_positions[position_index]["state"] = AttackStep.E_E
+
+func process_defense_evictions():
+	"""Process defense eviction cards that can reset positions"""
+	for i in range(current_defense_cards.size()):
+		var defense_data = current_defense_cards[i]
+		if defense_data != null and defense_data.is_eviction:
+			# Check if this defense successfully evicted
+			# This would be determined by the specific eviction card logic
+			# For now, we'll implement basic eviction on high maturity
+			if defense_data.maturity >= 4 and attack_positions[i]["state"] != AttackStep.EMPTY:
+				print("EVICTION: Position ", i + 1, " evicted by ", defense_data.name)
+				attack_positions[i]["state"] = AttackStep.EMPTY
+
+func check_red_team_victory() -> bool:
+	"""Check if red team has won (any position reached E/E)"""
+	for position in attack_positions:
+		if position["state"] == AttackStep.E_E:
+			return true
+	return false
+
+func get_step_name(step: AttackStep) -> String:
+	"""Get readable name for attack step"""
+	match step:
+		AttackStep.EMPTY:
+			return "EMPTY"
+		AttackStep.IA:
+			return "IA"
+		AttackStep.PEP:
+			return "PEP"
+		AttackStep.E_E:
+			return "E/E"
+		_:
+			return "Unknown"
+
+func get_position_states_snapshot() -> Array:
+	"""Get current position states for tracking"""
+	var states = []
+	for i in range(3):
+		states.append({
+			"position": i + 1,
+			"state": get_step_name(attack_positions[i]["state"])
+		})
+	return states
+
+# Helper functions for card identification
 func get_attack_name(attack_card) -> String:
 	"""Get attack card name safely"""
 	if not attack_card:
@@ -275,287 +388,149 @@ func get_defense_name(defense_card) -> String:
 			return mitre.defend_dict[card_index + 1][3]  # Defense: index 3 = Name
 	return "Defense Card"
 
-func record_dice_results(results: Array):
-	"""Record dice results and advance attack chains"""
-	current_round_results = results.duplicate()
-	dice_roll_completed = true
+func get_attack_type(attack_card) -> String:
+	"""Determine attack card type (IA, PEP, E/E) based on MITRE classification"""
+	if not attack_card:
+		return "Unknown"
 	
-	print("Recording dice results: ", results.size(), " results")
-	
-	# Process each result and advance attack chains
-	for result in results:
-		var attack_index = result.attack_index
-		print("Processing result for attack ", attack_index + 1, ": ", "Success" if result.success else "Failure")
-		if result.success:
-			advance_attack_chain(attack_index)
-	
-	# Check win conditions
-	if check_all_attacks_complete():
-		print("All attacks completed - Red team victory!")
-		emit_signal("attack_chain_victory")
-	
-	emit_signal("dice_roll_completed_signal")
+	var card_index = attack_card.card_index
+	if has_node("/root/Mitre"):
+		var mitre = get_node("/root/Mitre")
+		if mitre.attack_dict.has(card_index + 1):
+			var classification = mitre.attack_dict[card_index + 1].get(5, 1)  # Assuming index 5 is classification
+			match int(classification):
+				1:
+					return "IA"  # Initial Access
+				2:
+					return "PEP"  # Privilege Escalation/Persistence
+				3:
+					return "E/E"  # Execution/Exfiltration
+				_:
+					return "IA"  # Default to IA
+	return "IA"  # Default
 
-func advance_attack_chain(attack_index: int):
-	"""Advance an attack chain to the next step"""
-	if attack_index < 0 or attack_index >= 3:
-		return
+func is_eviction_card(defense_card) -> bool:
+	"""Check if defense card is an eviction card"""
+	if not defense_card:
+		return false
 	
-	var current_step = attack_lines[attack_index]["step"]
+	var card_name = get_defense_name(defense_card)
+	# Define eviction cards by name - you can expand this list
+	var eviction_cards = [
+		"Process Termination",
+		"File Removal", 
+		"Credential Revoking",
+		"System Shutdown",
+		"Account Access Removal"
+	]
 	
-	match current_step:
-		AttackStep.IA:
-			attack_lines[attack_index]["step"] = AttackStep.PEP
-			print("Attack ", attack_index + 1, " advanced to PEP")
-		AttackStep.PEP:
-			attack_lines[attack_index]["step"] = AttackStep.E_E
-			print("Attack ", attack_index + 1, " advanced to E/E")
-		AttackStep.E_E:
-			print("Attack ", attack_index + 1, " already at E/E")
+	return card_name in eviction_cards
 
-func check_all_attacks_complete() -> bool:
-	"""Check if ALL active attacks have reached E/E"""
-	var active_attacks = 0
-	var completed_attacks = 0
+# Data export functions
+func export_game_data_to_csv() -> String:
+	"""Export complete game data to CSV format"""
+	var csv_data = ""
 	
-	for i in range(3):
-		if attack_lines[i]["active"]:
-			active_attacks += 1
-			if attack_lines[i]["step"] == AttackStep.E_E:
-				completed_attacks += 1
+	# Headers
+	var headers = [
+		"Round", "Timestamp", "Position_1_Start", "Position_2_Start", "Position_3_Start",
+		"Attack_1", "Attack_1_Cost", "Attack_1_Time", "Attack_1_Type", "Attack_1_Valid",
+		"Attack_2", "Attack_2_Cost", "Attack_2_Time", "Attack_2_Type", "Attack_2_Valid", 
+		"Attack_3", "Attack_3_Cost", "Attack_3_Time", "Attack_3_Type", "Attack_3_Valid",
+		"Defense_1", "Defense_1_Maturity", "Defense_1_Eviction",
+		"Defense_2", "Defense_2_Maturity", "Defense_2_Eviction",
+		"Defense_3", "Defense_3_Maturity", "Defense_3_Eviction",
+		"Result_1", "Roll_1", "Success_1", "New_State_1",
+		"Result_2", "Roll_2", "Success_2", "New_State_2", 
+		"Result_3", "Roll_3", "Success_3", "New_State_3",
+		"Position_1_End", "Position_2_End", "Position_3_End",
+		"Red_Victory", "Round_Notes"
+	]
 	
-	return active_attacks > 0 and completed_attacks == active_attacks
-
-func get_step_name(step: AttackStep) -> String:
-	"""Get readable name for attack step"""
-	match step:
-		AttackStep.IA:
-			return "IA"
-		AttackStep.PEP:
-			return "PEP"
-		AttackStep.E_E:
-			return "E/E"
-		_:
-			return "Unknown"
-
-func get_attack_chain_progress() -> Array:
-	"""Get progress info for all attack chains"""
-	var progress_info = []
+	csv_data += ",".join(headers) + "\n"
 	
-	for i in range(3):
-		var info = {
-			"attack_index": i,
-			"active": attack_lines[i]["active"],
-			"current_step": get_step_name(attack_lines[i]["step"]),
-			"step_number": int(attack_lines[i]["step"]) + 1,
-			"progress_percentage": float(int(attack_lines[i]["step"]) + 1) / 3.0,
-			"completed": attack_lines[i]["step"] == AttackStep.E_E
-		}
-		progress_info.append(info)
-	
-	return progress_info
-
-func calculate_defense_effectiveness():
-	"""Calculate combined defense effectiveness"""
-	total_defense_maturity = 0.0
-	var active_defenses = 0
-	
-	for defense_card in current_defense_cards:
-		if defense_card != null:
-			if defense_card.has_method("getMaturityValue"):
-				total_defense_maturity += defense_card.getMaturityValue()
-			else:
-				total_defense_maturity += 1.0
-			active_defenses += 1
-	
-	if active_defenses > 0:
-		total_defense_maturity = total_defense_maturity / float(active_defenses)
-	else:
-		total_defense_maturity = 1.0
-
-func calculate_team_weights():
-	"""Calculate team weights based on card efficiency (legacy compatibility)"""
-	# Red team weight: lower cost/time = higher weight
-	var attack_efficiency = 0
-	var attack_count = 0
-	
-	for card in current_attack_cards:
-		if card and card.inPlay == true and card.card_index != -1:
-			var cost = 1
-			var time_factor = 1
-			
-			if card.has_method("getCostValue"):
-				cost = card.getCostValue()
-			if card.has_method("getTimeValue"):
-				time_factor = card.getTimeValue() / 24.0  # Normalize time to reasonable scale
-			
-			var efficiency = 6 - (cost + time_factor)  # Lower cost/time = higher efficiency
-			attack_efficiency += efficiency
-			attack_count += 1
-	
-	if attack_count > 0:
-		red_team_weight = clamp(int(attack_efficiency / float(attack_count)), 1, 5)
-	else:
-		red_team_weight = 1
-	
-	# Blue team weight: higher maturity = higher weight
-	blue_team_weight = clamp(int(total_defense_maturity), 1, 5)
-
-func calculate_attack_parameters():
-	"""Calculate combined attack cost and time (legacy compatibility)"""
-	var total_cost = 0
-	var total_time = 0
-	var card_count = 0
-	
-	for card in current_attack_cards:
-		if card and card.inPlay == true and card.card_index != -1:
-			if card.has_method("getCostValue"):
-				total_cost += card.getCostValue()
-			else:
-				total_cost += 1  # Default fallback
-				
-			if card.has_method("getTimeValue"):
-				total_time += card.getTimeValue()
-			else:
-				total_time += 1  # Default fallback
-			card_count += 1
-	
-	if card_count > 0:
-		# Use average for lookup, but clamp to 1-5 range
-		current_attack_cost = clamp(int(total_cost / float(card_count)), 1, 5)
-		current_attack_time = clamp(int(total_time / float(card_count) / 24), 1, 5)  # Convert minutes to 1-5 scale
-	else:
-		current_attack_cost = 1
-		current_attack_time = 1
-
-func reset_round_data():
-	"""Reset data for new round (keep attack chain progress)"""
-	current_round_results.clear()
-	dice_roll_completed = false
-	# Note: We DON'T reset attack_lines here - they persist across rounds
-
-# Export functions for CSV compatibility
-func export_to_csv_format() -> Array:
-	"""Export current state for CSV logging"""
-	var row = []
-	
-	# Add attack cards
-	for i in range(3):
-		if attack_lines[i]["active"]:
-			var attack_card = get_attack_card_by_index(i)
-			if attack_card and attack_card.has_method("getString"):
-				row.append(attack_card.getString())
-			else:
-				row.append("Attack " + str(i + 1))
-		else:
-			row.append("---")
-	
-	# Add defense cards
-	for i in range(3):
-		if i < current_defense_cards.size() and current_defense_cards[i] != null:
-			var defense_card = current_defense_cards[i]
-			if defense_card.has_method("getString"):
-				row.append(defense_card.getString())
-			else:
-				row.append("Defense " + str(i + 1))
-		else:
-			row.append("---")
-	
-	# Add individual roll results
-	for i in range(3):
-		var found_result = false
-		for result in current_round_results:
-			if result.attack_index == i:
-				row.append(result.roll_result if not result.auto_success else "AUTO")
-				row.append("Success" if result.success else "Failure")
-				found_result = true
-				break
+	# Data rows
+	for round_data in game_history:
+		var row = []
+		row.append(str(round_data.round_number))
+		row.append(round_data.timestamp)
 		
-		if not found_result:
-			row.append("---")
-			row.append("---")
+		# Starting positions
+		for pos_data in round_data.starting_positions:
+			row.append(pos_data.state)
+		
+		# Attack card data
+		for i in range(3):
+			if i < round_data.attack_cards.size():
+				var attack = round_data.attack_cards[i]
+				row.append(attack.name)
+				row.append(str(attack.cost))
+				row.append(str(attack.time))
+				row.append(attack.card_type)
+				row.append("Valid")  # You can add validation check here
+			else:
+				row.append_array(["---", "---", "---", "---", "---"])
+		
+		# Defense card data
+		for i in range(3):
+			if i < round_data.defense_cards.size() and round_data.defense_cards[i] != null:
+				var defense = round_data.defense_cards[i]
+				row.append(defense.name)
+				row.append(str(defense.maturity))
+				row.append("Yes" if defense.is_eviction else "No")
+			else:
+				row.append_array(["---", "---", "---"])
+		
+		# Results data
+		for i in range(3):
+			if i < round_data.results.size():
+				var result = round_data.results[i]
+				row.append("Success" if result.success else "Failure")
+				row.append(str(result.roll_result) if result.has("roll_result") else "AUTO")
+				row.append("Yes" if result.success else "No")
+				row.append(result.new_state)
+			else:
+				row.append_array(["---", "---", "---", "---"])
+		
+		# Ending positions
+		for pos_data in round_data.ending_positions:
+			row.append(pos_data.state)
+		
+		# Victory check
+		var victory = false
+		for pos_data in round_data.ending_positions:
+			if pos_data.state == "E/E":
+				victory = true
+				break
+		row.append("Yes" if victory else "No")
+		row.append("Round " + str(round_data.round_number) + " completed")
+		
+		csv_data += ",".join(row) + "\n"
 	
-	# Add overall results
-	var overall_success = false
-	for result in current_round_results:
-		if result.success:
-			overall_success = true
-			break
-	
-	row.append("Success" if overall_success else "Failure")
-	row.append("---")  # Risk analysis placeholder
-	
-	# Add attack chain steps
-	var progress_info = get_attack_chain_progress()
+	return csv_data
+
+func prepare_next_round():
+	"""Prepare for next round"""
+	round_number += 1
+	current_attack_cards.clear()
+	current_defense_cards.clear()
+	current_round_data.clear()
+
+# Debug functions
+func debug_show_game_state():
+	"""Debug function to show current game state"""
+	print("=== CURRENT GAME STATE ===")
+	print("Round: ", round_number)
 	for i in range(3):
-		if i < progress_info.size():
-			row.append(progress_info[i].current_step)
-		else:
-			row.append("---")
-	
-	return row
-
-# Legacy compatibility functions
-func get_attack_success_rate() -> float:
-	"""Get theoretical success rate for current attack parameters (legacy)"""
-	var key = "c" + str(current_attack_cost) + "t" + str(current_attack_time)
-	var attack_data = attack_success_table.get(key, {"likelihood": 50})
-	
-	# Factor in defense effectiveness
-	var base_likelihood = attack_data.likelihood / 100.0
-	var defense_modifier = (total_defense_maturity - 1.0) / 4.0  # Convert 1-5 to 0-1
-	var adjusted_likelihood = base_likelihood * (1.0 - (defense_modifier * 0.4))  # Max 40% reduction
-	
-	return clamp(adjusted_likelihood, 0.1, 0.9)
-
-func get_dice_success_threshold() -> int:
-	"""Get dice threshold for success (1-10 scale) (legacy)"""
-	var success_rate = get_attack_success_rate()
-	# Convert success rate to threshold (higher rate = lower threshold)
-	var threshold = int((1.0 - success_rate) * 10)
-	return clamp(threshold, 1, 9)
-
-func record_dice_result(result: int, success: bool):
-	"""Record dice roll results (legacy compatibility)"""
-	last_dice_result = result
-	last_attack_success = success
-	dice_roll_completed = true
-	emit_signal("dice_roll_completed_signal")
-
-func request_dice_roll():
-	"""Request transition to dice rolling scene (legacy)"""
-	emit_signal("dice_roll_requested")
-
-func should_use_dice_system() -> bool:
-	"""Check if conditions are met to use automated dice system (legacy)"""
-	# Use dice system if we have at least one attack card
-	for card in current_attack_cards:
-		if card and card.inPlay == true and card.card_index != -1:
-			return true
-	return false
-
-func get_manual_likelihood() -> int:
-	"""Convert current success rate to likelihood percentage for manual system fallback (legacy)"""
-	return int(get_attack_success_rate() * 100)
+		print("Position ", i + 1, ": ", get_step_name(attack_positions[i]["state"]))
+	print("Active attack cards: ", current_attack_cards.size())
+	print("Active defense cards: ", current_defense_cards.size())
+	print("=== END GAME STATE ===")
 
 func debug_show_attack_table():
-	"""Debug function to show attack success table entries"""
+	"""Debug function to show attack success table"""
 	print("=== ATTACK SUCCESS RATE TABLE ===")
 	for key in attack_success_table.keys():
 		var entry = attack_success_table[key]
 		print(key, " -> Cost:", entry.cost, " Time:", entry.time, " Likelihood:", entry.likelihood, "%")
 	print("=== END TABLE ===")
-
-func debug_card_pairing_info():
-	"""Debug function to show current card pairing calculations"""
-	print("=== CARD PAIRING DEBUG ===")
-	var pairings = get_card_pairing_info()
-	for i in range(pairings.size()):
-		var pairing = pairings[i]
-		print("Pairing ", i + 1, ":")
-		print("  Attack: ", pairing.attack_name, " (Step: ", pairing.current_step, ")")
-		print("  Defense: ", pairing.defense_name)
-		print("  Success Rate: ", pairing.success_percentage, "% -> Rounded: ", pairing.rounded_percentage, "%")
-		print("  Dice Threshold: ", pairing.dice_threshold, " (Roll ≤", pairing.dice_threshold, " to succeed)")
-		print("  Auto Success: ", pairing.auto_success)
-	print("=== END PAIRING DEBUG ===")
