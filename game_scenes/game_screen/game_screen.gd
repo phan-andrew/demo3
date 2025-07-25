@@ -1,6 +1,6 @@
 extends Node2D
 
-# Core game references - will be populated safely in _ready()
+# Core game references
 var aCards = []
 var dCards = []
 var attackbuttons = []
@@ -9,20 +9,19 @@ var timers = []
 
 # Game state variables
 var save_path = OS.get_user_data_dir() + "/game_data.txt"
-var successornah = ""
-var sucornah = false
-var likelihood = 0
-var riskanalysis = 0
 var currenttimer = 0
-var finalattack = false
 var timeTaken = 0
-var variables = [0, 0, 0]
+var game_won = false
+
+# Attack chain system variables
+var current_roll_results = []
+var attack_progress_bars = []
 
 # UI icons
 var playIcon = preload("res://images/UI_images/play_button.png")
 var pauseIcon = preload("res://images/UI_images/pause_button.png")
 
-# Dice system - using existing dice popup
+# Dice system
 var use_dice_system = true
 var dice_popup_scene = preload("res://game_scenes/dice_screen/dice_popup.tscn")
 var active_dice_popup = null
@@ -32,6 +31,7 @@ func _ready():
 	setup_connections()
 
 func initialize_game():
+	"""Initialize the game with attack chain system"""
 	# Initialize card arrays with null checks
 	aCards = []
 	dCards = []
@@ -60,7 +60,48 @@ func initialize_game():
 		else:
 			print("Warning: Defense card d_", i, " not found")
 	
-	# Update button arrays to match actual cards found
+	# Setup button arrays
+	setup_button_arrays()
+	
+	# Connect dropdown to card arrays
+	var dropdown = get_node_or_null("dropdown")
+	if dropdown and dropdown.has_method("set_card_references"):
+		dropdown.set_card_references(aCards, dCards)
+	
+	# Initialize timers
+	setup_timers()
+	
+	# Initial states
+	disable_attack_buttons(true)
+	disable_defend_buttons(true)
+	
+	var window = get_node_or_null("Window")
+	if window:
+		window.visible = false
+	var end_game = get_node_or_null("EndGame")
+	if end_game:
+		end_game.visible = false
+	
+	currenttimer = 0
+	
+	# Setup save file with attack chain headers
+	setup_enhanced_save_file()
+	
+	# Setup attack chain progress UI
+	setup_attack_chain_progress_ui()
+	
+	# Initialize GameData attack chains
+	if GameData:
+		GameData.reset_attack_chains()
+	
+	# Start background music
+	if has_node("/root/Music"):
+		var music = get_node("/root/Music")
+		if music.has_method("play_music"):
+			music.play_music()
+
+func setup_button_arrays():
+	"""Setup attack and defense button arrays"""
 	attackbuttons = []
 	defendbuttons = []
 	
@@ -77,128 +118,195 @@ func initialize_game():
 		defendbuttons.append(defend_dropdown)
 	if defend_submit:
 		defendbuttons.append(defend_submit)
-	
-	# Connect dropdown to card arrays for generation
-	var dropdown = get_node_or_null("dropdown")
-	if dropdown and dropdown.has_method("set_card_references"):
-		dropdown.set_card_references(aCards, dCards)
-	
-	# Initialize timer arrays
+
+func setup_timers():
+	"""Setup timer references and initial states"""
 	timers = []
 	var timer1 = get_node_or_null("Timer_Label")
 	var timer2 = get_node_or_null("Timer_Label2")
+	
 	if timer1:
 		timers.append(timer1)
 		var pause_button = timer1.get_node_or_null("pause")
 		if pause_button:
 			pause_button.disabled = true
-	if timer2:
-		timers.append(timer2)
-	
-	# Initial button states
-	disable_attack_buttons(true)
-	disable_defend_buttons(true)
-	
-	# Initial UI state
-	var window = get_node_or_null("Window")
-	if window:
-		window.visible = false
-	var end_game = get_node_or_null("EndGame")
-	if end_game:
-		end_game.visible = false
-	currenttimer = 0
-	
-	# Initialize timer displays
-	for timer in timers:
-		if timer and timer.get("initialTime") !=null:
-			var initialTime = timer.initialTime
+		
+		# Initialize timer display
+		if timer1.has_method("get") and timer1.initialTime != null:
+			var initialTime = timer1.initialTime
 			var minutes = int(initialTime) / 60
 			var seconds = int(initialTime) % 60
-			timer.text = str(minutes) + (":%02d" % seconds)
+			timer1.text = str(minutes) + (":%02d" % seconds)
 	
-	# Initialize save file
-	setup_save_file()
-	
-	# Start music (let Music.gd handle details)
-	if has_node("/root/Music"):
-		var music = get_node("/root/Music")
-		if music.has_method("play_music"):
-			music.play_music()
+	if timer2:
+		timers.append(timer2)
+		if timer2.has_method("get") and timer2.initialTime != null:
+			var initialTime = timer2.initialTime
+			var minutes = int(initialTime) / 60
+			var seconds = int(initialTime) % 60
+			timer2.text = str(minutes) + (":%02d" % seconds)
 
 func setup_connections():
-	# Connect to GameData for dice system
+	"""Setup signal connections for attack chain system"""
 	if GameData:
-		GameData.dice_roll_completed_signal.connect(_on_dice_roll_completed)
+		# Connect attack chain signals
+		if not GameData.dice_roll_completed_signal.is_connected(_on_dice_roll_completed):
+			GameData.dice_roll_completed_signal.connect(_on_dice_roll_completed)
+		if not GameData.defense_reallocation_needed.is_connected(_on_defense_reallocation_needed):
+			GameData.defense_reallocation_needed.connect(_on_defense_reallocation_needed)
+		if not GameData.attack_chain_victory.is_connected(_on_attack_chain_victory):
+			GameData.attack_chain_victory.connect(_on_attack_chain_victory)
+		if not GameData.timeline_victory.is_connected(_on_timeline_victory):
+			GameData.timeline_victory.connect(_on_timeline_victory)
 
-func setup_save_file():
+func setup_enhanced_save_file():
+	"""Setup CSV with enhanced headers for attack chain tracking"""
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
 	if file:
-		file.store_csv_line(["Time","Attack 1","Attack 2", "Attack 3","Defense 1", "Defense 2", "Defense 3", "Attack Success","Attack Success Likelihood","Risk Analysis","D1 APL", "D2 APL", "D3 APL"])
+		var headers = ["Time", "Attack 1", "Attack 2", "Attack 3", "Defense 1", "Defense 2", "Defense 3"]
+		headers.append_array(["A1 Roll", "A1 Success", "A2 Roll", "A2 Success", "A3 Roll", "A3 Success"])
+		headers.append_array(["Overall Success", "Risk Analysis"])
+		headers.append_array(["A1 Chain Step", "A2 Chain Step", "A3 Chain Step"])
+		file.store_csv_line(headers)
 		file.close()
 
+func setup_attack_chain_progress_ui():
+	"""Setup UI elements for attack chain progress tracking"""
+	attack_progress_bars = []
+	
+	# Create or find progress display container
+	var progress_display = get_node_or_null("AttackProgressDisplay")
+	if not progress_display:
+		progress_display = VBoxContainer.new()
+		progress_display.name = "AttackProgressDisplay"
+		progress_display.position = Vector2(50, 200)
+		add_child(progress_display)
+		
+		# Add title label
+		var title_label = Label.new()
+		title_label.text = "Attack Chain Progress:"
+		title_label.add_theme_font_size_override("font_size", 16)
+		progress_display.add_child(title_label)
+	
+	# Create progress bars for each attack line
+	for i in range(3):
+		var progress_container = create_attack_progress_display(i)
+		progress_display.add_child(progress_container)
+		attack_progress_bars.append(progress_container)
+func create_attack_progress_display(attack_index: int) -> Control:
+	"""Create progress display for a single attack line"""
+	var container = HBoxContainer.new()
+	container.name = "AttackProgress" + str(attack_index)
+	container.add_theme_constant_override("separation", 5)
+	
+	# Attack label
+	var label = Label.new()
+	label.text = "Attack " + str(attack_index + 1) + ":"
+	label.custom_minimum_size = Vector2(80, 25)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	container.add_child(label)
+	
+	# Progress steps with better visual styling
+	var steps = ["IA", "PEP", "E/E"]
+	for i in range(steps.size()):
+		var step_panel = Panel.new()
+		step_panel.custom_minimum_size = Vector2(45, 25)
+		step_panel.name = "Step" + str(i)
+		
+		var step_label = Label.new()
+		step_label.text = steps[i]
+		step_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		step_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		step_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		step_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		step_label.name = "StepLabel"
+		
+		step_panel.add_child(step_label)
+		container.add_child(step_panel)
+		
+		# Add arrow between steps (except after last step)
+		if i < steps.size() - 1:
+			var arrow_label = Label.new()
+			arrow_label.text = "→"
+			arrow_label.custom_minimum_size = Vector2(20, 25)
+			arrow_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			arrow_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			container.add_child(arrow_label)
+	
+	return container
+
 func _process(_delta):
+	"""Main game loop"""
 	handle_card_expansion_state()
 	update_timer_display()
 	update_theme_background()
+	update_attack_progress_display()
 	check_game_end_conditions()
-	handle_debug_input()
 	
 	if Input.is_action_just_pressed("exit"):
 		get_tree().quit()
 
 func handle_card_expansion_state():
-	# Simplified expansion logic
+	"""Handle card expansion logic to prevent multiple expansions"""
 	var attack_expanded = false
 	var defense_expanded = false
 	
 	for card in aCards:
-		if card.expanded:
+		if card and card.expanded:
 			attack_expanded = true
 			break
 	
 	for card in dCards:
-		if card.expanded:
+		if card and card.expanded:
 			defense_expanded = true
 			break
 	
-	# Only disable other cards when one is expanded
+	# Disable other cards when one is expanded
 	if attack_expanded:
 		for card in aCards:
-			if not card.expanded:
-				card.disable_expand(true)
+			if card and not card.expanded:
+				if card.has_method("disable_expand"):
+					card.disable_expand(true)
 	else:
 		for card in aCards:
-			if card.inPlay:
-				card.disable_expand(false)
-				card.disable_flip(false)
+			if card and card.inPlay:
+				if card.has_method("disable_expand"):
+					card.disable_expand(false)
+				if card.has_method("disable_flip"):
+					card.disable_flip(false)
 	
 	if defense_expanded:
 		for card in dCards:
-			if not card.expanded:
-				card.disable_expand(true)
+			if card and not card.expanded:
+				if card.has_method("disable_expand"):
+					card.disable_expand(true)
 	else:
 		for card in dCards:
-			if card.inPlay:
-				card.disable_expand(false)
-				card.disable_flip(false)
+			if card and card.inPlay:
+				if card.has_method("disable_expand"):
+					card.disable_expand(false)
+				if card.has_method("disable_flip"):
+					card.disable_flip(false)
 
 func update_timer_display():
+	"""Update timer display and pause button icon"""
 	var timer1 = get_node_or_null("Timer_Label")
 	var timer2 = get_node_or_null("Timer_Label2")
 	
-	if timer1 and timer1.get("play") == true:
+	if timer1 and timer1.play == true:
 		currenttimer = 0
-	elif timer2 and timer2.get("play") == true:
+	elif timer2 and timer2.play == true:
 		currenttimer = 1
 	
 	# Update pause button icon
 	var pause_button = get_node_or_null("Timer_Label/pause")
 	if pause_button:
-		var timer1_playing = timer1 and timer1.get("play") == true
-		var timer2_playing = timer2 and timer2.get("play") == true
+		var timer1_playing = timer1 and timer1.play == true
+		var timer2_playing = timer2 and timer2.play == true
 		pause_button.icon = playIcon if not (timer1_playing or timer2_playing) else pauseIcon
 
 func update_theme_background():
+	"""Update background based on current theme"""
 	var background = get_node_or_null("background")
 	if background and has_node("/root/Settings"):
 		var settings = get_node("/root/Settings")
@@ -207,42 +315,349 @@ func update_theme_background():
 			1: background.texture = load("res://images/UI_images/progress_bar/air/Air Background.png")
 			2: background.texture = load("res://images/UI_images/progress_bar/land/Land Background.png")
 
+func update_attack_progress_display():
+	"""Update attack chain progress displays"""
+	if not GameData:
+		return
+	
+	var progress_info = GameData.get_attack_chain_progress()
+	
+	for i in range(min(progress_info.size(), attack_progress_bars.size())):
+		var info = progress_info[i]
+		var display = attack_progress_bars[i]
+		
+		if not display:
+			continue
+		
+		# Update step highlighting
+		for j in range(3):  # IA, PEP, E/E
+			var step_panel = display.get_node_or_null("Step" + str(j))
+			if step_panel:
+				var step_label = step_panel.get_node_or_null("StepLabel")
+				if step_label:
+					if info.active:
+						# Highlight current and completed steps
+						if j < int(info.step_number) - 1:
+							# Completed steps - green
+							step_label.modulate = Color.GREEN
+							step_panel.modulate = Color(0.2, 0.8, 0.2, 0.3)  # Light green background
+						elif j == int(info.step_number) - 1:
+							# Current step - yellow
+							step_label.modulate = Color.YELLOW
+							step_panel.modulate = Color(0.8, 0.8, 0.2, 0.3)  # Light yellow background
+						else:
+							# Future steps - gray
+							step_label.modulate = Color.GRAY
+							step_panel.modulate = Color(0.5, 0.5, 0.5, 0.1)  # Light gray background
+					else:
+						# Inactive attack line
+						step_label.modulate = Color.DARK_GRAY
+						step_panel.modulate = Color(0.3, 0.3, 0.3, 0.1)  # Very light gray background
+
 func check_game_end_conditions():
+	"""Check for game end conditions"""
 	var timer1 = get_node_or_null("Timer_Label")
 	var timer2 = get_node_or_null("Timer_Label2")
 	var timeline = get_node_or_null("timeline")
 	
-	var timer1_expired = timer1 and timer1.get("initialTime") <= 0
-	var timer2_expired = timer2 and timer2.get("initialTime") <= 0
-	var rounds_completed = timeline and timeline.get("current_round") >= Mitre.timeline_dict.size()
+	# Check timer expiration (Blue team victory)
+	var timer1_expired = timer1 and timer1.initialTime <= 0
+	var timer2_expired = timer2 and timer2.initialTime <= 0
 	
-	if timer1_expired or timer2_expired or rounds_completed:
-		_on_quit_button_pressed()
+	# Check timeline completion (Blue team victory)
+	var timeline_completed = false
+	if timeline:
+		var current_round = timeline.current_round if timeline.has_method("get") else 0
+		var round_end = timeline.round_end if timeline.has_method("get") else 100
+		timeline_completed = current_round >= round_end
 	
-	var window_button = get_node_or_null("Window/Button")
-	if window_button:
-		window_button.disabled = !sucornah
+	# Check attack chain victory (Red team victory) - handled by GameData signal
+	
+	if timer1_expired or timer2_expired or timeline_completed:
+		handle_blue_team_victory("Time/Timeline completed")
 
-func handle_debug_input():
-	if Input.is_action_just_pressed("ui_accept") and Input.is_key_pressed(KEY_F1):
-		toggle_dice_system()
+func handle_red_team_victory(reason: String):
+	"""Handle Red Team (attack chain) victory"""
+	print("🔴 RED TEAM WINS: ", reason)
+	game_won = true
+	show_victory_screen("🔴 RED TEAM VICTORY!", reason, Color.RED)
+
+func handle_blue_team_victory(reason: String):
+	"""Handle Blue Team (defense) victory"""
+	print("🔵 BLUE TEAM WINS: ", reason)
+	game_won = true
+	show_victory_screen("🔵 BLUE TEAM VICTORY!", reason, Color.BLUE)
+
+func show_victory_screen(title: String, reason: String, color: Color):
+	"""Show victory screen with team colors"""
+	var victory_label = get_node_or_null("VictoryLabel")
+	if not victory_label:
+		victory_label = Label.new()
+		victory_label.name = "VictoryLabel"
+		victory_label.position = Vector2(400, 300)
+		victory_label.add_theme_font_size_override("font_size", 32)
+		victory_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		add_child(victory_label)
+	
+	victory_label.text = title + "\n" + reason
+	victory_label.modulate = color
+	victory_label.visible = true
+	
+	# Auto-transition to game over after delay
+	await get_tree().create_timer(3.0).timeout
+	_on_quit_button_pressed()
 
 # Game flow control
 func disable_attack_buttons(state: bool):
+	"""Disable/enable attack buttons and cards"""
 	for button in attackbuttons:
-		button.disabled = state
+		if button:
+			button.disabled = state
 	for card in aCards:
-		if card.inPlay:
-			card.disable_buttons(state)
+		if card and card.inPlay:
+			if card.has_method("disable_buttons"):
+				card.disable_buttons(state)
 
 func disable_defend_buttons(state: bool):
+	"""Disable/enable defense buttons and cards"""
 	for button in defendbuttons:
-		button.disabled = state
+		if button:
+			button.disabled = state
 	for card in dCards:
-		card.disable_buttons(state)
+		if card and card.has_method("disable_buttons"):
+			card.disable_buttons(state)
 
-# Event handlers
+func collapse_all_cards():
+	"""Collapse all expanded cards"""
+	for card in aCards + dCards:
+		if card and card.expanded:
+			if card.has_method("make_small_again"):
+				card.make_small_again()
+
+func has_active_attacks() -> bool:
+	"""Check if there are active attack cards"""
+	for card in aCards:
+		if card and card.card_index != -1:
+			return true
+	return false
+
+func has_active_defenses() -> bool:
+	"""Check if there are active defense cards"""
+	for card in dCards:
+		if card and card.card_index != -1:
+			return true
+	return false
+
+# Enhanced dice system event handlers
+func show_enhanced_dice_popup():
+	"""Show enhanced dice popup for attack chain system"""
+	if active_dice_popup:
+		return
+	
+	print("Showing enhanced dice popup")
+	active_dice_popup = dice_popup_scene.instantiate()
+	add_child(active_dice_popup)
+	
+	# Ensure proper size and positioning
+	active_dice_popup.position = Vector2.ZERO
+	active_dice_popup.size = Vector2(1152, 648)
+	active_dice_popup.z_index = 100
+	
+	# Connect signals
+	if active_dice_popup.has_signal("dice_completed"):
+		active_dice_popup.dice_completed.connect(_on_enhanced_dice_completed)
+	if active_dice_popup.has_signal("dice_cancelled"):
+		active_dice_popup.dice_cancelled.connect(_on_dice_popup_cancelled)
+	if active_dice_popup.has_signal("defense_reallocation_complete"):
+		active_dice_popup.defense_reallocation_complete.connect(_on_defense_reallocation_complete)
+
+func _on_enhanced_dice_completed(results: Array):
+	"""Handle completion of enhanced dice rolling"""
+	print("Enhanced dice rolling completed with ", results.size(), " results")
+	
+	current_roll_results = results.duplicate()
+	
+	# Record results in GameData
+	if GameData:
+		GameData.record_dice_results(results)
+	
+	close_dice_popup()
+	process_battle_results()
+
+func _on_defense_reallocation_needed():
+	"""Handle defense reallocation request from GameData"""
+	print("Defense reallocation needed - showing UI")
+	# The dice popup will handle the reallocation UI
+	
+func _on_defense_reallocation_complete():
+	"""Handle defense reallocation completion"""
+	print("Defense reallocation completed")
+	# Refresh the dice popup with new pairings
+	if active_dice_popup:
+		close_dice_popup()
+		await get_tree().create_timer(0.5).timeout
+		show_enhanced_dice_popup()
+
+func _on_attack_chain_victory():
+	"""Handle Red Team victory through attack chains"""
+	handle_red_team_victory("All attacks reached E/E")
+
+func _on_timeline_victory():
+	"""Handle Blue Team victory through timeline completion"""
+	handle_blue_team_victory("Timeline completed")
+
+func _on_dice_popup_cancelled():
+	"""Handle dice popup cancellation"""
+	close_dice_popup()
+	# Return to defense phase
+	disable_defend_buttons(false)
+	var pause_button = get_node_or_null("Timer_Label/pause")
+	if pause_button:
+		pause_button.disabled = false
+
+func close_dice_popup():
+	"""Close the active dice popup"""
+	if active_dice_popup:
+		active_dice_popup.queue_free()
+		active_dice_popup = null
+
+func process_battle_results():
+	"""Process the results of the battle and continue game flow"""
+	if current_roll_results.size() == 0:
+		return
+	
+	# Build and save CSV data
+	var row = build_enhanced_csv_row()
+	save_game_data(row)
+	
+	# Continue normal game flow
+	continue_normal_game_flow()
+	
+	# Reset for next round
+	current_roll_results.clear()
+
+func build_enhanced_csv_row() -> Array:
+	"""Build enhanced CSV row with attack chain progression"""
+	timeTaken = 0
+	for card in aCards:
+		if card and card.inPlay:
+			if card.has_method("getTimeValue"):
+				timeTaken += card.getTimeValue()
+	
+	var row = [Time.get_time_string_from_system()]
+	
+	# Add attack cards
+	for card in aCards:
+		if card and card.card_index != -1:
+			if card.has_method("getString"):
+				row.append(card.getString())
+			else:
+				row.append("Attack Card")
+			# Reset card
+			if card.expanded:
+				if card.has_method("make_small_again"):
+					card.make_small_again()
+			if card.has_method("reset_card"):
+				card.reset_card()
+		else:
+			row.append("---")
+	
+	# Add defense cards
+	for card in dCards:
+		if card and card.card_index != -1:
+			if card.has_method("getString"):
+				row.append(card.getString())
+			else:
+				row.append("Defense Card")
+			if card.expanded:
+				if card.has_method("make_small_again"):
+					card.make_small_again()
+			if card.has_method("reset_card"):
+				card.reset_card()
+		else:
+			row.append("---")
+	
+	# Add individual roll results
+	for i in range(3):
+		var found_result = false
+		for result in current_roll_results:
+			if result.attack_index == i:
+				row.append(result.roll_result if not result.auto_success else "AUTO")
+				row.append("Success" if result.success else "Failure")
+				found_result = true
+				break
+		
+		if not found_result:
+			row.append("---")
+			row.append("---")
+	
+	# Add overall results
+	var overall_success = false
+	for result in current_roll_results:
+		if result.success:
+			overall_success = true
+			break
+	
+	row.append("Success" if overall_success else "Failure")
+	row.append("---")  # Risk analysis placeholder
+	
+	# Add attack chain steps
+	if GameData:
+		var progress_info = GameData.get_attack_chain_progress()
+		for i in range(3):
+			if i < progress_info.size():
+				row.append(progress_info[i].current_step)
+			else:
+				row.append("---")
+	else:
+		row.append_array(["---", "---", "---"])
+	
+	return row
+
+func save_game_data(row: Array):
+	"""Save game data to CSV file"""
+	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+	if file:
+		file.seek_end()
+		file.store_csv_line(row)
+		file.close()
+
+func continue_normal_game_flow():
+	"""Continue normal game flow after battle resolution"""
+	var timer1 = get_node_or_null("Timer_Label")
+	var pause_button = get_node_or_null("Timer_Label/pause")
+	var timeline = get_node_or_null("timeline")
+	var attack_dropdown = get_node_or_null("dropdown/attack_option")
+	var defend_dropdown = get_node_or_null("dropdown/defend_option")
+	
+	# Resume attack phase
+	disable_attack_buttons(false)
+	for card in aCards:
+		if card and card.has_method("disable_buttons"):
+			card.disable_buttons(true)
+	
+	if pause_button:
+		pause_button.disabled = false
+	if timer1:
+		timer1.play = true
+	
+	# Progress timeline
+	if timeline and timeline.has_method("_progress"):
+		timeline._progress(timeTaken * 25)
+	if timeline and timeline.has_method("increase_time"):
+		timeline.increase_time()
+	
+	# Reset dropdowns
+	if attack_dropdown and attack_dropdown.has_method("select"):
+		attack_dropdown.select(-1)
+	if defend_dropdown and defend_dropdown.has_method("select"):
+		defend_dropdown.select(-1)
+	
+	timeTaken = 0
+
+# Standard game event handlers
 func _on_pause_pressed():
+	"""Handle pause button press"""
 	var timer1 = get_node_or_null("Timer_Label")
 	var timer2 = get_node_or_null("Timer_Label2")
 	
@@ -258,6 +673,7 @@ func _on_pause_pressed():
 			disable_defend_buttons(false)
 
 func _on_start_game_pressed():
+	"""Handle start game button press"""
 	var timer1 = get_node_or_null("Timer_Label")
 	var pause_button = get_node_or_null("Timer_Label/pause")
 	var start_game = get_node_or_null("CanvasLayer/StartGame")
@@ -280,6 +696,7 @@ func _on_start_game_pressed():
 		end_game.visible = true
 
 func _on_attack_submit_pressed():
+	"""Handle attack submit button press"""
 	if not has_active_attacks():
 		return
 	
@@ -301,9 +718,7 @@ func _on_attack_submit_pressed():
 		defense_submit.disabled = false
 
 func _on_defense_submit_pressed():
-	if not has_active_defenses():
-		return
-	
+	"""Handle defense submit button press"""
 	collapse_all_cards()
 	var timer2 = get_node_or_null("Timer_Label2")
 	var pause_button = get_node_or_null("Timer_Label/pause")
@@ -314,240 +729,35 @@ func _on_defense_submit_pressed():
 	if pause_button:
 		pause_button.disabled = true
 	
-	# Use dice system directly - show dice popup instead of manual input
-	if use_dice_system and has_active_attacks():
+	# Capture current card state and show dice system
+	if use_dice_system and GameData:
+		print("Capturing cards for dice system...")
 		GameData.capture_current_cards(aCards, dCards)
-		show_dice_popup()
+		
+		# Debug output to verify table usage
+		print("=== VERIFYING ATTACK TABLE USAGE ===")
+		if GameData.has_method("debug_show_attack_table"):
+			GameData.debug_show_attack_table()
+		
+		# Add a small delay to ensure UI updates
+		await get_tree().create_timer(0.1).timeout
+		show_enhanced_dice_popup()
 	else:
 		show_manual_input()
 
-# Helper functions
-func collapse_all_cards():
-	for card in aCards + dCards:
-		if card.expanded:
-			card.make_small_again()
-
-func has_active_attacks() -> bool:
-	for card in aCards:
-		if card.card_index != -1:
-			return true
-	return false
-
-func has_active_defenses() -> bool:
-	for card in dCards:
-		if card.card_index != -1:
-			return true
-	return false
-
 func show_manual_input():
-	var option_button = get_node_or_null("Window/OptionButton")
-	var spin_box = get_node_or_null("Window/SpinBox")
+	"""Show manual input window (legacy fallback)"""
 	var window = get_node_or_null("Window")
-	
-	if option_button:
-		option_button.select(-1)
-	if spin_box:
-		spin_box.value = 0
 	if window:
 		window.visible = true
 
-# Dice popup system
-func show_dice_popup():
-	if active_dice_popup:
-		return
-	
-	active_dice_popup = dice_popup_scene.instantiate()
-	add_child(active_dice_popup)
-	active_dice_popup.z_index = 100
-	
-	if active_dice_popup.has_signal("dice_completed"):
-		active_dice_popup.dice_completed.connect(_on_dice_popup_completed)
-	if active_dice_popup.has_signal("dice_cancelled"):
-		active_dice_popup.dice_cancelled.connect(_on_dice_popup_cancelled)
+func _on_dice_roll_completed():
+	"""Legacy compatibility for GameData signal"""
+	print("Legacy dice roll completed signal received")
 
-func _on_dice_popup_completed(result: int, success: bool):
-	if GameData:
-		GameData.record_dice_result(result, success)
-	
-	successornah = "Success" if success else "Failure"
-	likelihood = GameData.get_manual_likelihood() if GameData else 50
-	sucornah = true
-	
-	close_dice_popup()
-	_on_button_pressed()
-
-func _on_dice_popup_cancelled():
-	close_dice_popup()
-	show_manual_input()
-	disable_defend_buttons(false)
-	var pause_button = get_node_or_null("Timer_Label/pause")
-	if pause_button:
-		pause_button.disabled = false
-
-func close_dice_popup():
-	if active_dice_popup:
-		active_dice_popup.queue_free()
-		active_dice_popup = null
-
-# Manual input handlers
-func _on_option_button_item_selected(index):
-	successornah = "Success" if index == 0 else "Failure"
-	sucornah = true
-
-func _on_spin_box_value_changed(value):
-	likelihood = value
-
-func _on_spin_box_2_value_changed(value):
-	riskanalysis = value
-
-func _on_var_1_value_changed(value):
-	variables[0] = value / 100.0
-
-func _on_var_2_value_changed(value):
-	variables[1] = value / 100.0
-
-func _on_var_3_value_changed(value):
-	variables[2] = value / 100.0
-
-# Main game logic
-func _on_button_pressed():
-	if not sucornah:
-		return
-	
-	var row = build_game_data_row()
-	save_game_data(row)
-	check_for_final_attack()
-	
-	if finalattack:
-		handle_final_attack()
-	else:
-		continue_normal_flow()
-	
-	reset_round_state()
-
-func build_game_data_row() -> Array:
-	timeTaken = 0
-	for card in aCards:
-		if card.inPlay:
-			timeTaken += card.getTimeValue()
-	
-	var row = [Time.get_time_string_from_system()]
-	
-	# Add attack cards
-	for card in aCards:
-		if card.card_index != -1:
-			row.append(card.getString())
-			if card.expanded:
-				card.make_small_again()
-			card.reset_card()
-		else:
-			row.append("---")
-	
-	# Add defense cards  
-	for card in dCards:
-		if card.card_index != -1:
-			row.append(card.getString())
-			if card.expanded:
-				card.make_small_again()
-		else:
-			row.append("---")
-	
-	# Add results
-	row.append(successornah)
-	row.append(likelihood)
-	row.append("---")
-	
-	# Add defense analysis
-	for i in range(dCards.size()):
-		var card = dCards[i]
-		if card.card_index != -1:
-			var maturity = card.getMaturityValue()
-			var variable = variables[i] if i < variables.size() else 0
-			var ASP = 1 - (maturity * 0.2) * variable
-			row.append(ASP)
-			card.reset_card()
-		else:
-			row.append("---")
-	
-	return row
-
-func save_game_data(row: Array):
-	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
-	if file:
-		file.seek_end()
-		file.store_csv_line(row)
-		file.close()
-
-func check_for_final_attack():
-	finalattack = false
-	for card in aCards:
-		if card.inPlay and card.card_index != -1:
-			var attack_data = Mitre.attack_dict[card.card_index + 1]
-			if attack_data.size() > 5 and int(attack_data[5]) == 3:
-				finalattack = true
-				break
-
-func handle_final_attack():
-	load_previous_attacks(save_path)
-	var window3 = get_node_or_null("Window3")
-	var window = get_node_or_null("Window")
-	if window3:
-		window3.visible = true
-	if window:
-		window.visible = false
-
-func continue_normal_flow():
-	var window = get_node_or_null("Window")
-	var timer1 = get_node_or_null("Timer_Label")
-	var pause_button = get_node_or_null("Timer_Label/pause")
-	var timeline = get_node_or_null("timeline")
-	var attack_dropdown = get_node_or_null("dropdown/attack_option")
-	var defend_dropdown = get_node_or_null("dropdown/defend_option")
-	
-	if window:
-		window.visible = false
-	disable_attack_buttons(false)
-	for card in aCards:
-		if card and card.has_method("disable_buttons"):
-			card.disable_buttons(true)
-	if pause_button:
-		pause_button.disabled = false
-	if timer1:
-		timer1.play = true
-	if timeline and timeline.has_method("_progress"):
-		timeline._progress(timeTaken * 25)
-	if attack_dropdown:
-		attack_dropdown.select(-1)
-	if defend_dropdown:
-		defend_dropdown.select(-1)
-	if timeline and timeline.has_method("increase_time"):
-		timeline.increase_time()
-	timeTaken = 0
-
-func reset_round_state():
-	sucornah = false
-	finalattack = false
-	if GameData:
-		GameData.reset_round_data()
-
-# Other handlers
-func _on_final_continue_pressed():
-	var row = [Time.get_time_string_from_system()]
-	for i in range(8):
-		row.append("---")
-	row.append(riskanalysis)
-	save_game_data(row)
-	var window3 = get_node_or_null("Window3")
-	if window3:
-		window3.visible = false
-	continue_normal_flow()
-
-func load_previous_attacks(path):
-	var file = FileAccess.open(path, FileAccess.READ)
-	if file:
-		file.close()
-
+# Other standard event handlers (end game, quit, etc.)
 func _on_end_game_pressed():
+	"""Handle end game button press"""
 	_on_pause_pressed()
 	var end_game = get_node_or_null("EndGame")
 	var pause_button = get_node_or_null("Timer_Label/pause")
@@ -560,6 +770,7 @@ func _on_end_game_pressed():
 		window2.visible = true
 
 func _on_quit_button_pressed():
+	"""Handle quit button press"""
 	if has_node("/root/Music"):
 		var music = get_node("/root/Music")
 		if music.has_method("mouse_click"):
@@ -567,6 +778,7 @@ func _on_quit_button_pressed():
 	get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
 
 func _on_continue_button_pressed():
+	"""Handle continue button press"""
 	_on_pause_pressed()
 	var end_game = get_node_or_null("EndGame")
 	var pause_button = get_node_or_null("Timer_Label/pause")
@@ -579,22 +791,56 @@ func _on_continue_button_pressed():
 		window2.visible = false
 
 func _on_help_pressed():
+	"""Handle help button press"""
 	var window5 = get_node_or_null("Window5")
 	if window5:
 		window5.visible = true
 
 func _on_window_close_requested():
+	"""Handle help window close"""
 	var window5 = get_node_or_null("Window5")
 	if window5:
 		window5.visible = false
 
-func toggle_dice_system():
-	use_dice_system = !use_dice_system
-	print("Dice system: ", "ENABLED" if use_dice_system else "DISABLED")
+# Legacy event handlers for manual input compatibility
+func _on_option_button_item_selected(index):
+	"""Handle manual option selection"""
+	# Legacy compatibility - not used in attack chain system
+	pass
 
-func _on_dice_roll_completed():
-	if GameData and GameData.dice_roll_completed:
-		successornah = "Success" if GameData.last_attack_success else "Failure"
-		likelihood = GameData.get_manual_likelihood()
-		sucornah = true
-		_on_button_pressed()
+func _on_spin_box_value_changed(value):
+	"""Handle manual spin box value change"""
+	# Legacy compatibility - not used in attack chain system
+	pass
+
+func _on_button_pressed():
+	"""Handle manual button press"""
+	# Legacy compatibility - not used in attack chain system
+	pass
+
+func print_card_debug_info():
+	"""Print debug information about current card state"""
+	print("=== CARD DEBUG INFO ===")
+	print("Attack Cards:")
+	for i in range(aCards.size()):
+		var card = aCards[i]
+		if card:
+			print("  a_", i + 1, ": inPlay=", card.inPlay, " card_index=", card.card_index, " cardType=", card.cardType)
+		else:
+			print("  a_", i + 1, ": NULL")
+	
+	print("Defense Cards:")
+	for i in range(dCards.size()):
+		var card = dCards[i]
+		if card:
+			print("  d_", i + 1, ": inPlay=", card.inPlay, " card_index=", card.card_index, " cardType=", card.cardType)
+		else:
+			print("  d_", i + 1, ": NULL")
+	
+	if GameData:
+		print("GameData attack lines:")
+		for i in range(3):
+			var line = GameData.attack_lines[i]
+			print("  Attack ", i + 1, ": active=", line.active, " step=", GameData.get_step_name(line.step), " card_index=", line.card_index)
+	
+	print("=== END DEBUG INFO ===")

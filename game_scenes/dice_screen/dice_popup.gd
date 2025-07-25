@@ -1,320 +1,96 @@
 extends Control
 
-# Signals for communication with main game
-signal dice_completed(result: int, success: bool)
-signal dice_cancelled
+# Dice popup for SEACAT attack chain system
+# Handles 1:1 card pairing, sequential rolling, and team announcements
 
-# Dice system variables
-var current_roll_result: int = 0
-var success_threshold: int = 5
-var rolls_remaining: int = 3
-var is_rolling: bool = false
-var is_manual_mode: bool = false
+# UI References - using get_node to avoid sizing issues
+var attack_info_label
+var defense_info_label
+var dice_sprite
+var number_label
+var cup_sprite
+var dice_result_label
+var roll_button
+var manual_toggle
+var manual_entry
+var manual_submit
+var strength_info
+var red_section
+var blue_section
+var result_indicator
+var animation_player
+var close_button
+var admin_button
 
-# Animation and timing
-var roll_duration: float = 2.0
-var cup_lift_delay: float = 1.0
-var result_display_delay: float = 0.5
+# Game state
+var card_pairings = []
+var current_pairing_index = 0
+var rolling_results = []
+var is_rolling = false
+var manual_mode = false
+var rolls_remaining = 0
 
-# UI References - Updated to match robust structure
-@onready var dice_sprite: Sprite2D = $DialogPanel/DiceContainer/DiceArea/DiceSprite
-@onready var dice_number_label: Label = $DialogPanel/DiceContainer/DiceArea/DiceSprite/NumberLabel
-@onready var cup_sprite: Sprite2D = $DialogPanel/DiceContainer/DiceArea/CupSprite
-@onready var animation_player: AnimationPlayer = $DialogPanel/DiceContainer/DiceArea/AnimationPlayer
-@onready var background_sprite: TextureRect = $BackgroundSprite
-@onready var dice_result_label: Label = $DialogPanel/DiceContainer/DiceResult
-@onready var roll_button: Button = $DialogPanel/DiceContainer/ButtonContainer/RollButton
-@onready var manual_toggle: Button = $DialogPanel/DiceContainer/ButtonContainer/ManualToggle
-@onready var manual_entry: SpinBox = $DialogPanel/DiceContainer/ManualEntry
-@onready var manual_submit: Button = $DialogPanel/DiceContainer/ManualSubmit
-@onready var close_button: Button = $DialogPanel/HeaderContainer/CloseButton
-@onready var admin_button: Button = $DialogPanel/HeaderContainer/AdminButton
+# Dice faces (you'll need to add dice face textures)
+var dice_faces = [
+	"res://images/dice/dice_1.png",
+	"res://images/dice/dice_2.png", 
+	"res://images/dice/dice_3.png",
+	"res://images/dice/dice_4.png",
+	"res://images/dice/dice_5.png",
+	"res://images/dice/dice_6.png",
+	"res://images/dice/dice_7.png",
+	"res://images/dice/dice_8.png",
+	"res://images/dice/dice_9.png",
+	"res://images/dice/dice_10.png"
+]
 
-# Info display
-@onready var attack_info: RichTextLabel = $DialogPanel/InfoContainer/AttackInfo
-@onready var defense_info: RichTextLabel = $DialogPanel/InfoContainer/DefenseInfo
-@onready var strength_info: Label = $DialogPanel/StrengthContainer/StrengthInfo
-@onready var red_section: ColorRect = $DialogPanel/StrengthContainer/StrengthBar/RedSection
-@onready var blue_section: ColorRect = $DialogPanel/StrengthContainer/StrengthBar/BlueSection
-@onready var result_indicator: ColorRect = $DialogPanel/StrengthContainer/StrengthBar/ResultIndicator
-
-# Animation effects
-var roll_tween: Tween
-var shake_intensity: float = 10.0
-var dice_original_position: Vector2
-var cup_original_position: Vector2
+# Signals
+signal dice_completed(results: Array)
+signal dice_cancelled()
+signal defense_reallocation_complete()
 
 func _ready():
-	print("Dice popup initializing...")
+	# Set proper size for the popup
+	custom_minimum_size = Vector2(1152, 648)
+	size = Vector2(1152, 648)
 	
-	# Force full screen size regardless of parent
-	force_full_screen_size()
-	
-	# Wait a frame for all nodes to be ready
-	await get_tree().process_frame
-	
-	setup_initial_state()
-	load_dice_assets()
-	setup_strength_display()
-	display_current_situation()
+	# Get UI references
+	get_ui_references()
+	setup_ui()
 	connect_signals()
-	print("Dice popup ready!")
+	initialize_dice_session()
 
-func force_full_screen_size():
-	"""Force the popup to take the full viewport size when instantiated as child"""
-	# Get the actual viewport size
-	var viewport = get_viewport()
-	if viewport:
-		var viewport_size = viewport.get_visible_rect().size
-		print("Viewport size: ", viewport_size)
-		
-		# Force this control to fill the entire viewport
-		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		position = Vector2.ZERO
-		size = viewport_size
-		
-		# Ensure background elements also fill the screen
-		var full_bg = get_node_or_null("FullScreenBackground")
-		var bg_sprite = get_node_or_null("BackgroundSprite")
-		
-		if full_bg:
-			full_bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-			full_bg.size = viewport_size
-		
-		if bg_sprite:
-			bg_sprite.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-			bg_sprite.size = viewport_size
-		
-		print("Forced popup to full screen size: ", size)
-	else:
-		print("Warning: Could not get viewport for sizing")
+func get_ui_references():
+	"""Get all UI node references"""
+	attack_info_label = get_node("DialogPanel/InfoContainer/AttackInfo")
+	defense_info_label = get_node("DialogPanel/InfoContainer/DefenseInfo")
+	dice_sprite = get_node("DialogPanel/DiceContainer/DiceArea/DiceSprite")
+	number_label = get_node("DialogPanel/DiceContainer/DiceArea/DiceSprite/NumberLabel")
+	cup_sprite = get_node("DialogPanel/DiceContainer/DiceArea/CupSprite")
+	dice_result_label = get_node("DialogPanel/DiceContainer/DiceResult")
+	roll_button = get_node("DialogPanel/DiceContainer/ButtonContainer/RollButton")
+	manual_toggle = get_node("DialogPanel/DiceContainer/ButtonContainer/ManualToggle")
+	manual_entry = get_node("DialogPanel/DiceContainer/ManualEntry")
+	manual_submit = get_node("DialogPanel/DiceContainer/ManualSubmit")
+	strength_info = get_node("DialogPanel/StrengthContainer/StrengthInfo")
+	red_section = get_node("DialogPanel/StrengthContainer/StrengthBar/RedSection")
+	blue_section = get_node("DialogPanel/StrengthContainer/StrengthBar/BlueSection")
+	result_indicator = get_node("DialogPanel/StrengthContainer/StrengthBar/ResultIndicator")
+	animation_player = get_node("DialogPanel/DiceContainer/DiceArea/AnimationPlayer")
+	close_button = get_node("DialogPanel/HeaderContainer/CloseButton")
+	admin_button = get_node("DialogPanel/HeaderContainer/AdminButton")
 
-func setup_initial_state():
-	"""Initialize the dice popup visual state"""
-	# Store original positions
-	if dice_sprite:
-		dice_original_position = dice_sprite.position
-		print("Dice original position: ", dice_original_position)
-	
-	if cup_sprite:
-		cup_original_position = cup_sprite.position
-		cup_sprite.visible = false  # Start hidden, will show during roll
-		print("Cup original position: ", cup_original_position)
-	
-	# Hide dice number initially
-	if dice_number_label:
-		dice_number_label.visible = false
-	
-	# Set up manual entry
+func setup_ui():
+	"""Setup initial UI state"""
 	if manual_entry:
 		manual_entry.visible = false
 	if manual_submit:
 		manual_submit.visible = false
-	
-	update_roll_button_text()
-
-func load_dice_assets():
-	"""Load dice and cup sprite assets"""
-	
-	print("Loading dice assets...")
-	
-	# First, try to load and set the background
-	load_themed_background()
-	
-	# Load the dice image
-	var dice_path = "res://game_scenes/dice_screen/Dice.png"
-	if ResourceLoader.exists(dice_path) and dice_sprite:
-		var dice_texture = load(dice_path)
-		if dice_texture:
-			# Create SpriteFrames for AnimatedSprite2D
-			dice_sprite.texture = dice_texture
-			print("Dice texture loaded successfully")
-		else:
-			print("Failed to load dice texture")
-			create_fallback_dice()
-	else:
-		print("Dice.png not found, creating fallback")
-		create_fallback_dice()
-	
-	# Load the cup image
-	var cup_path = "res://game_scenes/dice_screen/Cup.png"
-	if ResourceLoader.exists(cup_path) and cup_sprite:
-		var cup_texture = load(cup_path)
-		if cup_texture:
-			cup_sprite.texture = cup_texture
-			print("Cup texture loaded successfully")
-		else:
-			print("Failed to load cup texture")
-			create_fallback_cup()
-	else:
-		print("Cup.png not found, creating fallback")
-		create_fallback_cup()
-
-func create_fallback_dice():
-	"""Create a simple colored square as dice fallback"""
-	var fallback_texture = ImageTexture.new()
-	var image = Image.create(64, 64, false, Image.FORMAT_RGB8)
-	image.fill(Color.WHITE)
-	# Add a black border
-	for x in range(64):
-		for y in range(64):
-			if x < 3 or x > 60 or y < 3 or y > 60:
-				image.set_pixel(x, y, Color.BLACK)
-	fallback_texture.set_image(image)
-	
-	if not dice_sprite.sprite_frames:
-		dice_sprite.sprite_frames = SpriteFrames.new()
-	dice_sprite.sprite_frames.clear_all()
-	dice_sprite.sprite_frames.add_animation("default")
-	dice_sprite.sprite_frames.add_frame("default", fallback_texture)
-	dice_sprite.play("default")
-	print("Using fallback dice texture")
-
-func create_fallback_cup():
-	"""Create a simple colored rectangle as cup fallback"""
-	var fallback_texture = ImageTexture.new()
-	var image = Image.create(80, 100, false, Image.FORMAT_RGB8)
-	image.fill(Color(0.6, 0.4, 0.2))  # Brown color
-	# Add darker edges for definition
-	for x in range(80):
-		for y in range(100):
-			if x < 3 or x > 76 or y < 3 or y > 96:
-				image.set_pixel(x, y, Color(0.4, 0.2, 0.1))
-	fallback_texture.set_image(image)
-	cup_sprite.texture = fallback_texture
-	print("Using fallback cup texture")
-
-func load_themed_background():
-	"""Load the appropriate background based on current theme"""
-	print("Loading themed background...")
-	
-	var theme_index = 0  # Default to underwater
-	
-	# Get current theme from Settings
-	if has_node("/root/Settings"):
-		var settings = get_node("/root/Settings")
-		theme_index = settings.theme
-		print("Current theme index: ", theme_index)
-	
-	var bg_path = ""
-	match theme_index:
-		0:  # Underwater
-			bg_path = "res://game_scenes/dice_screen/UnderwaterDiceScene.png"
-		1:  # Air
-			bg_path = "res://game_scenes/dice_screen/AirDiceScene.png"
-		2:  # Surface/Land
-			bg_path = "res://game_scenes/dice_screen/SurfaceDiceScene.png"
-	
-	print("Attempting to load background: ", bg_path)
-	
-	# Try to load and set the background
-	if ResourceLoader.exists(bg_path):
-		var bg_texture = load(bg_path)
-		if bg_texture and background_sprite:
-			background_sprite.texture = bg_texture
-			print("Background loaded successfully: ", bg_path)
-		else:
-			print("Failed to load background texture or background_sprite is null")
-			create_fallback_background()
-	else:
-		print("Background file not found: ", bg_path)
-		create_fallback_background()
-
-func create_fallback_background():
-	"""Create a simple gradient background as fallback"""
-	print("Creating fallback background...")
-	if background_sprite:
-		var fallback_texture = ImageTexture.new()
-		var image = Image.create(512, 512, false, Image.FORMAT_RGB8)
-		
-		# Create a simple blue gradient (underwater theme)
-		for y in range(512):
-			var blue_intensity = 0.2 + (y / 512.0) * 0.6  # Darker at top, lighter at bottom
-			var color = Color(0.1, 0.3, blue_intensity)
-			for x in range(512):
-				image.set_pixel(x, y, color)
-		
-		fallback_texture.set_image(image)
-		background_sprite.texture = fallback_texture
-		print("Fallback background created")
-
-func setup_strength_display():
-	"""Setup the team strength visualization bar"""
-	if not has_node("/root/GameData"):
-		print("GameData not found, using default values")
-		success_threshold = 5
-		if strength_info:
-			strength_info.text = "Success Rate: 50% | Roll 5 or lower to succeed"
-		return
-		
-	var game_data = get_node("/root/GameData")
-	var red_weight = game_data.red_team_weight
-	var blue_weight = game_data.blue_team_weight
-	var total_weight = red_weight + blue_weight
-	
-	if total_weight == 0:
-		total_weight = 2
-		red_weight = 1
-		blue_weight = 1
-	
-	# Calculate bar sections (500px wide)
-	var bar_width = 500
-	var red_width = (red_weight / float(total_weight)) * bar_width
-	var blue_width = bar_width - red_width
-	
-	if red_section:
-		red_section.size.x = red_width
-	if blue_section:
-		blue_section.position.x = red_width
-		blue_section.size.x = blue_width
-	
-	# Success threshold
-	success_threshold = game_data.get_dice_success_threshold()
-	var threshold_position = (success_threshold / 10.0) * bar_width
 	if result_indicator:
-		result_indicator.position.x = threshold_position - 2
-		result_indicator.size = Vector2(4, 40)
-		result_indicator.color = Color.WHITE
-
-func display_current_situation():
-	"""Display current attack and defense information"""
-	if not has_node("/root/GameData"):
-		if attack_info:
-			attack_info.text = "[b]Current Attack:[/b]\nGameData not available"
-		if defense_info:
-			defense_info.text = "[b]Active Defenses:[/b]\nGameData not available"
-		return
+		result_indicator.visible = false
 	
-	var game_data = get_node("/root/GameData")
-	
-	# Display attack info
-	var attack_info_text = "[b]Current Attack:[/b]\n"
-	var attack_info_dict = game_data.get_current_attack_info()
-	if attack_info_dict.names.size() > 0:
-		attack_info_text += attack_info_dict.combined_name + "\n"
-		attack_info_text += "Cost: " + str(attack_info_dict.cost) + " | Time: " + str(attack_info_dict.time)
-	else:
-		attack_info_text += "No attacks selected"
-	
-	if attack_info:
-		attack_info.text = attack_info_text
-	
-	# Display defense info
-	var defense_info_text = "[b]Active Defenses:[/b]\n"
-	var defense_list = game_data.get_current_defense_info()
-	if defense_list.size() > 0:
-		for defense in defense_list:
-			defense_info_text += "• " + defense.name + " (Maturity: " + str(defense.maturity) + ")\n"
-	else:
-		defense_info_text += "No defenses active"
-	
-	if defense_info:
-		defense_info.text = defense_info_text
-	
-	# Display success information
-	var success_rate = game_data.get_attack_success_rate()
-	if strength_info:
-		strength_info.text = "Success Rate: " + str(int(success_rate * 100)) + "% | Roll " + str(success_threshold) + " or lower to succeed"
+	# Load dice face (default to 5)
+	update_dice_display(5)
 
 func connect_signals():
 	"""Connect UI signals"""
@@ -329,185 +105,399 @@ func connect_signals():
 	if admin_button:
 		admin_button.pressed.connect(_on_admin_button_pressed)
 
-func _on_roll_button_pressed():
-	"""Handle dice roll button press"""
-	if is_rolling or rolls_remaining <= 0:
+func initialize_dice_session():
+	"""Initialize the dice rolling session"""
+	if not GameData:
+		print("ERROR: GameData not available")
+		if dice_result_label:
+			dice_result_label.text = "Error: GameData not available"
+		if roll_button:
+			roll_button.disabled = true
 		return
 	
-	print("Starting dice roll...")
+	# Debug: Show that we're using the attack table
+	GameData.debug_show_attack_table()
+	
+	# Get card pairings from GameData
+	card_pairings = GameData.get_card_pairing_info()
+	
+	if card_pairings.size() == 0:
+		print("No active card pairings found")
+		if dice_result_label:
+			dice_result_label.text = "No active attacks to resolve"
+		if roll_button:
+			roll_button.disabled = true
+		return
+	
+	print("Initialized dice session with ", card_pairings.size(), " card pairings")
+	
+	# Debug: Show pairing calculations
+	GameData.debug_card_pairing_info()
+	
+	current_pairing_index = 0
+	rolling_results.clear()
+	rolls_remaining = card_pairings.size()
+	
+	# Display first pairing
+	display_current_pairing()
+	update_roll_button_text()
+
+func display_current_pairing():
+	"""Display information about the current card pairing"""
+	if current_pairing_index >= card_pairings.size():
+		return
+	
+	var pairing = card_pairings[current_pairing_index]
+	
+	# Update attack info
+	if attack_info_label:
+		var attack_text = "[b]Attack " + str(pairing.attack_index + 1) + " (" + pairing.current_step + "):[/b]\n"
+		attack_text += pairing.attack_name
+		attack_info_label.text = attack_text
+	
+	# Update defense info
+	if defense_info_label:
+		var defense_text = "[b]Defense " + str(pairing.attack_index + 1) + ":[/b]\n"
+		if pairing.auto_success:
+			defense_text += "[color=red]UNDEFENDED - AUTO SUCCESS[/color]"
+		else:
+			defense_text += pairing.defense_name
+		defense_info_label.text = defense_text
+	
+	# Update strength bar and info
+	update_strength_display(pairing)
+	
+	# Update dice result text
+	if dice_result_label:
+		if pairing.auto_success:
+			dice_result_label.text = "Auto-Success! No roll needed."
+		else:
+			dice_result_label.text = "Ready to roll for Attack " + str(pairing.attack_index + 1)
+	
+	# Update roll button
+	if roll_button:
+		if pairing.auto_success:
+			roll_button.text = "⚡ Auto-Resolve"
+		else:
+			roll_button.text = "🎲 Roll Dice"
+
+func update_strength_display(pairing: Dictionary):
+	"""Update the strength bar display"""
+	var success_percentage = pairing.rounded_percentage
+	var bar_width = 500.0
+	var red_width = (success_percentage / 100.0) * bar_width
+	
+	# Update sections
+	if red_section:
+		red_section.size.x = red_width
+	if blue_section:
+		blue_section.position.x = red_width
+		blue_section.size.x = bar_width - red_width
+	
+	# Update info text
+	if strength_info:
+		if pairing.auto_success:
+			strength_info.text = "AUTO SUCCESS - No Defense Present"
+		else:
+			strength_info.text = "Success Rate: " + str(success_percentage) + "% | Roll " + str(pairing.dice_threshold) + " or lower to succeed"
+			print("Displaying strength - Success Rate: ", success_percentage, "% Threshold: ", pairing.dice_threshold)
+
+func update_roll_button_text():
+	"""Update the roll button text with remaining rolls"""
+	var remaining_text = ""
+	if rolls_remaining > 1:
+		remaining_text = " (" + str(rolls_remaining) + " Remaining)"
+	elif rolls_remaining == 1:
+		remaining_text = " (Last Roll)"
+	
+	if current_pairing_index < card_pairings.size():
+		var pairing = card_pairings[current_pairing_index]
+		if roll_button:
+			if pairing.auto_success:
+				roll_button.text = "⚡ Auto-Resolve" + remaining_text
+			else:
+				roll_button.text = "🎲 Roll Dice" + remaining_text
+
+func _on_roll_button_pressed():
+	"""Handle roll button press"""
+	if is_rolling:
+		return
+	
+	if current_pairing_index >= card_pairings.size():
+		complete_all_rolls()
+		return
+	
+	var pairing = card_pairings[current_pairing_index]
+	
+	if pairing.auto_success:
+		handle_auto_success(pairing)
+	else:
+		if manual_mode:
+			show_manual_entry()
+		else:
+			perform_dice_roll(pairing)
+
+func handle_auto_success(pairing: Dictionary):
+	"""Handle auto-success for undefended attacks"""
+	var result = {
+		"attack_index": pairing.attack_index,
+		"attack_name": pairing.attack_name,
+		"defense_name": pairing.defense_name,
+		"roll_result": 0,  # No roll needed
+		"success": true,
+		"auto_success": true,
+		"success_percentage": 100,
+		"dice_threshold": 10
+	}
+	
+	rolling_results.append(result)
+	
+	# Show team announcement
+	show_team_announcement("🔴 RED TEAM WINS!", "Attack " + str(pairing.attack_index + 1) + " auto-succeeds (undefended)", Color.RED)
+	
+	# Wait for announcement, then continue
+	await get_tree().create_timer(2.0).timeout
+	advance_to_next_pairing()
+
+func perform_dice_roll(pairing: Dictionary):
+	"""Perform actual dice roll"""
+	if is_rolling:
+		return
+	
 	is_rolling = true
 	if roll_button:
 		roll_button.disabled = true
-	if manual_toggle:
-		manual_toggle.disabled = true
 	
-	await perform_dice_roll()
+	# Animate dice roll
+	await animate_dice_roll()
 	
-	rolls_remaining -= 1
-	update_roll_button_text()
+	# Generate result
+	var roll_result = randi_range(1, 10)
+	var success = roll_result <= pairing.dice_threshold
 	
-	if rolls_remaining <= 0:
-		await get_tree().create_timer(1.0).timeout
-		complete_dice_roll()
-	else:
-		if roll_button:
-			roll_button.disabled = false
-		if manual_toggle:
-			manual_toggle.disabled = false
-		is_rolling = false
-
-func perform_dice_roll():
-	"""Perform the animated dice roll sequence"""
-	print("Performing dice roll animation...")
+	# Store result
+	var result = {
+		"attack_index": pairing.attack_index,
+		"attack_name": pairing.attack_name,
+		"defense_name": pairing.defense_name,
+		"roll_result": roll_result,
+		"success": success,
+		"auto_success": false,
+		"success_percentage": pairing.rounded_percentage,
+		"dice_threshold": pairing.dice_threshold
+	}
 	
-	# Step 1: Show cup covering dice
-	if cup_sprite:
-		cup_sprite.position = cup_original_position
-		cup_sprite.visible = true
-		cup_sprite.modulate.a = 1.0
-		cup_sprite.z_index = 3  # Above dice
-		print("Cup shown at position: ", cup_sprite.position)
+	rolling_results.append(result)
 	
-	if dice_number_label:
-		dice_number_label.visible = false
+	# Update dice display
+	update_dice_display(roll_result)
+	update_result_indicator(roll_result, pairing.dice_threshold)
 	
+	# Show result text
 	if dice_result_label:
-		dice_result_label.text = "🎲 Rolling dice..."
-		dice_result_label.modulate = Color.WHITE
+		var result_text = "Rolled: " + str(roll_result) + " (needed ≤" + str(pairing.dice_threshold) + ")\n"
+		result_text += "Result: " + ("SUCCESS!" if success else "FAILURE")
+		dice_result_label.text = result_text
 	
-	await get_tree().create_timer(0.5).timeout
+	# Show team announcement
+	var team_color = Color.RED if success else Color.BLUE
+	var team_name = "🔴 RED TEAM WINS!" if success else "🔵 BLUE TEAM WINS!"
+	var message = "Attack " + str(pairing.attack_index + 1) + " " + ("succeeds" if success else "fails") + " (rolled " + str(roll_result) + ")"
 	
+	show_team_announcement(team_name, message, team_color)
+	
+	# Wait for announcement, then continue
+	await get_tree().create_timer(2.5).timeout
+	
+	is_rolling = false
+	advance_to_next_pairing()
 
+func animate_dice_roll() -> void:
+	"""Animate the dice rolling"""
+	var roll_duration = 1.5
+	var roll_steps = 15
+	var step_duration = roll_duration / roll_steps
 	
-	# Step 3: Determine result
-	current_roll_result = randi_range(1, 10)
-	print("Dice rolled: ", current_roll_result)
+	for i in range(roll_steps):
+		var random_face = randi_range(1, 10)
+		update_dice_display(random_face)
+		await get_tree().create_timer(step_duration).timeout
 	
-	await get_tree().create_timer(cup_lift_delay).timeout
-	
-	# Step 4: Use AnimationPlayer for cup reveal if available, otherwise manual tween
-	if animation_player and animation_player.has_animation("cup_reveal"):
-		print("Using AnimationPlayer for cup reveal")
+	# Play cup reveal animation
+	if animation_player:
 		animation_player.play("cup_reveal")
 		await animation_player.animation_finished
-	else:
-		print("Using manual tween for cup reveal")
-		# Manual cup removal animation
-		if cup_sprite:
-			var cup_tween = create_tween()
-			cup_tween.parallel().tween_property(cup_sprite, "position", cup_original_position + Vector2(-50, -120), 1.5)
-			cup_tween.parallel().tween_property(cup_sprite, "rotation", 0.35, 1.5)
-			cup_tween.parallel().tween_property(cup_sprite, "modulate:a", 0.0, 1.5)
-			await cup_tween.finished
-	
-	# Ensure cup is hidden
-	if cup_sprite:
-		cup_sprite.visible = false
-		cup_sprite.modulate.a = 1.0
-		cup_sprite.position = cup_original_position
-		cup_sprite.rotation = 0.0
-	
-	await get_tree().create_timer(result_display_delay).timeout
-	
-	# Step 5: Show result
-	if dice_number_label:
-		dice_number_label.text = str(current_roll_result)
-		dice_number_label.visible = true
-	
-	var is_success = current_roll_result <= success_threshold
-	var result_color = Color.GREEN if is_success else Color.RED
-	
-	if dice_result_label:
-		var result_text = "🎲 Rolled: " + str(current_roll_result) + " - "
-		result_text += "✅ SUCCESS!" if is_success else "❌ FAILURE!"
-		dice_result_label.text = result_text
-		dice_result_label.modulate = result_color
-	
-	# Update strength bar with result indicator
-	if result_indicator:
-		var result_position = (current_roll_result / 10.0) * 500
-		result_indicator.position.x = result_position - 2
-		result_indicator.color = result_color
-	
-	print("Dice roll animation completed - Result: ", current_roll_result, " Success: ", is_success)
 
-func complete_dice_roll():
-	"""Complete the dice rolling process"""
-	var is_success = current_roll_result <= success_threshold
-	print("Completing dice roll - Result: ", current_roll_result, " Success: ", is_success)
-	emit_signal("dice_completed", current_roll_result, is_success)
-
-func _on_manual_toggle_pressed():
-	"""Toggle manual entry mode"""
-	is_manual_mode = !is_manual_mode
+func update_dice_display(face_number: int):
+	"""Update the dice sprite and number"""
+	if number_label:
+		number_label.text = str(face_number)
 	
-	if is_manual_mode:
-		if manual_entry:
-			manual_entry.visible = true
-		if manual_submit:
-			manual_submit.visible = true
-		if roll_button:
-			roll_button.visible = false
-		if manual_toggle:
-			manual_toggle.text = "🎲 Use Dice"
-		if dice_result_label:
-			dice_result_label.text = "Enter manual result (1-10):"
-	else:
-		if manual_entry:
-			manual_entry.visible = false
-		if manual_submit:
-			manual_submit.visible = false
-		if roll_button:
-			roll_button.visible = true
-		if manual_toggle:
-			manual_toggle.text = "✏️ Manual Entry"
-		if dice_result_label:
-			dice_result_label.text = "Ready to roll the dice..."
+	# If you have dice face textures, load them here
+	# For now, we'll just use the number display
+	# if face_number >= 1 and face_number <= 10:
+	#     dice_sprite.texture = load(dice_faces[face_number - 1])
 
-func _on_manual_submit_pressed():
-	"""Handle manual entry submission"""
-	if manual_entry:
-		current_roll_result = int(manual_entry.value)
-	var is_success = current_roll_result <= success_threshold
-	
-	# Show the number on the dice
-	if dice_number_label:
-		dice_number_label.text = str(current_roll_result)
-		dice_number_label.visible = true
-	if cup_sprite:
-		cup_sprite.visible = false
-	
-	if dice_result_label:
-		var result_text = "✏️ Manual: " + str(current_roll_result) + " - "
-		result_text += "✅ SUCCESS!" if is_success else "❌ FAILURE!"
-		dice_result_label.text = result_text
-		dice_result_label.modulate = Color.GREEN if is_success else Color.RED
-	
-	await get_tree().create_timer(1.0).timeout
-	complete_dice_roll()
-
-func _on_admin_button_pressed():
-	"""Admin override for testing"""
-	if OS.is_debug_build():
-		current_roll_result = success_threshold  # Force success
-		complete_dice_roll()
-
-func _on_close_button_pressed():
-	"""Handle popup cancellation"""
-	print("Dice popup cancelled")
-	emit_signal("dice_cancelled")
-
-func update_roll_button_text():
-	"""Update roll button text with remaining rolls"""
-	if not roll_button:
+func update_result_indicator(roll_result: int, threshold: int):
+	"""Update the result indicator on the strength bar"""
+	if not result_indicator:
 		return
 		
-	if rolls_remaining > 0:
-		roll_button.text = "🎲 Roll Dice (" + str(rolls_remaining) + " Remaining)"
-		roll_button.disabled = false
+	var bar_width = 500.0
+	var indicator_position = (roll_result / 10.0) * bar_width
+	
+	result_indicator.position.x = indicator_position - 2
+	result_indicator.size.x = 4
+	result_indicator.visible = true
+	
+	# Color based on success/failure
+	if roll_result <= threshold:
+		result_indicator.color = Color.GREEN
 	else:
-		roll_button.text = "🎲 Max Rolls Used"
+		result_indicator.color = Color.RED
+
+func show_team_announcement(team_name: String, message: String, color: Color):
+	"""Show team win announcement"""
+	if dice_result_label:
+		dice_result_label.text = "[center][color=" + color.to_html() + "]" + team_name + "[/color]\n" + message + "[/center]"
+		dice_result_label.modulate = color
+
+func advance_to_next_pairing():
+	"""Advance to the next card pairing or complete"""
+	current_pairing_index += 1
+	rolls_remaining -= 1
+	
+	if current_pairing_index >= card_pairings.size():
+		complete_all_rolls()
+	else:
+		# Reset UI for next roll
+		if result_indicator:
+			result_indicator.visible = false
+		if dice_result_label:
+			dice_result_label.modulate = Color.WHITE
+		if roll_button:
+			roll_button.disabled = false
+		
+		# Display next pairing
+		display_current_pairing()
+		update_roll_button_text()
+
+func complete_all_rolls():
+	"""Complete all dice rolls and return results"""
+	print("All dice rolls completed. Results: ", rolling_results.size())
+	
+	# Show completion message
+	if dice_result_label:
+		dice_result_label.text = "[center]All attacks resolved!\nReturning to game...[/center]"
+	if roll_button:
 		roll_button.disabled = true
+	
+	# Wait a moment, then emit completion signal
+	await get_tree().create_timer(1.5).timeout
+	emit_signal("dice_completed", rolling_results)
+
+func show_manual_entry():
+	"""Show manual entry controls"""
+	if manual_entry:
+		manual_entry.visible = true
+	if manual_submit:
+		manual_submit.visible = true
+	if roll_button:
+		roll_button.visible = false
+
+func _on_manual_toggle_pressed():
+	"""Toggle between manual and automatic rolling"""
+	manual_mode = !manual_mode
+	
+	if manual_toggle:
+		if manual_mode:
+			manual_toggle.text = "🎲 Auto Roll"
+			if current_pairing_index < card_pairings.size():
+				var pairing = card_pairings[current_pairing_index]
+				if not pairing.auto_success and roll_button:
+					roll_button.text = "✏️ Manual Entry"
+		else:
+			manual_toggle.text = "✏️ Manual Entry"
+			if manual_entry:
+				manual_entry.visible = false
+			if manual_submit:
+				manual_submit.visible = false
+			if roll_button:
+				roll_button.visible = true
+			if current_pairing_index < card_pairings.size():
+				var pairing = card_pairings[current_pairing_index]
+				if roll_button:
+					if pairing.auto_success:
+						roll_button.text = "⚡ Auto-Resolve"
+					else:
+						roll_button.text = "🎲 Roll Dice"
+
+func _on_manual_submit_pressed():
+	"""Handle manual roll submission"""
+	if current_pairing_index >= card_pairings.size() or not manual_entry:
+		return
+	
+	var pairing = card_pairings[current_pairing_index]
+	var manual_roll = int(manual_entry.value)
+	
+	# Validate roll
+	if manual_roll < 1 or manual_roll > 10:
+		if dice_result_label:
+			dice_result_label.text = "Invalid roll! Must be between 1-10"
+		return
+	
+	var success = manual_roll <= pairing.dice_threshold
+	
+	# Store result
+	var result = {
+		"attack_index": pairing.attack_index,
+		"attack_name": pairing.attack_name,
+		"defense_name": pairing.defense_name,
+		"roll_result": manual_roll,
+		"success": success,
+		"auto_success": false,
+		"success_percentage": pairing.rounded_percentage,
+		"dice_threshold": pairing.dice_threshold
+	}
+	
+	rolling_results.append(result)
+	
+	# Update display
+	update_dice_display(manual_roll)
+	update_result_indicator(manual_roll, pairing.dice_threshold)
+	
+	# Show result
+	if dice_result_label:
+		var result_text = "Manual Roll: " + str(manual_roll) + " (needed ≤" + str(pairing.dice_threshold) + ")\n"
+		result_text += "Result: " + ("SUCCESS!" if success else "FAILURE")
+		dice_result_label.text = result_text
+	
+	# Show team announcement
+	var team_color = Color.RED if success else Color.BLUE
+	var team_name = "🔴 RED TEAM WINS!" if success else "🔵 BLUE TEAM WINS!"
+	var message = "Attack " + str(pairing.attack_index + 1) + " " + ("succeeds" if success else "fails") + " (manual roll " + str(manual_roll) + ")"
+	
+	show_team_announcement(team_name, message, team_color)
+	
+	# Hide manual controls
+	if manual_entry:
+		manual_entry.visible = false
+	if manual_submit:
+		manual_submit.visible = false
+	if roll_button:
+		roll_button.visible = true
+	
+	# Wait for announcement, then continue
+	await get_tree().create_timer(2.5).timeout
+	advance_to_next_pairing()
+
+func _on_close_button_pressed():
+	"""Handle close button press"""
+	emit_signal("dice_cancelled")
+
+func _on_admin_button_pressed():
+	"""Handle admin/exit button press"""
+	emit_signal("dice_cancelled")
 
 func _input(event):
 	"""Handle input events"""
