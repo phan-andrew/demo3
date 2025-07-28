@@ -80,6 +80,9 @@ func capture_current_cards(attack_cards: Array, defense_cards: Array):
 	
 	print("=== ROUND ", round_number, " CARD CAPTURE ===")
 	
+	# Debug: Run comprehensive card debugging
+	run_comprehensive_card_debug(attack_cards, defense_cards)
+	
 	# Capture attack cards with their individual properties
 	for i in range(min(attack_cards.size(), 3)):
 		var card = attack_cards[i]
@@ -93,7 +96,7 @@ func capture_current_cards(attack_cards: Array, defense_cards: Array):
 				"card_type": get_attack_type(card)  # IA, PEP, or E/E type
 			}
 			current_attack_cards.append(card_data)
-			print("Attack ", i + 1, ": ", card_data.name, " (Cost: ", card_data.cost, ", Time: ", card_data.time, ")")
+			print("Attack ", i + 1, ": ", card_data.name, " (Type: ", card_data.card_type, ", Cost: ", card_data.cost, ", Time: ", card_data.time, ")")
 	
 	# Capture defense cards with 1:1 mapping
 	for i in range(min(defense_cards.size(), 3)):
@@ -107,7 +110,7 @@ func capture_current_cards(attack_cards: Array, defense_cards: Array):
 				"is_eviction": is_eviction_card(card)  # Check if it's an eviction card
 			}
 			current_defense_cards.append(card_data)
-			print("Defense ", i + 1, ": ", card_data.name, " (Maturity: ", card_data.maturity, ")")
+			print("Defense ", i + 1, ": ", card_data.name, " (Maturity: ", card_data.maturity, ", Eviction: ", card_data.is_eviction, ")")
 		else:
 			current_defense_cards.append(null)
 	
@@ -391,22 +394,33 @@ func get_defense_name(defense_card) -> String:
 func get_attack_type(attack_card) -> String:
 	"""Determine attack card type (IA, PEP, E/E) based on MITRE classification"""
 	if not attack_card:
-		return "Unknown"
+		return "IA"
 	
 	var card_index = attack_card.card_index
 	if has_node("/root/Mitre"):
 		var mitre = get_node("/root/Mitre")
 		if mitre.attack_dict.has(card_index + 1):
-			var classification = mitre.attack_dict[card_index + 1].get(5, 1)  # Assuming index 5 is classification
-			match int(classification):
-				1:
-					return "IA"  # Initial Access
-				2:
-					return "PEP"  # Privilege Escalation/Persistence
-				3:
-					return "E/E"  # Execution/Exfiltration
-				_:
-					return "IA"  # Default to IA
+			# CSV structure: Index,ID,Name,Description,Path,Classification,Type
+			# So classification is at index 5
+			var attack_entry = mitre.attack_dict[card_index + 1]
+			if attack_entry.size() > 5:
+				var classification = int(attack_entry[5])
+				match classification:
+					1:
+						return "IA"  # Initial Access
+					2:
+						return "PEP"  # Privilege Escalation/Persistence
+					3:
+						return "E/E"  # Impact/Exfiltration
+					4:
+						return "PEP"  # Persistence (treat as PEP)
+					_:
+						return "IA"  # Default to IA
+			else:
+				print("Warning: Attack entry missing classification field for card_index: ", card_index)
+				return "IA"
+	
+	print("Warning: Could not determine attack type for card_index: ", card_index)
 	return "IA"  # Default
 
 func is_eviction_card(defense_card) -> bool:
@@ -534,3 +548,197 @@ func debug_show_attack_table():
 		var entry = attack_success_table[key]
 		print(key, " -> Cost:", entry.cost, " Time:", entry.time, " Likelihood:", entry.likelihood, "%")
 	print("=== END TABLE ===")
+
+# ===== DEBUG FUNCTIONS =====
+
+func debug_print_attack_card_structure(card_index: int):
+	"""Print the structure of an attack card for debugging"""
+	print("=== DEBUG ATTACK CARD STRUCTURE ===")
+	print("Card Index: ", card_index)
+	
+	if has_node("/root/Mitre"):
+		var mitre = get_node("/root/Mitre")
+		var dict_key = card_index + 1
+		print("Dictionary Key: ", dict_key)
+		
+		if mitre.attack_dict.has(dict_key):
+			var attack_entry = mitre.attack_dict[dict_key]
+			print("Entry Size: ", attack_entry.size())
+			print("Full Entry: ", attack_entry)
+			
+			# Print each field with its index
+			for i in range(attack_entry.size()):
+				print("  Index ", i, ": ", attack_entry[i])
+			
+			# Expected structure verification
+			if attack_entry.size() >= 6:
+				print("--- PARSED FIELDS ---")
+				print("Index (0): ", attack_entry[0])
+				print("ID (1): ", attack_entry[1]) 
+				print("Name (2): ", attack_entry[2])
+				print("Description (3): ", attack_entry[3])
+				print("Path (4): ", attack_entry[4])
+				print("Classification (5): ", attack_entry[5])
+				if attack_entry.size() > 6:
+					print("Type (6): ", attack_entry[6])
+				
+				# Classification mapping
+				var classification = int(attack_entry[5])
+				var type_name = ""
+				match classification:
+					1: type_name = "IA (Initial Access)"
+					2: type_name = "PEP (Privilege Escalation/Persistence)"
+					3: type_name = "E/E (Impact/Exfiltration)"  
+					4: type_name = "PEP (Persistence)"
+					_: type_name = "Unknown (" + str(classification) + ")"
+				print("Mapped Type: ", type_name)
+			else:
+				print("ERROR: Entry too short - expected at least 6 fields")
+		else:
+			print("ERROR: Dictionary key not found")
+	else:
+		print("ERROR: Mitre node not found")
+	print("=== END DEBUG ===")
+
+func debug_print_defense_card_structure(card_index: int):
+	"""Print the structure of a defense card for debugging"""
+	print("=== DEBUG DEFENSE CARD STRUCTURE ===")
+	print("Card Index: ", card_index)
+	
+	if has_node("/root/Mitre"):
+		var mitre = get_node("/root/Mitre")
+		var dict_key = card_index + 1
+		print("Dictionary Key: ", dict_key)
+		
+		if mitre.defend_dict.has(dict_key):
+			var defense_entry = mitre.defend_dict[dict_key]
+			print("Entry Size: ", defense_entry.size())
+			print("Full Entry: ", defense_entry)
+			
+			# Print each field with its index
+			for i in range(defense_entry.size()):
+				print("  Index ", i, ": ", defense_entry[i])
+			
+			# Expected structure verification
+			if defense_entry.size() >= 6:
+				print("--- PARSED FIELDS ---")
+				print("Index (0): ", defense_entry[0])
+				print("ID (1): ", defense_entry[1])
+				print("Category (2): ", defense_entry[2])
+				print("Name (3): ", defense_entry[3])
+				print("Description (4): ", defense_entry[4])
+				print("Path (5): ", defense_entry[5])
+			else:
+				print("ERROR: Entry too short - expected at least 6 fields")
+		else:
+			print("ERROR: Dictionary key not found")
+	else:
+		print("ERROR: Mitre node not found")
+	print("=== END DEBUG ===")
+
+func debug_all_active_cards(attack_cards: Array, defense_cards: Array):
+	"""Debug all currently active cards"""
+	print("=== DEBUG ALL ACTIVE CARDS ===")
+	
+	print("Attack Cards:")
+	for i in range(attack_cards.size()):
+		var card = attack_cards[i]
+		if card and card.inPlay and card.card_index != -1:
+			print("  Position ", i + 1, ":")
+			debug_print_attack_card_structure(card.card_index)
+		else:
+			print("  Position ", i + 1, ": No active card")
+	
+	print("Defense Cards:")
+	for i in range(defense_cards.size()):
+		var card = defense_cards[i]
+		if card and card.inPlay and card.card_index != -1:
+			print("  Position ", i + 1, ":")
+			debug_print_defense_card_structure(card.card_index)
+		else:
+			print("  Position ", i + 1, ": No active card")
+	
+	print("=== END DEBUG ALL CARDS ===")
+
+func test_attack_classification_mapping():
+	"""Test the attack classification mapping with known cards"""
+	print("=== TESTING ATTACK CLASSIFICATION ===")
+	
+	if not has_node("/root/Mitre"):
+		print("ERROR: Mitre node not found")
+		return
+	
+	var mitre = get_node("/root/Mitre")
+	var test_cases = []
+	
+	# Test first few cards to verify mapping
+	for i in range(1, min(11, mitre.attack_dict.size() + 1)):  # 1-indexed
+		if mitre.attack_dict.has(i):
+			var entry = mitre.attack_dict[i]
+			if entry.size() >= 6:
+				test_cases.append({
+					"index": i - 1,  # Convert back to 0-based for card_index
+					"name": entry[2],
+					"classification": int(entry[5])
+				})
+	
+	print("Testing ", test_cases.size(), " attack cards:")
+	for test_case in test_cases:
+		var mock_card = {"card_index": test_case.index}
+		var determined_type = get_attack_type(mock_card)
+		
+		var expected_type = ""
+		match test_case.classification:
+			1: expected_type = "IA"
+			2: expected_type = "PEP"
+			3: expected_type = "E/E"
+			4: expected_type = "PEP"
+			_: expected_type = "IA"
+		
+		var status = "✓" if determined_type == expected_type else "✗"
+		print("  ", status, " ", test_case.name, " (Class: ", test_case.classification, ") -> Expected: ", expected_type, ", Got: ", determined_type)
+	
+	print("=== END CLASSIFICATION TEST ===")
+
+func debug_card_pairing_calculations():
+	"""Debug the card pairing calculations"""
+	print("=== DEBUG CARD PAIRING CALCULATIONS ===")
+	
+	var pairings = get_card_pairing_info()
+	
+	for i in range(pairings.size()):
+		var pairing = pairings[i]
+		print("Pairing ", i + 1, ":")
+		print("  Attack: ", pairing.attack_name)
+		print("  Type: ", pairing.get("card_type", "Unknown"))
+		print("  Position State: ", pairing.current_position_state)
+		print("  Intended Step: ", pairing.intended_step)
+		print("  Valid Play: ", pairing.is_valid_play)
+		print("  Individual Cost: ", pairing.individual_cost)
+		print("  Individual Time: ", pairing.individual_time)
+		print("  Success Rate: ", pairing.success_percentage, "%")
+		print("  Dice Threshold: ", pairing.dice_threshold)
+		print("  Auto Success: ", pairing.auto_success)
+		if pairing.has("invalid_play"):
+			print("  Invalid Play: ", pairing.invalid_play)
+		print("  Defense: ", pairing.defense_name)
+		print("")
+	
+	print("=== END PAIRING DEBUG ===")
+
+# Call this function to run comprehensive debugging
+func run_comprehensive_card_debug(attack_cards: Array, defense_cards: Array):
+	"""Run all debugging functions"""
+	print("\n" + "=".repeat(50))
+	print("COMPREHENSIVE CARD DEBUG SESSION")
+	print("=".repeat(50))
+	
+	test_attack_classification_mapping()
+	debug_all_active_cards(attack_cards, defense_cards)
+	
+	if current_attack_cards.size() > 0 or current_defense_cards.size() > 0:
+		debug_card_pairing_calculations()
+	
+	print("=".repeat(50))
+	print("END COMPREHENSIVE DEBUG")
+	print("=".repeat(50) + "\n")

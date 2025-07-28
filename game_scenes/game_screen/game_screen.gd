@@ -957,30 +957,3 @@ func _on_spin_box_value_changed(value):
 func _on_button_pressed():
 	"""Handle manual button press (legacy compatibility)"""
 	pass
-
-func print_card_debug_info():
-	"""Print debug information about current card state"""
-	print("=== CARD DEBUG INFO ===")
-	print("Attack Cards:")
-	for i in range(aCards.size()):
-		var card = aCards[i]
-		if card:
-			print("  a_", i + 1, ": inPlay=", card.inPlay, " card_index=", card.card_index, " cardType=", card.cardType)
-		else:
-			print("  a_", i + 1, ": NULL")
-	
-	print("Defense Cards:")
-	for i in range(dCards.size()):
-		var card = dCards[i]
-		if card:
-			print("  d_", i + 1, ": inPlay=", card.inPlay, " card_index=", card.card_index, " cardType=", card.cardType)
-		else:
-			print("  d_", i + 1, ": NULL")
-	
-	if GameData:
-		print("GameData attack lines:")
-		for i in range(3):
-			var line = GameData.attack_lines[i]
-			print("  Attack ", i + 1, ": active=", line.active, " step=", GameData.get_step_name(line.step), " card_index=", line.card_index)
-	
-	print("=== END DEBUG INFO ===")
