@@ -287,12 +287,15 @@ autoplay = "default"
 frame_progress = 0.402242
 
 [node name="timeline_title" type="Label" parent="."]
-offset_left = 816.0
-offset_top = 8.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 800.0
+offset_top = 15.0
 offset_right = 1119.0
-offset_bottom = 48.0
+offset_bottom = 41.0
+grow_horizontal = 0
 pivot_offset = Vector2(148, 25)
-size_flags_horizontal = 3
 theme = ExtResource("7_unjkg")
 text = "lllll"
 horizontal_alignment = 2

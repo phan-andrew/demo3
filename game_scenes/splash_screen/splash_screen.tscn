@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_60llc"]
 [ext_resource type="Script" uid="uid://cwwh8r0ol4t3o" path="res://game_scenes/splash_screen/splash_screen.gd" id="1_d2qnl"]
-[ext_resource type="Texture2D" uid="uid://dqy286st7y17p" path="res://pixil-frame-0 - 2025-07-29T125546.237.png" id="3_rkugt"]
+[ext_resource type="Texture2D" uid="uid://ba86kst506f8n" path="res://pixil-frame-0 - 2025-07-29T133234.359.png" id="3_rkugt"]
 [ext_resource type="Texture2D" uid="uid://cfft4dopidiq3" path="res://images/UI_images/dod.png" id="5_dqmfp"]
 [ext_resource type="Texture2D" uid="uid://miyoer6h0k0v" path="res://images/UI_images/comuuv.png" id="6_1jmxl"]
 [ext_resource type="Texture2D" uid="uid://bcel5hil43bfe" path="res://images/UI_images/godotlogo.png" id="6_axrwi"]
@@ -49,10 +49,10 @@ texture = ExtResource("8_mvm13")
 
 [node name="Button" type="Button" parent="."]
 z_index = -2
-offset_left = -13.0
-offset_top = 2.0
-offset_right = 1142.0
-offset_bottom = 652.0
+offset_left = -1.0
+offset_top = 1.0
+offset_right = 1154.0
+offset_bottom = 651.0
 
 [node name="Label" type="Label" parent="."]
 offset_left = 390.0
