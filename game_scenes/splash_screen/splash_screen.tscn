@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0qd0epqdp3ht"]
+[gd_scene load_steps=10 format=3 uid="uid://c0qd0epqdp3ht"]
 
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_60llc"]
 [ext_resource type="Script" uid="uid://cwwh8r0ol4t3o" path="res://game_scenes/splash_screen/splash_screen.gd" id="1_d2qnl"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bcel5hil43bfe" path="res://images/UI_images/godotlogo.png" id="6_axrwi"]
 [ext_resource type="Texture2D" uid="uid://bdce0x0otqfo7" path="res://images/UI_images/keyport.jpg" id="8_mvm13"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="9_4rmsb"]
+[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="9_rkugt"]
 [ext_resource type="Texture2D" uid="uid://b7db0jpft5nxs" path="res://images/Logo/Capture.PNG" id="10_capture"]
 
 [node name="Node2D" type="Node2D"]
@@ -19,7 +20,7 @@ scale = Vector2(1.152, 0.972973)
 texture = ExtResource("1_60llc")
 
 [node name="seacat" type="Sprite2D" parent="."]
-position = Vector2(520, 280)
+position = Vector2(585, 280)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("10_capture")
 
@@ -52,11 +53,12 @@ offset_right = 1155.0
 offset_bottom = 650.0
 
 [node name="Label" type="Label" parent="."]
-offset_left = 325.0
-offset_top = 490.0
-offset_right = 722.0
-offset_bottom = 545.0
+offset_left = 390.0
+offset_top = 488.0
+offset_right = 787.0
+offset_bottom = 543.0
 theme = ExtResource("9_4rmsb")
+theme_override_fonts/font = ExtResource("9_rkugt")
 text = "CLICK ANYWHERE
 TO START"
 horizontal_alignment = 1

@@ -30,27 +30,35 @@ func _process(_delta):
 		$tank.show()
 		vehicle = $tank
 		$ParallaxBackground/ParallaxLayer/background.texture = load("res://images/UI_images/progress_bar/land/Surface.png")
-	$Label.text="T"+str(int(Mitre.timeline_dict[current_round][0]))
-	$timeline_title.text=str(Mitre.timeline_dict[current_round][1])
+	
+	# Safe access to timeline_dict
+	if is_valid_round(current_round):
+		$Label.text = "T" + str(int(Mitre.timeline_dict[current_round][0]))
+		$timeline_title.text = str(Mitre.timeline_dict[current_round][1])
 
 func _progress(speed):
 	$ParallaxBackground.progress(speed)
+
 func increase_time():
-	current_round=current_round+1
+	current_round = current_round + 1
 
 func _on_area_2d_mouse_entered():
-	$CanvasLayer/PanelContainerCurrent.show()
-	$CanvasLayer/PanelContainerCurrent/MarginContainer/Label.text="Round: " + str(current_round-1) + " of " + str(round_end) + "\n" + "Time: "+str(Mitre.timeline_dict[current_round][0]) +  "\n" + "Description: " + str(Mitre.timeline_dict[current_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[current_round][2])
-	
+	if is_valid_round(current_round):
+		$CanvasLayer/PanelContainerCurrent.show()
+		$CanvasLayer/PanelContainerCurrent/MarginContainer/Label.text = "Round: " + str(current_round) + " of " + str(round_end) + "\n" + "Time: " + str(Mitre.timeline_dict[current_round][0]) + "\n" + "Description: " + str(Mitre.timeline_dict[current_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[current_round][2])
+
 func _on_area_2d_mouse_exited():
 	$CanvasLayer/PanelContainerCurrent.hide()
 
 func _on_start_area_2d_mouse_entered():
-	var previous_round = current_round-1
-	if previous_round-1 != 0:
+	var previous_round = current_round - 1
+	
+	# Check if previous_round is valid (>= 0 and exists in dictionary)
+	if previous_round >= 0 and is_valid_round(previous_round):
 		$StartCanvasLayer/PanelContainerCurrent.show()
-		$StartCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text="Round: " + str(previous_round-1) + " of " + str(round_end) + "\n" + "Time: "+str(Mitre.timeline_dict[previous_round][0]) +  "\n" + "Description: " + str(Mitre.timeline_dict[previous_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[previous_round][2])
+		$StartCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text = "Round: " + str(previous_round) + " of " + str(round_end) + "\n" + "Time: " + str(Mitre.timeline_dict[previous_round][0]) + "\n" + "Description: " + str(Mitre.timeline_dict[previous_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[previous_round][2])
 	else:
+		# Show start panel when we're at the beginning
 		$StartCanvasLayer/PanelContainerStart.show()
 
 func _on_start_area_2d_mouse_exited():
@@ -58,13 +66,41 @@ func _on_start_area_2d_mouse_exited():
 	$StartCanvasLayer/PanelContainerStart.hide()
 
 func _on_end_area_2d_mouse_entered() -> void:
-	var next_round = current_round+1
-	if next_round <= round_end+1:
+	var next_round = current_round + 1
+	
+	# Check if next_round is valid and within bounds
+	if next_round <= round_end and is_valid_round(next_round):
 		$EndCanvasLayer/PanelContainerCurrent.show()
-		$EndCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text="Round: " + str(next_round-1) + " of " + str(round_end) + "\n" + "Time: "+str(Mitre.timeline_dict[next_round][0]) +  "\n" + "Description: " + str(Mitre.timeline_dict[next_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[next_round][2])
+		$EndCanvasLayer/PanelContainerCurrent/MarginContainer/Label.text = "Round: " + str(next_round) + " of " + str(round_end) + "\n" + "Time: " + str(Mitre.timeline_dict[next_round][0]) + "\n" + "Description: " + str(Mitre.timeline_dict[next_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[next_round][2])
 	else:
+		# Show end panel when we're at the end
 		$EndCanvasLayer/PanelContainerEnd.show()
 
 func _on_end_area_2d_mouse_exited() -> void:
 	$EndCanvasLayer/PanelContainerCurrent.hide()
 	$EndCanvasLayer/PanelContainerEnd.hide()
+
+func is_valid_round(round_index: int) -> bool:
+	"""Check if the round index is valid for accessing Mitre.timeline_dict"""
+	# Check if Mitre exists
+	if not Mitre:
+		print("Warning: Mitre not available")
+		return false
+	
+	# Check if timeline_dict exists
+	if not Mitre.timeline_dict:
+		print("Warning: Mitre.timeline_dict not available")
+		return false
+	
+	# Check if the round index exists in the dictionary
+	if not Mitre.timeline_dict.has(round_index):
+		print("Warning: Round index ", round_index, " not found in timeline_dict")
+		return false
+	
+	# Check if the round data has the required elements
+	var round_data = Mitre.timeline_dict[round_index]
+	if not round_data or round_data.size() < 3:
+		print("Warning: Invalid round data at index ", round_index, " - insufficient data")
+		return false
+	
+	return true

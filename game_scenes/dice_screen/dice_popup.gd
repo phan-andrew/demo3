@@ -1,7 +1,7 @@
 extends Control
 
-# Enhanced Dice popup for connected attack chain system
-# Handles individual card calculations and discussion time
+# Enhanced Dice popup with user-controlled flow and smooth animations
+# Fixes: Consistent formatting, dice stability, single roll, complete font application
 
 # UI References
 var attack_info_label
@@ -11,6 +11,7 @@ var number_label
 var cup_sprite
 var dice_result_label
 var roll_button
+var continue_button
 var manual_toggle
 var manual_entry
 var manual_submit
@@ -22,7 +23,6 @@ var animation_player
 var close_button
 var admin_button
 var discussion_panel
-var continue_button
 var round_summary_label
 
 # Game state
@@ -30,9 +30,21 @@ var card_pairings = []
 var current_pairing_index = 0
 var rolling_results = []
 var is_rolling = false
+var is_waiting_for_user = false
 var manual_mode = false
 var rolls_remaining = 0
 var discussion_mode = false
+var current_roll_result = 0
+
+# UI state tracking
+var ui_state = "ready"  # ready, rolling, result_shown, discussion
+
+# Dice position consistency - NEVER change this once set
+var dice_base_position = Vector2(200, 75)
+var dice_initialized = false
+
+# Font resource
+var kongtext_font = preload("res://pixel font/kongtext.ttf")
 
 # Dice faces
 var dice_faces = [
@@ -59,6 +71,7 @@ func _ready():
 	
 	get_ui_references()
 	setup_ui()
+	apply_font_everywhere()
 	connect_signals()
 	initialize_dice_session()
 
@@ -82,11 +95,65 @@ func get_ui_references():
 	close_button = get_node("DialogPanel/HeaderContainer/CloseButton")
 	admin_button = get_node("DialogPanel/HeaderContainer/AdminButton")
 	
+	# Initialize dice position ONCE and never change it again
+	if dice_sprite and not dice_initialized:
+		dice_sprite.position = dice_base_position
+		dice_initialized = true
+	
+	# Create continue button in proper position
+	create_continue_button()
+	
 	# Create discussion panel
 	create_discussion_panel()
 
+func apply_font_everywhere():
+	"""Apply kongtext font to all UI elements"""
+	var elements_to_font = [
+		get_node("DialogPanel/HeaderContainer/TitleLabel"),
+		get_node("DialogPanel/HeaderContainer/AdminButton"),
+		get_node("DialogPanel/HeaderContainer/CloseButton"),
+		attack_info_label,
+		defense_info_label,
+		dice_result_label,
+		roll_button,
+		manual_toggle,
+		manual_submit,
+		strength_info,
+		number_label
+	]
+	
+	for element in elements_to_font:
+		if element:
+			element.add_theme_font_override("font", kongtext_font)
+			if element == number_label:
+				element.add_theme_font_size_override("font_size", 28)
+			elif element == get_node("DialogPanel/HeaderContainer/TitleLabel"):
+				element.add_theme_font_size_override("font_size", 24)
+			elif element == strength_info:
+				element.add_theme_font_size_override("font_size", 18)
+			elif element == dice_result_label:
+				element.add_theme_font_size_override("font_size", 18)
+			else:
+				element.add_theme_font_size_override("font_size", 16)
+
+func create_continue_button():
+	"""Create a continue button positioned properly in the button container"""
+	continue_button = Button.new()
+	continue_button.name = "ContinueButton"
+	continue_button.text = "Continue"
+	continue_button.visible = false
+	continue_button.add_theme_font_override("font", kongtext_font)
+	continue_button.add_theme_font_size_override("font_size", 16)
+	
+	# Insert at the beginning of button container to maintain layout
+	var button_container = get_node("DialogPanel/DiceContainer/ButtonContainer")
+	button_container.add_child(continue_button)
+	button_container.move_child(continue_button, 0)  # Move to first position
+	
+	continue_button.pressed.connect(_on_continue_button_pressed)
+
 func create_discussion_panel():
-	"""Create discussion time panel"""
+	"""Create discussion time panel with consistent formatting"""
 	discussion_panel = Panel.new()
 	discussion_panel.name = "DiscussionPanel"
 	discussion_panel.visible = false
@@ -102,45 +169,57 @@ func create_discussion_panel():
 	
 	# Main content panel
 	var content_panel = Panel.new()
-	content_panel.position = Vector2(200, 100)
-	content_panel.size = Vector2(752, 448)
+	content_panel.position = Vector2(50, 30)
+	content_panel.size = Vector2(1052, 588)
 	discussion_panel.add_child(content_panel)
 	
-	# Title
+	# Title with proper font
 	var title_label = Label.new()
-	title_label.text = "Discussion Time"
-	title_label.position = Vector2(20, 20)
-	title_label.add_theme_font_size_override("font_size", 32)
+	title_label.text = "Round Results Summary"
+	title_label.position = Vector2(20, 15)
+	title_label.size = Vector2(1012, 40)
+	title_label.add_theme_font_override("font", kongtext_font)
+	title_label.add_theme_font_size_override("font_size", 28)
 	title_label.add_theme_color_override("font_color", Color.WHITE)
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	content_panel.add_child(title_label)
 	
-	# Round summary
+	# Single RichTextLabel for all content - simpler approach
 	round_summary_label = RichTextLabel.new()
-	round_summary_label.position = Vector2(20, 80)
-	round_summary_label.size = Vector2(712, 300)
+	round_summary_label.position = Vector2(20, 70)
+	round_summary_label.size = Vector2(1012, 450)
 	round_summary_label.bbcode_enabled = true
 	round_summary_label.fit_content = true
+	round_summary_label.scroll_active = true
+	round_summary_label.add_theme_font_override("normal_font", kongtext_font)
+	round_summary_label.add_theme_font_override("bold_font", kongtext_font)
+	round_summary_label.add_theme_font_size_override("normal_font_size", 14)
+	round_summary_label.add_theme_color_override("default_color", Color.WHITE)
 	content_panel.add_child(round_summary_label)
 	
-	# Continue button
-	continue_button = Button.new()
-	continue_button.text = "Continue to Next Round"
-	continue_button.position = Vector2(276, 400)
-	continue_button.size = Vector2(200, 40)
-	continue_button.pressed.connect(_on_continue_button_pressed)
-	content_panel.add_child(continue_button)
+	# Continue button for discussion
+	var discussion_continue = Button.new()
+	discussion_continue.text = "Continue to Next Round"
+	discussion_continue.position = Vector2(426, 535)
+	discussion_continue.size = Vector2(200, 40)
+	discussion_continue.add_theme_font_override("font", kongtext_font)
+	discussion_continue.add_theme_font_size_override("font_size", 16)
+	discussion_continue.pressed.connect(_on_discussion_continue_pressed)
+	content_panel.add_child(discussion_continue)
 
 func setup_ui():
 	"""Setup initial UI state"""
 	if manual_entry:
 		manual_entry.visible = false
+		manual_entry.add_theme_font_override("font", kongtext_font)
 	if manual_submit:
 		manual_submit.visible = false
 	if result_indicator:
 		result_indicator.visible = false
 	
-	# Load dice face (default to 5)
-	update_dice_display(5)
+	# Set dice to default display without changing position
+	set_dice_display_only(5)
+	ui_state = "ready"
 
 func connect_signals():
 	"""Connect UI signals"""
@@ -165,8 +244,8 @@ func initialize_dice_session():
 			roll_button.disabled = true
 		return
 	
-	# Get individual card pairings from GameData
-	card_pairings = GameData.get_card_pairing_info()
+	# Get individual card pairings from GameData with duplicate prevention
+	card_pairings = get_unique_card_pairings()
 	
 	if card_pairings.size() == 0:
 		print("No active card pairings found")
@@ -176,7 +255,7 @@ func initialize_dice_session():
 			roll_button.disabled = true
 		return
 	
-	print("Initialized dice session with ", card_pairings.size(), " individual card pairings")
+	print("Initialized dice session with ", card_pairings.size(), " unique card pairings")
 	
 	# Show position state info
 	show_position_state_info()
@@ -185,10 +264,31 @@ func initialize_dice_session():
 	rolling_results.clear()
 	rolls_remaining = card_pairings.size()
 	discussion_mode = false
+	ui_state = "ready"
 	
 	# Display first pairing
 	display_current_pairing()
 	update_roll_button_text()
+
+func get_unique_card_pairings() -> Array:
+	"""Get unique card pairings, preventing duplicates"""
+	if not GameData or not GameData.has_method("get_card_pairing_info"):
+		return []
+	
+	var raw_pairings = GameData.get_card_pairing_info()
+	var unique_pairings = []
+	var seen_attacks = {}
+	
+	for pairing in raw_pairings:
+		var attack_key = str(pairing.attack_index) + "_" + pairing.attack_name
+		if not seen_attacks.has(attack_key):
+			seen_attacks[attack_key] = true
+			unique_pairings.append(pairing)
+			print("Added unique pairing: Attack ", pairing.attack_index + 1, " - ", pairing.attack_name)
+		else:
+			print("Skipped duplicate pairing: Attack ", pairing.attack_index + 1, " - ", pairing.attack_name)
+	
+	return unique_pairings
 
 func show_position_state_info():
 	"""Show current position states for context"""
@@ -205,6 +305,9 @@ func display_current_pairing():
 	"""Display information about the current individual card pairing"""
 	if current_pairing_index >= card_pairings.size():
 		return
+	
+	# Ensure dice is in correct position before displaying
+	force_dice_position()
 	
 	var pairing = card_pairings[current_pairing_index]
 	
@@ -236,24 +339,83 @@ func display_current_pairing():
 	# Update strength bar and info with individual calculations
 	update_strength_display(pairing)
 	
-	# Update dice result text
-	if dice_result_label:
-		if pairing.auto_success:
-			dice_result_label.text = "Auto-Success! No roll needed."
-		elif pairing.has("invalid_play") and pairing.invalid_play:
-			dice_result_label.text = "Invalid play - Auto-Failure!"
-		else:
-			dice_result_label.text = "Ready to roll for Attack " + str(pairing.attack_index + 1)
-			dice_result_label.text += "\nIndividual Success Rate: " + str(pairing.rounded_percentage) + "%"
+	# Update dice result text based on current UI state  
+	update_dice_result_text(pairing)
 	
 	# Update roll button
-	if roll_button:
-		if pairing.auto_success:
-			roll_button.text = "⚡ Auto-Resolve (Success)"
-		elif pairing.has("invalid_play") and pairing.invalid_play:
-			roll_button.text = "❌ Auto-Resolve (Failure)"
-		else:
-			roll_button.text = "🎲 Roll Dice"
+	update_roll_button_for_pairing(pairing)
+
+func update_dice_result_text(pairing: Dictionary):
+	"""Update dice result text based on current state"""
+	if not dice_result_label:
+		return
+	
+	match ui_state:
+		"ready":
+			if pairing.auto_success:
+				dice_result_label.text = "Auto-Success! No roll needed."
+				dice_result_label.modulate = Color.WHITE
+			elif pairing.has("invalid_play") and pairing.invalid_play:
+				dice_result_label.text = "Invalid play - Auto-Failure!"
+				dice_result_label.modulate = Color.WHITE
+			else:
+				dice_result_label.text = "Ready to roll for Attack " + str(pairing.attack_index + 1)
+				dice_result_label.text += "\nIndividual Success Rate: " + str(pairing.rounded_percentage) + "%"
+				dice_result_label.modulate = Color.WHITE
+		"rolling":
+			dice_result_label.text = "Rolling dice for Attack " + str(pairing.attack_index + 1) + "..."
+			dice_result_label.modulate = Color.WHITE
+		"result_shown":
+			if current_roll_result > 0:
+				var result_text = "Rolled: " + str(current_roll_result) + " (needed ≤" + str(pairing.dice_threshold) + ")\n"
+				result_text += "Individual Stats: Cost " + str(pairing.individual_cost) + ", Time " + str(pairing.individual_time) + "\n"
+				var success = current_roll_result <= pairing.dice_threshold
+				result_text += "Result: " + ("SUCCESS!" if success else "FAILURE")
+				dice_result_label.text = result_text
+				dice_result_label.modulate = Color.RED if success else Color.BLUE
+			else:
+				# Auto success/failure cases
+				if pairing.auto_success:
+					dice_result_label.text = "AUTO SUCCESS - No Defense Present!"
+					dice_result_label.modulate = Color.GREEN
+				elif pairing.has("invalid_play") and pairing.invalid_play:
+					dice_result_label.text = "INVALID PLAY - Auto Failure!"
+					dice_result_label.modulate = Color.RED
+
+func update_roll_button_for_pairing(pairing: Dictionary):
+	"""Update roll button for current pairing and UI state"""
+	if not roll_button:
+		return
+	
+	match ui_state:
+		"ready":
+			roll_button.visible = true
+			continue_button.visible = false
+			
+			if pairing.auto_success:
+				roll_button.text = "⚡ Auto-Resolve (Success)"
+			elif pairing.has("invalid_play") and pairing.invalid_play:
+				roll_button.text = "❌ Auto-Resolve (Failure)"
+			else:
+				if manual_mode:
+					roll_button.text = "✏️ Manual Entry"
+				else:
+					roll_button.text = "🎲 Roll Dice"
+			
+			update_roll_button_text()
+			roll_button.disabled = false
+			
+		"rolling":
+			roll_button.visible = false
+			continue_button.visible = false
+			
+		"result_shown":
+			roll_button.visible = false
+			continue_button.visible = true
+			if rolls_remaining > 1:
+				continue_button.text = "Next Roll (" + str(rolls_remaining - 1) + " remaining)"
+			else:
+				continue_button.text = "Show Round Summary"
 
 func update_strength_display(pairing: Dictionary):
 	"""Update the strength bar display with individual card calculations"""
@@ -280,25 +442,24 @@ func update_strength_display(pairing: Dictionary):
 
 func update_roll_button_text():
 	"""Update the roll button text with remaining rolls"""
+	if not roll_button or ui_state != "ready":
+		return
+		
+	var base_text = roll_button.text
 	var remaining_text = ""
+	
 	if rolls_remaining > 1:
 		remaining_text = " (" + str(rolls_remaining) + " Remaining)"
 	elif rolls_remaining == 1:
 		remaining_text = " (Last Roll)"
 	
-	if current_pairing_index < card_pairings.size():
-		var pairing = card_pairings[current_pairing_index]
-		if roll_button:
-			if pairing.auto_success:
-				roll_button.text = "⚡ Auto-Resolve (Success)" + remaining_text
-			elif pairing.has("invalid_play") and pairing.invalid_play:
-				roll_button.text = "❌ Auto-Resolve (Failure)" + remaining_text
-			else:
-				roll_button.text = "🎲 Roll Dice" + remaining_text
+	# Only add remaining text if it doesn't already contain it
+	if not base_text.contains("("):
+		roll_button.text = base_text + remaining_text
 
 func _on_roll_button_pressed():
 	"""Handle roll button press"""
-	if is_rolling or discussion_mode:
+	if is_rolling or discussion_mode or ui_state != "ready":
 		return
 	
 	if current_pairing_index >= card_pairings.size():
@@ -333,13 +494,12 @@ func handle_auto_success(pairing: Dictionary):
 	}
 	
 	rolling_results.append(result)
+	current_roll_result = 0
 	
-	# Show team announcement
-	show_team_announcement("RED TEAM WINS!", "Attack " + str(pairing.attack_index + 1) + " auto-succeeds (undefended)", Color.RED)
-	
-	# Wait for announcement, then continue
-	await get_tree().create_timer(7.5).timeout
-	advance_to_next_pairing()
+	# Show result immediately
+	ui_state = "result_shown"
+	update_dice_result_text(pairing)
+	update_roll_button_for_pairing(pairing)
 
 func handle_auto_failure(pairing: Dictionary):
 	"""Handle auto-failure for invalid plays"""
@@ -358,28 +518,35 @@ func handle_auto_failure(pairing: Dictionary):
 	}
 	
 	rolling_results.append(result)
+	current_roll_result = 0
 	
-	# Show team announcement
-	show_team_announcement("BLUE TEAM WINS!", "Attack " + str(pairing.attack_index + 1) + " invalid play (auto-failure)", Color.BLUE)
-	
-	# Wait for announcement, then continue
-	await get_tree().create_timer(7.5).timeout
-	advance_to_next_pairing()
+	# Show result immediately
+	ui_state = "result_shown"
+	update_dice_result_text(pairing)
+	update_roll_button_for_pairing(pairing)
 
 func perform_dice_roll(pairing: Dictionary):
 	"""Perform actual dice roll with individual calculations"""
-	if is_rolling:
+	if is_rolling or ui_state != "ready":
 		return
 	
+	# Ensure dice starts in correct position
+	force_dice_position()
+	
 	is_rolling = true
-	if roll_button:
-		roll_button.disabled = true
+	ui_state = "rolling"
+	update_roll_button_for_pairing(pairing)
 	
-	# Animate dice roll
-	await animate_dice_roll()
+	# Update text to show rolling state
+	update_dice_result_text(pairing)
 	
-	# Generate result
+	# Generate result ONCE before animation
 	var roll_result = randi_range(1, 10)
+	current_roll_result = roll_result
+	
+	# Simple dice animation - NO random changes during animation
+	await animate_dice_roll_simple(roll_result)
+	
 	var success = roll_result <= pairing.dice_threshold
 	
 	# Store result with individual card data
@@ -398,50 +565,54 @@ func perform_dice_roll(pairing: Dictionary):
 	
 	rolling_results.append(result)
 	
-	# Update dice display
-	update_dice_display(roll_result)
+	# Update result indicator
 	update_result_indicator(roll_result, pairing.dice_threshold)
 	
-	# Show result text
-	if dice_result_label:
-		var result_text = "Rolled: " + str(roll_result) + " (needed ≤" + str(pairing.dice_threshold) + ")\n"
-		result_text += "Individual Stats: Cost " + str(pairing.individual_cost) + ", Time " + str(pairing.individual_time) + "\n"
-		result_text += "Result: " + ("SUCCESS!" if success else "FAILURE")
-		dice_result_label.text = result_text
-	
-	# Show team announcement
-	var team_color = Color.RED if success else Color.BLUE
-	var team_name = "RED TEAM WINS!" if success else "BLUE TEAM WINS!"
-	var message = "Attack " + str(pairing.attack_index + 1) + " " + ("succeeds" if success else "fails") + " (rolled " + str(roll_result) + ")"
-	
-	show_team_announcement(team_name, message, team_color)
-	
-	# Wait for announcement, then continue
-	await get_tree().create_timer(7.5).timeout
-	
+	# Show result
 	is_rolling = false
-	advance_to_next_pairing()
+	ui_state = "result_shown"
+	update_dice_result_text(pairing)
+	update_roll_button_for_pairing(pairing)
 
-func animate_dice_roll() -> void:
-	"""Animate the dice rolling"""
-	var roll_duration = 1.5
-	var roll_steps = 15
-	var step_duration = roll_duration / roll_steps
+func animate_dice_roll_simple(final_result: int) -> void:
+	"""Simple dice animation - show final result then cup reveal"""
+	# Set the dice to show the final result immediately
+	set_dice_display_only(final_result)
 	
-	for i in range(roll_steps):
-		var random_face = randi_range(1, 10)
-		update_dice_display(random_face)
-		await get_tree().create_timer(step_duration).timeout
+	# Store original dice position before animation
+	var original_dice_pos = dice_base_position
 	
-	# Play cup reveal animation
-	if animation_player:
+	# Brief pause to show the roll
+	await get_tree().create_timer(0.5).timeout
+	
+	# Play cup reveal animation if available
+	if animation_player and animation_player.has_animation("cup_reveal"):
 		animation_player.play("cup_reveal")
 		await animation_player.animation_finished
+	
+	# Force dice back to original position after animation
+	if dice_sprite:
+		dice_sprite.position = original_dice_pos
 
-func update_dice_display(face_number: int):
-	"""Update the dice sprite and number"""
+func set_dice_display_only(face_number: int):
+	"""Update ONLY the dice display without touching position"""
+	# ALWAYS ensure dice is in correct position first
+	if dice_sprite:
+		dice_sprite.position = dice_base_position
+	
 	if number_label:
 		number_label.text = str(face_number)
+	
+	# Update dice sprite if available - DO NOT CHANGE POSITION
+	if dice_sprite and face_number >= 1 and face_number <= 10:
+		var face_index = face_number - 1
+		if face_index < dice_faces.size():
+			dice_sprite.texture = load(dice_faces[face_index])
+
+func force_dice_position():
+	"""Force dice back to base position - call this anywhere dice might move"""
+	if dice_sprite:
+		dice_sprite.position = dice_base_position
 
 func update_result_indicator(roll_result: int, threshold: int):
 	"""Update the result indicator on the strength bar"""
@@ -461,11 +632,13 @@ func update_result_indicator(roll_result: int, threshold: int):
 	else:
 		result_indicator.color = Color.RED
 
-func show_team_announcement(team_name: String, message: String, color: Color):
-	if dice_result_label:
-		dice_result_label.text = team_name + "\n" + message
-		dice_result_label.modulate = color
-		
+func _on_continue_button_pressed():
+	"""Handle continue button press - user-controlled flow"""
+	if ui_state == "result_shown":
+		advance_to_next_pairing()
+	elif discussion_mode:
+		complete_all_rolls()
+
 func advance_to_next_pairing():
 	"""Advance to the next card pairing or complete"""
 	current_pairing_index += 1
@@ -477,16 +650,20 @@ func advance_to_next_pairing():
 		# Reset UI for next roll
 		if result_indicator:
 			result_indicator.visible = false
-		if roll_button:
-			roll_button.disabled = false
+		
+		ui_state = "ready"
+		current_roll_result = 0
+		
+		# Ensure dice stays in correct position
+		force_dice_position()
 		
 		# Display next pairing
 		display_current_pairing()
-		update_roll_button_text()
 
 func show_discussion_time():
 	"""Show discussion time panel with round summary"""
 	discussion_mode = true
+	ui_state = "discussion"
 	
 	# Hide main dice interface
 	var dialog_panel = get_node("DialogPanel")
@@ -505,63 +682,63 @@ func generate_round_summary():
 	if not round_summary_label:
 		return
 	
-	var summary_text = "[b][font_size=24]Round Results Summary[/font_size][/b]\n\n"
-	
-	# Position states before
-	summary_text += "[b]Position States (Before):[/b]\n"
-	if GameData:
-		var position_states = GameData.get_position_states_snapshot()
-		for state in position_states:
-			summary_text += "Position " + str(state.position) + ": " + state.state + "\n"
-	
-	summary_text += "\n[b]Individual Attack Results:[/b]\n"
+	var summary_text = "[b][font_size=20]Attack Results[/font_size][/b]\n\n"
 	
 	# Individual results
 	for i in range(rolling_results.size()):
 		var result = rolling_results[i]
-		summary_text += "\n[b]Attack " + str(result.attack_index + 1) + ":[/b] " + result.attack_name + "\n"
-		summary_text += "  Individual Stats: Cost $" + str(result.individual_cost) + ", Time " + str(result.individual_time) + " min\n"
-		summary_text += "  Defense: " + result.defense_name + "\n"
+		summary_text += "[b]Attack " + str(result.attack_index + 1) + ":[/b] " + result.attack_name + "\n"
+		summary_text += "Individual Stats: Cost " + str(result.individual_cost) + ", Time " + str(result.individual_time) + "\n"
+		summary_text += "Defense: " + result.defense_name + "\n"
 		
 		if result.get("auto_success", false):
-			summary_text += "  [color=green]Result: AUTO SUCCESS (No Defense)[/color]\n"
+			summary_text += "[color=green]Result: AUTO SUCCESS (No Defense)[/color]\n"
 		elif result.get("invalid_play", false):
-			summary_text += "  [color=red]Result: INVALID PLAY (Auto Failure)[/color]\n"
+			summary_text += "[color=red]Result: INVALID PLAY (Auto Failure)[/color]\n"
 		else:
 			var success_text = "SUCCESS" if result.success else "FAILURE"
 			var color = "green" if result.success else "red"
-			summary_text += "  Roll: " + str(result.roll_result) + "/10 (needed ≤" + str(result.dice_threshold) + ")\n"
-			summary_text += "  [color=" + color + "]Result: " + success_text + "[/color]\n"
+			summary_text += "Roll: " + str(result.roll_result) + "/10 (needed ≤" + str(result.dice_threshold) + ")\n"
+			summary_text += "[color=" + color + "]Result: " + success_text + "[/color]\n"
+		
+		if i < rolling_results.size() - 1:
+			summary_text += "\n"
 	
-	# Position states after (simulated based on results)
-	summary_text += "\n[b]Projected Position States (After):[/b]\n"
-	summary_text += "[i]Note: Actual states will be determined after discussion[/i]\n"
+	# Position states before
+	summary_text += "\n\n[b][font_size=20]Position States[/font_size][/b]\n\n"
 	
+	# Combine current state and projected changes on same line
 	for i in range(3):
-		var found_result = false
+		var current_state = "EMPTY"  # Default
+		if GameData and GameData.has_method("get_position_states_snapshot"):
+			var position_states = GameData.get_position_states_snapshot()
+			if i < position_states.size():
+				current_state = position_states[i].state
+		
+		# Pad current state to consistent width for alignment
+		var padded_state = current_state.rpad(6)  # Pad to 6 characters (longest is "EMPTY ")
+		
+		# Find projected change for this position
+		var projected_change = "[color=gray]No attack[/color]"
 		for result in rolling_results:
 			if result.attack_index == i:
-				found_result = true
-				var current_pos = "Position " + str(i + 1) + ": "
 				if result.success:
-					current_pos += "[color=yellow]Will advance based on attack type[/color]"
+					projected_change = "[color=yellow]→ Advance[/color]"
 				else:
-					current_pos += "[color=gray]No change (attack failed)[/color]"
-				summary_text += current_pos + "\n"
+					projected_change = "[color=gray]→ No change[/color]"
 				break
 		
-		if not found_result:
-			summary_text += "Position " + str(i + 1) + ": [color=gray]No attack played[/color]\n"
+		summary_text += "Position " + str(i + 1) + ": " + padded_state + " " + projected_change + "\n"
 	
 	# Red team victory condition
-	summary_text += "\n[b][color=yellow]Victory Condition:[/color][/b]\n"
-	summary_text += "Red Team wins when ANY position reaches E/E\n"
-	summary_text += "Blue Team wins by preventing this until time expires\n"
+	summary_text += "\n[b][font_size=20]Victory Condition[/font_size][/b]\n"
+	summary_text += "[color=red]When ANY position reaches E/E[/color]\n"
+	summary_text += "[color=blue]Preventing this until time expires[/color]\n"
 	
 	round_summary_label.text = summary_text
 
-func _on_continue_button_pressed():
-	"""Handle continue button press to end discussion time"""
+func _on_discussion_continue_pressed():
+	"""Handle discussion continue button press"""
 	discussion_mode = false
 	
 	# Hide discussion panel
@@ -575,14 +752,13 @@ func complete_all_rolls():
 	"""Complete all dice rolls and return results"""
 	print("All dice rolls completed. Results: ", rolling_results.size())
 	
-	# Show completion message
+	# Show completion message briefly
 	if dice_result_label:
 		dice_result_label.text = "All attacks resolved!\nProcessing results..."
-	if roll_button:
-		roll_button.disabled = true
+		dice_result_label.modulate = Color.WHITE
 	
 	# Wait a moment, then emit completion signal
-	await get_tree().create_timer(2).timeout
+	await get_tree().create_timer(1.0).timeout
 	emit_signal("dice_completed", rolling_results)
 
 func show_manual_entry():
@@ -591,8 +767,6 @@ func show_manual_entry():
 		manual_entry.visible = true
 	if manual_submit:
 		manual_submit.visible = true
-	if roll_button:
-		roll_button.visible = false
 
 func _on_manual_toggle_pressed():
 	"""Toggle between manual and automatic rolling"""
@@ -601,27 +775,17 @@ func _on_manual_toggle_pressed():
 	if manual_toggle:
 		if manual_mode:
 			manual_toggle.text = "🎲 Auto Roll"
-			if current_pairing_index < card_pairings.size():
-				var pairing = card_pairings[current_pairing_index]
-				if not pairing.auto_success and not pairing.get("invalid_play", false) and roll_button:
-					roll_button.text = "✏️ Manual Entry"
 		else:
 			manual_toggle.text = "✏️ Manual Entry"
 			if manual_entry:
 				manual_entry.visible = false
 			if manual_submit:
 				manual_submit.visible = false
-			if roll_button:
-				roll_button.visible = true
-			if current_pairing_index < card_pairings.size():
-				var pairing = card_pairings[current_pairing_index]
-				if roll_button:
-					if pairing.auto_success:
-						roll_button.text = "⚡ Auto-Resolve (Success)"
-					elif pairing.get("invalid_play", false):
-						roll_button.text = "❌ Auto-Resolve (Failure)"
-					else:
-						roll_button.text = "🎲 Roll Dice"
+	
+	# Update the current pairing display
+	if current_pairing_index < card_pairings.size():
+		var pairing = card_pairings[current_pairing_index]
+		update_roll_button_for_pairing(pairing)
 
 func _on_manual_submit_pressed():
 	"""Handle manual roll submission"""
@@ -637,6 +801,7 @@ func _on_manual_submit_pressed():
 			dice_result_label.text = "Invalid roll! Must be between 1-10"
 		return
 	
+	current_roll_result = manual_roll
 	var success = manual_roll <= pairing.dice_threshold
 	
 	# Store result with individual card data
@@ -655,35 +820,23 @@ func _on_manual_submit_pressed():
 	
 	rolling_results.append(result)
 	
-	# Update display
-	update_dice_display(manual_roll)
+	# Update display without changing position
+	set_dice_display_only(manual_roll)
 	update_result_indicator(manual_roll, pairing.dice_threshold)
 	
-	# Show result
-	if dice_result_label:
-		var result_text = "Manual Roll: " + str(manual_roll) + " (needed ≤" + str(pairing.dice_threshold) + ")\n"
-		result_text += "Individual Stats: Cost " + str(pairing.individual_cost) + ", Time " + str(pairing.individual_time) + "\n"
-		result_text += "Result: " + ("SUCCESS!" if success else "FAILURE")
-		dice_result_label.text = result_text
-	
-	# Show team announcement
-	var team_color = Color.RED if success else Color.BLUE
-	var team_name = "RED TEAM WINS!" if success else "BLUE TEAM WINS!"
-	var message = "Attack " + str(pairing.attack_index + 1) + " " + ("succeeds" if success else "fails") + " (manual roll " + str(manual_roll) + ")"
-	
-	show_team_announcement(team_name, message, team_color)
+	# Ensure dice position is correct after display update
+	force_dice_position()
 	
 	# Hide manual controls
 	if manual_entry:
 		manual_entry.visible = false
 	if manual_submit:
 		manual_submit.visible = false
-	if roll_button:
-		roll_button.visible = true
 	
-	# Wait for announcement, then continue
-	await get_tree().create_timer(7.5).timeout
-	advance_to_next_pairing()
+	# Show result
+	ui_state = "result_shown"
+	update_dice_result_text(pairing)
+	update_roll_button_for_pairing(pairing)
 
 func _on_close_button_pressed():
 	"""Handle close button press"""

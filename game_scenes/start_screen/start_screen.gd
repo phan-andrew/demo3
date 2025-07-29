@@ -1,17 +1,9 @@
 extends Node2D
 var seacar=false
 func _ready():
-	$Label.text="SEACAT"
 	$Sprite2D.texture = load(Settings.textured[Settings.theme])
 	Music.start_music()
 		
-	
-
-func _process(_delta):
-	if seacar:
-		$Label.text='SEACAR'
-	else:
-		$Label.text='SEACAT'
 
 func _on_button_3_pressed():
 	Music.mouse_click()
