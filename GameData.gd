@@ -357,14 +357,45 @@ func get_step_name(step: AttackStep) -> String:
 			return "Unknown"
 
 func get_position_states_snapshot() -> Array:
-	"""Get current position states for tracking"""
+	"""Get current position states for single progress bar tracking"""
 	var states = []
 	for i in range(3):
 		states.append({
-			"position": i + 1,
+			"position": i,  # 0-indexed for compatibility
 			"state": get_step_name(attack_positions[i]["state"])
 		})
 	return states
+
+func get_most_advanced_position_state() -> String:
+	"""Get the most advanced position state for single progress bar display"""
+	var max_state = AttackStep.EMPTY
+	
+	for position in attack_positions:
+		if position["state"] > max_state:
+			max_state = position["state"]
+	
+	return get_step_name(max_state)
+
+func get_most_advanced_position_progress() -> int:
+	"""Get progress level (0-3) for single progress bar image selection"""
+	var max_state = AttackStep.EMPTY
+	
+	for position in attack_positions:
+		if position["state"] > max_state:
+			max_state = position["state"]
+	
+	# Return progress level that maps directly to image indices
+	match max_state:
+		AttackStep.EMPTY:
+			return 0  # 0.png - Empty
+		AttackStep.IA:
+			return 1  # 1.png - IA filled
+		AttackStep.PEP:
+			return 2  # 2.png - PEP filled
+		AttackStep.E_E:
+			return 3  # 3.png - E/E filled (victory)
+		_:
+			return 0
 
 # Helper functions for card identification
 func get_attack_name(attack_card) -> String:
@@ -537,6 +568,7 @@ func debug_show_game_state():
 	print("Round: ", round_number)
 	for i in range(3):
 		print("Position ", i + 1, ": ", get_step_name(attack_positions[i]["state"]))
+	print("Most Advanced: ", get_most_advanced_position_state(), " (Progress Level: ", get_most_advanced_position_progress(), ")")
 	print("Active attack cards: ", current_attack_cards.size())
 	print("Active defense cards: ", current_defense_cards.size())
 	print("=== END GAME STATE ===")

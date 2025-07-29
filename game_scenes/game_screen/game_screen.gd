@@ -17,7 +17,7 @@ var game_won = false
 
 # Connected attack chain system variables
 var current_roll_results = []
-var attack_progress_bars = []
+var progress_bar_sprite = null  # Single progress bar sprite
 
 # UI icons
 var playIcon = preload("res://images/UI_images/play_button.png")
@@ -30,6 +30,14 @@ var active_dice_popup = null
 
 # Round tracking
 var round_number = 1
+
+# Progress bar images
+var progress_bar_images = [
+	"res://images/bar/0.png",  # Empty
+	"res://images/bar/1.png",  # IA filled
+	"res://images/bar/2.png",  # PEP filled
+	"res://images/bar/3.png"   # E/E filled
+]
 
 func _ready():
 	initialize_connected_game()
@@ -92,8 +100,8 @@ func initialize_connected_game():
 	# Setup enhanced save file for connected system
 	setup_connected_save_file()
 	
-	# Setup connected attack chain progress UI
-	setup_connected_attack_chain_progress_ui()
+	# Setup single progress bar UI
+	setup_single_progress_bar()
 	
 	# Initialize GameData connected attack chains
 	if GameData:
@@ -190,96 +198,34 @@ func setup_connected_save_file():
 		file.close()
 		print("Connected attack chain save file initialized: ", save_path)
 
-func setup_connected_attack_chain_progress_ui():
-	"""Setup UI elements for connected attack chain progress tracking"""
-	attack_progress_bars = []
+func setup_single_progress_bar():
+	"""Setup single progress bar UI element"""
+	# Create progress bar sprite - 2.55x size (15% smaller than 3x)
+	progress_bar_sprite = Sprite2D.new()
+	progress_bar_sprite.name = "ProgressBarSprite"
+	progress_bar_sprite.position = Vector2(576, 600)  # Lowered by 11 pixels
+	progress_bar_sprite.scale = Vector2(2.55, 2.55)  # 15% smaller than 3x
+	progress_bar_sprite.texture = load(progress_bar_images[0])  # Start with empty
+	add_child(progress_bar_sprite)
 	
-	# Create or find progress display container
-	var progress_display = get_node_or_null("ConnectedAttackProgressDisplay")
-	if not progress_display:
-		progress_display = VBoxContainer.new()
-		progress_display.name = "ConnectedAttackProgressDisplay"
-		progress_display.position = Vector2(50, 200)
-		add_child(progress_display)
-		
-		# Add title label
-		var title_label = Label.new()
-		title_label.text = "Connected Attack Chain Progress:"
-		title_label.add_theme_font_size_override("font_size", 16)
-		title_label.add_theme_color_override("font_color", Color.WHITE)
-		progress_display.add_child(title_label)
-		
-		# Add explanation label
-		var explanation_label = Label.new()
-		explanation_label.text = "Red team wins when ANY position reaches E/E"
-		explanation_label.add_theme_font_size_override("font_size", 12)
-		explanation_label.modulate = Color.YELLOW
-		progress_display.add_child(explanation_label)
-		
-		# Add rules label
-		var rules_label = Label.new()
-		rules_label.text = "IA → PEP → E/E | Invalid plays auto-fail"
-		rules_label.add_theme_font_size_override("font_size", 10)
-		rules_label.modulate = Color.CYAN
-		progress_display.add_child(rules_label)
-	
-	# Create progress bars for each position
-	for i in range(3):
-		var progress_container = create_connected_progress_display(i)
-		progress_display.add_child(progress_container)
-		attack_progress_bars.append(progress_container)
-
-func create_connected_progress_display(position_index: int) -> Control:
-	"""Create progress display for a connected attack position"""
-	var container = HBoxContainer.new()
-	container.name = "AttackProgress" + str(position_index)
-	container.add_theme_constant_override("separation", 5)
-	
-	# Position label
-	var label = Label.new()
-	label.text = "Position " + str(position_index + 1) + ":"
-	label.custom_minimum_size = Vector2(80, 25)
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_color_override("font_color", Color.WHITE)
-	container.add_child(label)
-	
-	# Progress steps for connected system
-	var steps = ["EMPTY", "IA", "PEP", "E/E"]
-	for i in range(steps.size()):
-		var step_panel = Panel.new()
-		step_panel.custom_minimum_size = Vector2(50, 25)
-		step_panel.name = "Step" + str(i)
-		
-		var step_label = Label.new()
-		step_label.text = steps[i]
-		step_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		step_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		step_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		step_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		step_label.name = "StepLabel"
-		step_label.add_theme_color_override("font_color", Color.WHITE)
-		
-		step_panel.add_child(step_label)
-		container.add_child(step_panel)
-		
-		# Add arrow between steps (except after last step)
-		if i < steps.size() - 1:
-			var arrow_label = Label.new()
-			arrow_label.text = "→"
-			arrow_label.custom_minimum_size = Vector2(20, 25)
-			arrow_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			arrow_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-			arrow_label.add_theme_color_override("font_color", Color.WHITE)
-			container.add_child(arrow_label)
-	
-	return container
+	# Add explanation label with kongtext font - properly centered and lowered slightly
+	var explanation_label = Label.new()
+	explanation_label.name = "ProgressBarExplanation"
+	explanation_label.text = "Red team wins when ANY position reaches E/E"
+	explanation_label.position = Vector2(288, 630)  # Lowered slightly by 5 pixels
+	explanation_label.size = Vector2(576, 25)  # Half screen width for proper centering
+	explanation_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	explanation_label.add_theme_color_override("font_color", Color.WHITE)
+	explanation_label.add_theme_font_override("font", preload("res://pixel font/kongtext.ttf"))
+	explanation_label.add_theme_font_size_override("font_size", 12)  # Reduced from 14 to 12
+	add_child(explanation_label)
 
 func _process(_delta):
 	"""Main game loop"""
 	handle_card_expansion_state()
 	update_timer_display()
 	update_theme_background()
-	update_connected_attack_progress_display()
+	update_single_progress_bar()
 	check_connected_game_end_conditions()
 	
 	if Input.is_action_just_pressed("exit"):
@@ -354,49 +300,26 @@ func update_theme_background():
 			1: background.texture = load("res://images/UI_images/progress_bar/air/Air Background.png")
 			2: background.texture = load("res://images/UI_images/progress_bar/land/Land Background.png")
 
-func update_connected_attack_progress_display():
-	"""Update connected attack chain progress displays"""
-	if not GameData:
+func update_single_progress_bar():
+	"""Update single progress bar to show most advanced position"""
+	if not GameData or not progress_bar_sprite:
 		return
 	
-	# Get current position states
-	var position_states = GameData.get_position_states_snapshot()
+	# Get most advanced position progress directly from GameData
+	var max_progress = GameData.get_most_advanced_position_progress()
 	
-	for i in range(min(position_states.size(), attack_progress_bars.size())):
-		var state_info = position_states[i]
-		var display = attack_progress_bars[i]
+	# Update progress bar sprite
+	if max_progress < progress_bar_images.size():
+		progress_bar_sprite.texture = load(progress_bar_images[max_progress])
 		
-		if not display:
-			continue
-		
-		# Update step highlighting based on position state
-		var steps = ["EMPTY", "IA", "PEP", "E/E"]
-		var current_state = state_info.state
-		var current_step_index = steps.find(current_state)
-		
-		for j in range(steps.size()):
-			var step_panel = display.get_node_or_null("Step" + str(j))
-			if step_panel:
-				var step_label = step_panel.get_node_or_null("StepLabel")
-				if step_label:
-					if j <= current_step_index:
-						# Current or completed steps
-						if j == current_step_index:
-							# Current step
-							if current_state == "E/E":
-								step_label.modulate = Color.GOLD  # Victory state
-								step_panel.modulate = Color(1.0, 0.8, 0.0, 0.5)
-							else:
-								step_label.modulate = Color.YELLOW
-								step_panel.modulate = Color(0.8, 0.8, 0.2, 0.3)
-						else:
-							# Completed steps
-							step_label.modulate = Color.GREEN
-							step_panel.modulate = Color(0.2, 0.8, 0.2, 0.3)
-					else:
-						# Future steps
-						step_label.modulate = Color.GRAY
-						step_panel.modulate = Color(0.5, 0.5, 0.5, 0.1)
+		# Update explanation text color based on progress
+		var explanation_label = get_node_or_null("ProgressBarExplanation")
+		if explanation_label:
+			match max_progress:
+				0: explanation_label.modulate = Color.WHITE     # EMPTY
+				1: explanation_label.modulate = Color.YELLOW    # IA
+				2: explanation_label.modulate = Color.ORANGE    # PEP
+				3: explanation_label.modulate = Color.RED       # E/E - Victory!
 
 func check_connected_game_end_conditions():
 	"""Check for connected game end conditions"""
@@ -434,8 +357,6 @@ func handle_red_team_victory(reason: String):
 			file.store_string(final_data)
 			file.close()
 			print("Final connected game data exported to: ", final_path)
-	
-	show_victory_screen("🔴 RED TEAM VICTORY!", reason, Color.RED)
 
 func handle_blue_team_victory(reason: String):
 	"""Handle Blue Team (defense) victory"""

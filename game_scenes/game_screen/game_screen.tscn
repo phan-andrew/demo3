@@ -129,10 +129,10 @@ theme = ExtResource("11_qde7s")
 text = "Submit Defense"
 
 [node name="EndGame" type="Button" parent="."]
-offset_left = 493.0
-offset_top = 589.0
-offset_right = 660.0
-offset_bottom = 639.0
+offset_left = 970.0
+offset_top = 610.0
+offset_right = 1134.0
+offset_bottom = 641.0
 theme = ExtResource("11_qde7s")
 text = "End Game"
 
@@ -221,6 +221,7 @@ theme = ExtResource("11_qde7s")
 editable = false
 
 [node name="HELP" type="Button" parent="."]
+visible = false
 offset_left = -3.0
 offset_top = 606.0
 offset_right = 41.0
