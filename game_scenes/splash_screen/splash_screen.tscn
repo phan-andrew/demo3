@@ -2,12 +2,12 @@
 
 [ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="1_60llc"]
 [ext_resource type="Script" uid="uid://cwwh8r0ol4t3o" path="res://game_scenes/splash_screen/splash_screen.gd" id="1_d2qnl"]
-[ext_resource type="Texture2D" uid="uid://y1qagnc8ykdp" path="res://images/Logo/SEACAT_nobgFS.png" id="2_ljruu"]
 [ext_resource type="Texture2D" uid="uid://cfft4dopidiq3" path="res://images/UI_images/dod.png" id="5_dqmfp"]
 [ext_resource type="Texture2D" uid="uid://miyoer6h0k0v" path="res://images/UI_images/comuuv.png" id="6_1jmxl"]
 [ext_resource type="Texture2D" uid="uid://bcel5hil43bfe" path="res://images/UI_images/godotlogo.png" id="6_axrwi"]
 [ext_resource type="Texture2D" uid="uid://bdce0x0otqfo7" path="res://images/UI_images/keyport.jpg" id="8_mvm13"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="9_4rmsb"]
+[ext_resource type="Texture2D" uid="uid://b7db0jpft5nxs" path="res://images/Logo/Capture.PNG" id="10_capture"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_d2qnl")
@@ -19,9 +19,9 @@ scale = Vector2(1.152, 0.972973)
 texture = ExtResource("1_60llc")
 
 [node name="seacat" type="Sprite2D" parent="."]
-position = Vector2(582, 255)
-scale = Vector2(0.5, 0.534)
-texture = ExtResource("2_ljruu")
+position = Vector2(520, 280)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("10_capture")
 
 [node name="dod" type="Sprite2D" parent="."]
 visible = false

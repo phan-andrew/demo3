@@ -335,10 +335,10 @@ func handle_auto_success(pairing: Dictionary):
 	rolling_results.append(result)
 	
 	# Show team announcement
-	show_team_announcement("🔴 RED TEAM WINS!", "Attack " + str(pairing.attack_index + 1) + " auto-succeeds (undefended)", Color.RED)
+	show_team_announcement("RED TEAM WINS!", "Attack " + str(pairing.attack_index + 1) + " auto-succeeds (undefended)", Color.RED)
 	
 	# Wait for announcement, then continue
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(7.5).timeout
 	advance_to_next_pairing()
 
 func handle_auto_failure(pairing: Dictionary):
@@ -360,10 +360,10 @@ func handle_auto_failure(pairing: Dictionary):
 	rolling_results.append(result)
 	
 	# Show team announcement
-	show_team_announcement("🔵 BLUE TEAM WINS!", "Attack " + str(pairing.attack_index + 1) + " invalid play (auto-failure)", Color.BLUE)
+	show_team_announcement("BLUE TEAM WINS!", "Attack " + str(pairing.attack_index + 1) + " invalid play (auto-failure)", Color.BLUE)
 	
 	# Wait for announcement, then continue
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(7.5).timeout
 	advance_to_next_pairing()
 
 func perform_dice_roll(pairing: Dictionary):
@@ -411,13 +411,13 @@ func perform_dice_roll(pairing: Dictionary):
 	
 	# Show team announcement
 	var team_color = Color.RED if success else Color.BLUE
-	var team_name = "🔴 RED TEAM WINS!" if success else "🔵 BLUE TEAM WINS!"
+	var team_name = "RED TEAM WINS!" if success else "BLUE TEAM WINS!"
 	var message = "Attack " + str(pairing.attack_index + 1) + " " + ("succeeds" if success else "fails") + " (rolled " + str(roll_result) + ")"
 	
 	show_team_announcement(team_name, message, team_color)
 	
 	# Wait for announcement, then continue
-	await get_tree().create_timer(2.5).timeout
+	await get_tree().create_timer(7.5).timeout
 	
 	is_rolling = false
 	advance_to_next_pairing()
@@ -462,11 +462,10 @@ func update_result_indicator(roll_result: int, threshold: int):
 		result_indicator.color = Color.RED
 
 func show_team_announcement(team_name: String, message: String, color: Color):
-	"""Show team win announcement"""
 	if dice_result_label:
-		dice_result_label.text = "[center][color=" + color.to_html() + "]" + team_name + "[/color]\n" + message + "[/center]"
+		dice_result_label.text = team_name + "\n" + message
 		dice_result_label.modulate = color
-
+		
 func advance_to_next_pairing():
 	"""Advance to the next card pairing or complete"""
 	current_pairing_index += 1
@@ -478,8 +477,6 @@ func advance_to_next_pairing():
 		# Reset UI for next roll
 		if result_indicator:
 			result_indicator.visible = false
-		if dice_result_label:
-			dice_result_label.modulate = Color.WHITE
 		if roll_button:
 			roll_button.disabled = false
 		
@@ -580,12 +577,12 @@ func complete_all_rolls():
 	
 	# Show completion message
 	if dice_result_label:
-		dice_result_label.text = "[center]All attacks resolved!\nProcessing results...[/center]"
+		dice_result_label.text = "All attacks resolved!\nProcessing results..."
 	if roll_button:
 		roll_button.disabled = true
 	
 	# Wait a moment, then emit completion signal
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(2).timeout
 	emit_signal("dice_completed", rolling_results)
 
 func show_manual_entry():
@@ -671,7 +668,7 @@ func _on_manual_submit_pressed():
 	
 	# Show team announcement
 	var team_color = Color.RED if success else Color.BLUE
-	var team_name = "🔴 RED TEAM WINS!" if success else "🔵 BLUE TEAM WINS!"
+	var team_name = "RED TEAM WINS!" if success else "BLUE TEAM WINS!"
 	var message = "Attack " + str(pairing.attack_index + 1) + " " + ("succeeds" if success else "fails") + " (manual roll " + str(manual_roll) + ")"
 	
 	show_team_announcement(team_name, message, team_color)
@@ -685,7 +682,7 @@ func _on_manual_submit_pressed():
 		roll_button.visible = true
 	
 	# Wait for announcement, then continue
-	await get_tree().create_timer(2.5).timeout
+	await get_tree().create_timer(7.5).timeout
 	advance_to_next_pairing()
 
 func _on_close_button_pressed():
