@@ -200,7 +200,7 @@ func create_discussion_panel():
 	# Continue button for discussion
 	var discussion_continue = Button.new()
 	discussion_continue.text = "Continue to Next Round"
-	discussion_continue.position = Vector2(426, 535)
+	discussion_continue.position = Vector2(680, 535)
 	discussion_continue.size = Vector2(200, 40)
 	discussion_continue.add_theme_font_override("font", kongtext_font)
 	discussion_continue.add_theme_font_size_override("font_size", 16)
