@@ -49,10 +49,10 @@ texture = ExtResource("8_mvm13")
 
 [node name="Button" type="Button" parent="."]
 z_index = -2
-offset_left = -663.0
-offset_top = 471.0
-offset_right = 492.0
-offset_bottom = 1121.0
+offset_left = -2.0
+offset_top = -1.0
+offset_right = 1153.0
+offset_bottom = 649.0
 
 [node name="Label" type="Label" parent="."]
 offset_left = 390.0
