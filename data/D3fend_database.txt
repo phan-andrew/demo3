@@ -3,43 +3,43 @@ Index,ID,Category,Name,Description
 1,D3-ANAA,2,Administrative Network Activity Analysis,Detection of unauthorized use of administrative network protocols by analyzing network activity against a baseline.,res://images/card_images/defense/Administrative Network Activity Analysis.png
 2,D3-ACH,1,Application Configuration Hardening,Modifying an application's configuration to reduce its attack surface.,res://images/card_images/defense/Application Configuration Hardening.png
 3,D3-ANCI,3,Authentication Cache Invalidation,Removing tokens or credentials from an authentication cache to prevent further user associated account accesses.,res://images/card_images/defense/Authentication Cache Invalidation.png
-4,D3-ANET,2,Authentication Event Thresholding,"Collecting authentication events,creating a baseline user profile
-5,D3-AZET,2,Authorization Event Thresholding,"Collecting authorization events,creating a baseline user profile
+4,D3-ANET,2,Authentication Event Thresholding,Collecting authentication events and creating a baseline user profile,res://images/card_images/defense/Authentication Event Thresholding.png
+5,D3-AZET,2,Authorization Event Thresholding,Collecting authorization events and creating a baseline user profile,res://images/card_images/defense/Authorization Event Thresholding.png
 6,D3-BAN,1,Biometric Authentication,Using biological measures in order to authenticate a user.,res://images/card_images/defense/Biometric Authentication.png
 7,D3-BA,1,Bootloader Authentication,Cryptographically authenticating the bootloader software before system boot.,res://images/card_images/defense/BootloaderAuthentication.png
 8,D3-BDI,3,Broadcast Domain Isolation,Broadcast isolation restricts the number of computers a host can contact on their LAN.,res://images/card_images/defense/BroadcastDomainIsolation.png
 9,D3-BSE,2,Byte Sequence Emulation,Analyzing sequences of bytes and determining if they likely represent malicious shellcode.,res://images/card_images/defense/Byte Sequence Emulation.png
-10,D3-CA,2,Certificate Analysis,"Analyzing Public Key Infrastructure certificates to detect if they have been misconfigured or spoofed using both network traffic,certificate fields and third-party logs."
+10,D3-CA,2,Certificate Analysis,Analyzing Public Key Infrastructure certificates to detect if they have been misconfigured or spoofed using both network traffic and certificate fields and third-party logs.,res://images/card_images/defense/Certificate Analysis.png
 11,D3-CP,1,Certificate Pinning,Persisting either a server's X.509 certificate or their public key and comparing that to server's presented identity to allow for greater client confidence in the remote server's identity for SSL connections.,res://images/card_images/defense/Certificate Pinning.png
 12,D3-CBAN,1,Certificate-based Authentication,Requiring a digital certificate in order to authenticate a user.,res://images/card_images/defense/Certificate-Based Authentication.png
-13,D3-CHN,1,Connected Honeynet,"A decoy service,system
+13,D3-CHN,1,Connected Honeynet,A decoy service or system or network designed to be probed attacked or compromised.,res://images/card_images/defense/Connected Honeynet.png
 14,D3-CAA,2,Connection Attempt Analysis,Analyzing failed connections in a network to detect unauthorized activity.,res://images/card_images/defense/Connection Attempt Analysis.png
 15,D3-CCSA,2,Credential Compromise Scope Analysis,Determining which credentials may have been compromised by analyzing the user logon history of a particular system.,res://images/card_images/defense/Credential Compromise Scope Analysis.png
-16,D3-CH,,Credential Hardening,Credential Hardening techniques modify system or network properties in order to protect system or network/domain credentials.,res://images/card_images/defense/Credential Revoking.png
+16,D3-CH,1,Credential Hardening,Credential Hardening techniques modify system or network properties in order to protect system or network/domain credentials.,res://images/card_images/defense/Credential Revoking.png
 17,D3-CR,3,Credential Revoking,Deleting a set of credentials permanently to prevent them from being used to authenticate.,res://images/card_images/defense/Credential Rotation.png
 18,D3-CTS,3,Credential Transmission Scoping,Limiting the transmission of a credential to a scoped set of relying parties.,res://images/card_images/defense/Credential Transmission Scoping.png
-19,D3-DQSA,2,Database Query String Analysis,Analyzing database queries to detect [SQL Injection](https://capec.mitre.org/data/definitions/66.html).,res://images/card_images/defense/Database Query String Analysis.png
-20,D3-DCE,1,Dead Code Elimination,"Removing unreachable or ""dead code"" from compiled source code.",res://images/card_images/defense/DeadCodeElimination.png
+19,D3-DQSA,2,Database Query String Analysis,Analyzing database queries to detect SQL Injection.,res://images/card_images/defense/Database Query String Analysis.png
+20,D3-DCE,1,Dead Code Elimination,Removing unreachable or dead code from compiled source code.,res://images/card_images/defense/DeadCodeElimination.png
 21,D3-DF,1,Decoy File,A file created for the purposes of deceiving an adversary.,res://images/card_images/defense/Decoy File.png
 22,D3-DNR,1,Decoy Network Resource,Deploying a network resource for the purposes of deceiving an adversary.,res://images/card_images/defense/Decoy Network Resource.png
-23,D3-DP,1,Decoy Persona,"Establishing a fake online identity to misdirect,deceive
+23,D3-DP,1,Decoy Persona,Establishing a fake online identity to misdirect and deceive adversaries.,res://images/card_images/defense/Decoy Persona.png
 24,D3-DPR,1,Decoy Public Release,Issuing publicly released media to deceive adversaries.,res://images/card_images/defense/DecoyPublicRelease.png
 25,D3-DST,1,Decoy Session Token,An authentication token created for the purposes of deceiving an adversary.,res://images/card_images/defense/DecoySessionToken.png
 26,D3-DUC,1,Decoy User Credential,A Credential created for the purpose of deceiving an adversary.,res://images/card_images/defense/DecoyUserCredentials.png
 27,D3-DENCR,1,Disk Encryption,Encrypting a hard disk partition to prevent cleartext access to a file system.,res://images/card_images/defense/DiskEncryption.png
 28,D3-DNSAL,3,DNS Allowlisting,Permitting only approved domains and their subdomains to be resolved.,res://images/card_images/defense/DNSAllowList.png
-29,D3-DNSDL,3,DNS Denylisting,"Blocking DNS Network Traffic based on criteria such as IP address,domain name
-30,D3-DNSTA,2,DNS Traffic Analysis,"Analysis of domain name metadata,including name and DNS records
+29,D3-DNSDL,3,DNS Denylisting,Blocking DNS Network Traffic based on criteria such as IP address and domain name,res://images/card_images/defense/DNS Denylisting.png
+30,D3-DNSTA,2,DNS Traffic Analysis,Analysis of domain name metadata including name and DNS records,res://images/card_images/defense/DNS Traffic Analysis.png
 31,D3-DAM,2,Domain Account Monitoring,Monitoring the existence of or changes to Domain User Accounts.,res://images/card_images/defense/DomainAccountMonitoring.png
 32,D3-DTP,3,Domain Trust Policy,Restricting inter-domain trust by modifying domain configuration.,res://images/card_images/defense/Domain Trust Policy.png
 33,D3-DLIC,1,Driver Load Integrity Checking,Ensuring the integrity of drivers loaded during initialization of the operating system.,res://images/card_images/defense/Driver Load Integrity Checking.png
-34,D3-DA,2,Dynamic Analysis,"Executing or opening a file in a synthetic ""sandbox"" environment to determine if the file is a malicious program or if the file exploits another program such as a document reader.",res://images/card_images/defense/Dynamic Analysis.png
+34,D3-DA,2,Dynamic Analysis,Executing or opening a file in a synthetic sandbox environment to determine if the file is a malicious program or if the file exploits another program such as a document reader.,res://images/card_images/defense/Dynamic Analysis.png
 35,D3-EFA,2,Emulated File Analysis,Emulating instructions in a file looking for specific patterns.,res://images/card_images/defense/EmulatedFileAnalysis.png
 36,D3-ET,3,Encrypted Tunnels,Encrypted encapsulation of routable network traffic.,res://images/card_images/defense/Encrypted Tunnels.png
 37,D3-EHPV,1,Exception Handler Pointer Validation,Validates that a referenced exception handler pointer is a valid exception handler.,res://images/card_images/defense/Exception Handler Pointer Validation.png
 38,D3-EAL,3,Executable Allowlisting,Using a digital signature to authenticate a file before opening.,res://images/card_images/defense/ExecutableAllowlist.png
 39,D3-EDL,3,Executable Denylisting,Blocking the execution of files on a host in accordance with defined application policy rules.,res://images/card_images/defense/Executable Deny List.png
-40,D3-EI,,Execution Isolation,"Execution Isolation techniques prevent application processes from accessing non-essential system resources,such as memory
+40,D3-EI,1,Execution Isolation,Execution Isolation techniques prevent application processes from accessing non-essential system resources such as memory and network interfaces.,res://images/card_images/defense/Execution Isolation.png
 41,D3-FAPA,2,File Access Pattern Analysis,Analyzing the files accessed by a process to identify unauthorized activity.,res://images/card_images/defense/File Access Pattern Analysis.png
 42,D3-FC,2,File Carving,Identifying and extracting files from network application protocols through the use of network stream reassembly software.,res://images/card_images/defense/FileCarving.png
 43,D3-FCOA,2,File Content Analysis,Employing a pattern matching algorithm to statically analyze the content of files.,res://images/card_images/defense/FileContentAnalysis.png
@@ -54,13 +54,13 @@ Index,ID,Category,Name,Description
 52,D3-HD,2,Homoglyph Detection,Comparing strings using a variety of techniques to determine if a deceptive or malicious string is being presented to a user.,res://images/card_images/defense/Homoglyoh Detection.png
 53,D3-HS,3,Host Shutdown,Initiating a host's shutdown sequence to terminate all running processes.,res://images/card_images/defense/Host Shutdown.png
 54,D3-IAA,2,Identifier Activity Analysis,Taking known malicious identifiers and determining if they are present in a system.,res://images/card_images/defense/Identifier Activity Analysis.png
-55,D3-ID,,Identifier Analysis,"Analyzing identifier artifacts such as IP address,domain names
+55,D3-ID,2,Identifier Analysis,Analyzing identifier artifacts such as IP address and domain names,res://images/card_images/defense/Identifier Analysis.png
 56,D3-IRA,2,Identifier Reputation Analysis,Analyzing the reputation of an identifier.,res://images/card_images/defense/Identifier Reputation Analysis.png
 57,D3-ISVA,2,Inbound Session Volume Analysis,Analyzing inbound network session or connection attempt volume.,res://images/card_images/defense/InboundSessionVolumeAnalysis.png
 58,D3-IHN,1,Integrated Honeynet,The practice of setting decoys in a production environment to entice interaction from attackers.,res://images/card_images/defense/IntegratedHoneynet.png
 59,D3-IOPR,3,IO Port Restriction,Limiting access to computer input/output (IO) ports to restrict unauthorized devices.,res://images/card_images/defense/IO Port Restriction.png
 60,D3-IPCTA,2,IPC Traffic Analysis,Analyzing standard inter process communication (IPC) protocols to detect deviations from normal protocol activity.,res://images/card_images/defense/IPCTrafficAnalysis.png
-61,D3-JFAPA,2,Job Function Access Pattern Analysis,"Detecting anomalies in user access patterns by comparing user access activity to behavioral profiles that categorize users by role such as job title,function
+61,D3-JFAPA,2,Job Function Access Pattern Analysis,Detecting anomalies in user access patterns by comparing user access activity to behavioral profiles that categorize users by role such as job title and function,res://images/card_images/defense/Job Function Access Pattern Analysis.png
 62,D3-KBPI,3,Kernel-based Process Isolation,Using kernel-level capabilities to isolate processes.,res://images/card_images/defense/Kernel-Based Process Isolation.png
 63,D3-LAM,2,Local Account Monitoring,Analyzing local user accounts to detect unauthorized activity.,res://images/card_images/defense/LocalAccountMonitoring.png
 64,D3-LFP,1,Local File Permissions,Restricting access to a local file by configuring operating system functionality.,res://images/card_images/defense/LocalFilePermissions.png
@@ -70,12 +70,12 @@ Index,ID,Category,Name,Description
 68,D3-NTA,3,Network Traffic Analysis,Analyzing intercepted or summarized computer network traffic to detect unauthorized activity.,res://images/card_images/defense/Network Traffic Filtering.png
 69,D3-NTCD,2,Network Traffic Community Deviation,Establishing baseline communities of network hosts and identifying statistically divergent inter-community communication.,res://images/card_images/defense/NetworkTrafficCommunityDeviation.png
 70,D3-OTP,1,One-time Password,A one-time password is valid for only one user authentication.,res://images/card_images/defense/One Time Password.png
-71,D3-OSM,2,Operating System Monitoring,"The operating system software,for D3FEND's purposes
+71,D3-OSM,2,Operating System Monitoring,The operating system software monitoring for D3FEND purposes,res://images/card_images/defense/Operating System Monitoring.png
 72,D3-PHDURA,2,Per Host Download-Upload Ratio Analysis,Detecting anomalies that indicate malicious activity by comparing the amount of data downloaded versus data uploaded by a host.,res://images/card_images/defense/PerHostDownloadUploadRatioAnalysis.png
 73,D3-PAN,1,Pointer Authentication,Comparing the cryptographic hash or derivative of a pointer's value to an expected value.,res://images/card_images/defense/PointerAuthentication.png
-74,D3-PCSV,2,Process Code Segment Verification,"Comparing the ""text"" or ""code"" memory segments to a source of truth.",res://images/card_images/defense/Process Code Segment Verification.png
+74,D3-PCSV,2,Process Code Segment Verification,Comparing the text or code memory segments to a source of truth.,res://images/card_images/defense/Process Code Segment Verification.png
 75,D3-PSEP,1,Process Segment Execution Prevention,Preventing execution of any address in a memory region other than the code segment.,res://images/card_images/defense/Process Segment Execution Prevention.png
-76,D3-PSMD,2,Process Self-Modification Detection,"Detects processes that modify,change
+76,D3-PSMD,2,Process Self-Modification Detection,Detects processes that modify or change their own code or process image while running.,res://images/card_images/defense/Process Self-Modification Detection.png
 77,D3-PSA,2,Process Spawn Analysis,Analyzing spawn arguments or attributes of a process to detect processes that are unauthorized.,res://images/card_images/defense/Process Spawn Analysis.png
 78,D3-PS,3,Process Suspension,Suspending a running process on a computer system.,res://images/card_images/defense/Process Suspension.png
 79,D3-PT,3,Process Termination,Terminating a running application process on a computer system.,res://images/card_images/defense/Process Termination.png
