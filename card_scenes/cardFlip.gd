@@ -1,5 +1,7 @@
 extends Node2D
 
+signal card_reset()
+
 var flipped = false
 var inPlay = false
 var dPics = []
@@ -151,6 +153,8 @@ func reset_card():
 		var music = get_node("/root/Music")
 		if music.has_method("flip_card"):
 			music.flip_card()
+			
+	emit_signal("card_reset")
 
 func disable_buttons(state):
 	$close_button.disabled = state

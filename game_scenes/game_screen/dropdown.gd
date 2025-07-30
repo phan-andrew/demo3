@@ -30,20 +30,44 @@ func set_card_references(attack_cards: Array, defense_cards: Array):
 	dCards = defense_cards
 
 func _on_attack_option_item_selected(index):
-	attack_choice = index
-	generateACard = true
+	# Check if all attack slots are already full
+	var slots_filled = 0
+	for card in aCards:
+		if card.inPlay:
+			slots_filled += 1
+	
+	# Only store selection if there's an available slot
+	if slots_filled < 3:
+		attack_choice = index
+		generateACard = true
+	else:
+		# Reset dropdown if all slots are full
+		$attack_option.select(-1)
+		print("All attack slots are full! Remove a card first.")
 
 func _on_defend_option_item_selected(index):
-	defend_choice = int(index)
-	generateDCard = true
+	# Check if all defense slots are already full
+	var slots_filled = 0
+	for card in dCards:
+		if card.inPlay:
+			slots_filled += 1
+	
+	# Only store selection if there's an available slot
+	if slots_filled < 3:
+		defend_choice = int(index)
+		generateDCard = true
+	else:
+		# Reset dropdown if all slots are full
+		$defend_option.select(-1)
+		print("All defense slots are full! Remove a card first.")
 
 func generate_attack_card():
-	"""Generate attack card based on current selection"""
+	"""Generate attack card based on current selection - SIMPLE LOGIC"""
 	if not Mitre or attack_choice < 0:
 		generateACard = false
 		return
 	
-	# Find first available attack card slot
+	# Find first available attack card slot - EXACTLY like original
 	for card in aCards:
 		if not card.inPlay:
 			var choice_index = attack_choice + 2
@@ -58,6 +82,10 @@ func generate_attack_card():
 				
 				generateACard = false
 				print("Attack card generated: ", Mitre.attack_dict[int(attack_data[0]) + 1][2])  # Attack: index 2 = Name
+				
+				# RESET DROPDOWN SELECTION so you can select the same item again
+				$attack_option.select(-1)
+				attack_choice = -1
 				break
 			else:
 				print("Error: Attack choice index not found")
@@ -65,12 +93,12 @@ func generate_attack_card():
 				break
 
 func generate_defense_card():
-	"""Generate defense card based on current selection"""
+	"""Generate defense card based on current selection - SIMPLE LOGIC"""
 	if not Mitre or defend_choice < 0:
 		generateDCard = false
 		return
 	
-	# Find first available defense card slot
+	# Find first available defense card slot - EXACTLY like original
 	for card in dCards:
 		if not card.inPlay:
 			var choice_index = defend_choice + 2
@@ -83,10 +111,11 @@ func generate_defense_card():
 				card.play()
 				
 				generateDCard = false
+				print("Defense card generated: ", Mitre.defend_dict[int(defense_data[0]) + 1][3])  # Defense: index 3 = Name
 				
-				# Find the defense name using robust lookup
-				var defense_name = get_defense_name_safe(int(defense_data[0]))
-				print("Defense card generated: ", defense_name)
+				# RESET DROPDOWN SELECTION so you can select the same item again
+				$defend_option.select(-1)
+				defend_choice = -1
 				break
 			else:
 				print("Error: Defense choice index not found")
@@ -111,7 +140,7 @@ func add_attack_options():
 	drop.select(-1)
 
 func add_defend_options():
-	"""Populate defense dropdown with available options - ROBUST VERSION"""
+	"""Populate defense dropdown with available options"""
 	var drop = $defend_option
 	drop.clear()
 	
@@ -119,107 +148,14 @@ func add_defend_options():
 		print("Warning: Mitre not available for defense options")
 		return
 	
-	print("=== DEFENSE LOADING DEBUG ===")
-	print("d3fendprof_dict size: ", Mitre.d3fendprof_dict.size())
-	print("defend_dict size: ", Mitre.defend_dict.size())
-	
-	# Debug: Check what keys are actually available in defend_dict
-	var available_keys = []
-	for i in range(200):  # Check first 200 possible indices
-		if Mitre.defend_dict.has(i):
-			available_keys.append(i)
-		if available_keys.size() >= 10:  # Show first 10 for debug
-			break
-	print("First 10 defend_dict keys: ", available_keys)
-	
-	var loaded_count = 0
-	var failed_indices = []
-	
-	# Process mission file entries (starting from row 2 to skip headers)
 	for i in range(2, Mitre.d3fendprof_dict.size()):
-		if not Mitre.d3fendprof_dict.has(i):
-			continue
-
-		var defense_row = Mitre.d3fendprof_dict[i]
-
-		# ✅ Skip header rows that accidentally made it into the mission file
-		if defense_row.size() > 3 and str(defense_row[3]).strip_edges().to_lower() == "name":
-			continue
-
-		if defense_row.size() < 1:
-			continue
-		
-		# Get the defense index from mission file
-		var defense_id = int(str(defense_row[0]).strip_edges())
-		print("Processing mission defense ID: ", defense_id)
-		
-		# Try multiple indexing strategies to find the defense
-		var defense_name = get_defense_name_safe(defense_id)
-		
-		if defense_name != "Unknown Defense":
+		var defense_id = int(Mitre.d3fendprof_dict[i][0])
+		if Mitre.defend_dict.has(defense_id + 1):
+			# FIXED: Defense cards have Name at index 3, not index 2
+			var defense_name = Mitre.defend_dict[defense_id + 1][3]  # Defense: index 3 = Name
 			drop.add_item(defense_name)
-			loaded_count += 1
-			print("✓ Added: ", defense_name, " (ID: ", defense_id, ")")
-		else:
-			failed_indices.append(defense_id)
-			print("✗ Failed to find defense for ID: ", defense_id)
-	
-	print("=== RESULTS ===")
-	print("Successfully loaded: ", loaded_count, "/", (Mitre.d3fendprof_dict.size() - 2))
-	print("Failed indices: ", failed_indices)
-	print("Dropdown item count: ", drop.get_item_count())
 	
 	drop.select(-1)
-
-func get_defense_name_safe(defense_id: int) -> String:
-	"""Safely get defense name trying multiple indexing strategies"""
-	
-	# Strategy 1: Direct index (0-based)
-	if Mitre.defend_dict.has(defense_id):
-		var entry = Mitre.defend_dict[defense_id]
-		if entry.size() > 3:
-			print("  Found via direct indexing: ", entry[3])
-			return entry[3]  # Name is at index 3
-	
-	# Strategy 2: Index + 1 (1-based)
-	if Mitre.defend_dict.has(defense_id + 1):
-		var entry = Mitre.defend_dict[defense_id + 1]
-		if entry.size() > 3:
-			print("  Found via +1 indexing: ", entry[3])
-			return entry[3]
-	
-	# Strategy 3: Search by ID string (if defend_dict uses string keys)
-	var defense_id_str = str(defense_id)
-	if Mitre.defend_dict.has(defense_id_str):
-		var entry = Mitre.defend_dict[defense_id_str]
-		if entry.size() > 3:
-			print("  Found via string key: ", entry[3])
-			return entry[3]
-	
-	# Strategy 4: Linear search through defend_dict to find matching index
-	for key in Mitre.defend_dict.keys():
-		var entry = Mitre.defend_dict[key]
-		if entry.size() > 0:
-			# Check if first column (Index) matches our defense_id
-			if str(entry[0]).strip_edges() == str(defense_id):
-				if entry.size() > 3:
-					print("  Found via linear search: ", entry[3])
-					return entry[3]
-	
-	# Strategy 5: Check if it's stored as the actual row index in the database
-	# (i.e., if database row 5 corresponds to defense index 5)
-	var expected_database_keys = [defense_id, defense_id + 1, defense_id - 1]
-	for key in expected_database_keys:
-		if Mitre.defend_dict.has(key):
-			var entry = Mitre.defend_dict[key]
-			if entry.size() > 0:
-				# Verify this is the right defense by checking the Index column
-				if int(str(entry[0]).strip_edges()) == defense_id:
-					print("  Found via database row verification: ", entry[3] if entry.size() > 3 else "Unknown Defense")
-					return entry[3] if entry.size() > 3 else "Unknown Defense"
-	
-	print("  No strategy worked for defense ID: ", defense_id)
-	return "Unknown Defense"
 
 func reset_selections():
 	"""Reset dropdown selections"""
@@ -229,3 +165,7 @@ func reset_selections():
 	defend_choice = -1
 	generateACard = false
 	generateDCard = false
+
+func _on_option_button_item_selected(index):
+	"""Legacy compatibility function for signal connections"""
+	pass

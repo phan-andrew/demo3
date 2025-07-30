@@ -1,8 +1,5 @@
 extends Node
 
-# Enhanced GameData - Connected Attack Chain Progression System
-# Each position progresses through IA → PEP → E/E independently but connectedly
-
 # Attack chain progression system
 enum AttackStep {
 	EMPTY,  # No foothold
@@ -774,3 +771,490 @@ func run_comprehensive_card_debug(attack_cards: Array, defense_cards: Array):
 	print("=".repeat(50))
 	print("END COMPREHENSIVE DEBUG")
 	print("=".repeat(50) + "\n")
+
+# ===== ENHANCED CSV EXPORT FUNCTIONS =====
+
+# Enhanced detailed export with console-like information
+func export_detailed_game_data_to_csv() -> String:
+	"""Export comprehensive game data with detailed analysis information"""
+	var csv_data = ""
+	
+	# Main game summary headers
+	var summary_headers = [
+		"Game_Summary", "Total_Rounds", "Game_Duration", "Red_Team_Victory", 
+		"Final_Position_1", "Final_Position_2", "Final_Position_3", 
+		"Most_Advanced_State", "Total_Attacks_Attempted", "Total_Attacks_Successful",
+		"Total_Defenses_Active", "Average_Attack_Cost", "Average_Attack_Time",
+		"Average_Defense_Maturity", "Notes"
+	]
+	
+	csv_data += "=== GAME SUMMARY ===\n"
+	csv_data += ",".join(summary_headers) + "\n"
+	csv_data += generate_game_summary_row() + "\n\n"
+	
+	# Detailed round-by-round analysis
+	csv_data += "=== DETAILED ROUND ANALYSIS ===\n"
+	var detailed_headers = [
+		"Round", "Timestamp", "Round_Phase", "Position_1_State", "Position_2_State", "Position_3_State",
+		"Attack_1_Name", "Attack_1_Type", "Attack_1_Cost", "Attack_1_Time", "Attack_1_Valid_Play",
+		"Attack_2_Name", "Attack_2_Type", "Attack_2_Cost", "Attack_2_Time", "Attack_2_Valid_Play",
+		"Attack_3_Name", "Attack_3_Type", "Attack_3_Cost", "Attack_3_Time", "Attack_3_Valid_Play",
+		"Defense_1_Name", "Defense_1_Maturity", "Defense_1_Category", "Defense_1_Eviction",
+		"Defense_2_Name", "Defense_2_Maturity", "Defense_2_Category", "Defense_2_Eviction",
+		"Defense_3_Name", "Defense_3_Maturity", "Defense_3_Category", "Defense_3_Eviction",
+		"Total_Attack_Cost", "Total_Attack_Time", "Average_Defense_Maturity",
+		"Calculation_Method", "Base_Success_Rate", "Defense_Modifier", "Final_Success_Rate",
+		"Round_Outcome", "Positions_Advanced", "Round_Notes"
+	]
+	
+	csv_data += ",".join(detailed_headers) + "\n"
+	
+	# Add round data
+	for round_data in game_history:
+		csv_data += generate_detailed_round_row(round_data) + "\n"
+	
+	csv_data += "\n=== INDIVIDUAL ATTACK RESULTS ===\n"
+	var attack_headers = [
+		"Round", "Attack_Position", "Attack_Name", "Attack_Type", "Individual_Cost", "Individual_Time",
+		"Defense_Name", "Defense_Maturity", "Target_Position_State", "Intended_Step",
+		"Individual_Success_Rate", "Dice_Threshold", "Roll_Result", "Roll_Method",
+		"Attack_Success", "Reason", "Position_Advanced_From", "Position_Advanced_To",
+		"Attack_Chain_Progress", "Console_Output_Equivalent"
+	]
+	
+	csv_data += ",".join(attack_headers) + "\n"
+	
+	# Add individual attack data
+	for round_data in game_history:
+		if round_data.has("results"):
+			for result in round_data.results:
+				csv_data += generate_individual_attack_row(round_data, result) + "\n"
+	
+	csv_data += "\n=== POSITION STATE TRACKING ===\n"
+	var position_headers = [
+		"Round", "Event_Type", "Position_1_Before", "Position_1_After", "Position_1_Change",
+		"Position_2_Before", "Position_2_After", "Position_2_Change",
+		"Position_3_Before", "Position_3_After", "Position_3_Change",
+		"Most_Advanced_Before", "Most_Advanced_After", "Progress_Level_Change",
+		"Red_Team_Threat_Level", "Analysis_Notes"
+	]
+	
+	csv_data += ",".join(position_headers) + "\n"
+	
+	# Add position tracking data
+	for round_data in game_history:
+		csv_data += generate_position_tracking_row(round_data) + "\n"
+	
+	csv_data += "\n=== CALCULATION DETAILS ===\n"
+	var calc_headers = [
+		"Round", "Attack_Position", "Base_Cost", "Base_Time", "Lookup_Key", 
+		"Base_Success_Rate", "Defense_Present", "Defense_Maturity", "Defense_Modifier",
+		"Eviction_Bonus", "Final_Success_Rate", "Rounded_Percentage", "Dice_Threshold",
+		"Calculation_Formula", "Console_Debug_Output"
+	]
+	
+	csv_data += ",".join(calc_headers) + "\n"
+	
+	# Add calculation details
+	for round_data in game_history:
+		if round_data.has("attack_cards"):
+			for i in range(round_data.attack_cards.size()):
+				csv_data += generate_calculation_detail_row(round_data, i) + "\n"
+	
+	return csv_data
+
+func generate_game_summary_row() -> String:
+	"""Generate overall game summary row"""
+	var total_rounds = game_history.size()
+	var red_victory = false
+	var final_positions = ["EMPTY", "EMPTY", "EMPTY"]
+	var most_advanced = "EMPTY"
+	var total_attacks = 0
+	var successful_attacks = 0
+	var total_defenses = 0
+	var total_cost = 0
+	var total_time = 0
+	var total_maturity = 0
+	var defense_count = 0
+	
+	# Analyze final state and statistics
+	if game_history.size() > 0:
+		var final_round = game_history[game_history.size() - 1]
+		if final_round.has("ending_positions"):
+			for i in range(min(3, final_round.ending_positions.size())):
+				final_positions[i] = final_round.ending_positions[i].state
+				if final_round.ending_positions[i].state == "E/E":
+					red_victory = true
+				# Track most advanced
+				if is_more_advanced(final_round.ending_positions[i].state, most_advanced):
+					most_advanced = final_round.ending_positions[i].state
+	
+	# Calculate statistics across all rounds
+	for round_data in game_history:
+		if round_data.has("attack_cards"):
+			total_attacks += round_data.attack_cards.size()
+			for attack in round_data.attack_cards:
+				total_cost += attack.get("cost", 0)
+				total_time += attack.get("time", 0)
+		
+		if round_data.has("defense_cards"):
+			for defense in round_data.defense_cards:
+				if defense != null:
+					total_defenses += 1
+					total_maturity += defense.get("maturity", 0)
+					defense_count += 1
+		
+		if round_data.has("results"):
+			for result in round_data.results:
+				if result.get("success", false):
+					successful_attacks += 1
+	
+	var avg_cost = total_cost / float(max(total_attacks, 1))
+	var avg_time = total_time / float(max(total_attacks, 1))
+	var avg_maturity = total_maturity / float(max(defense_count, 1))
+	
+	var game_duration = Time.get_time_string_from_system()  # This could be improved with actual duration tracking
+	
+	var notes = "Game completed with " + str(total_rounds) + " rounds. "
+	notes += "Red team " + ("won" if red_victory else "lost") + ". "
+	notes += "Success rate: " + str(int((successful_attacks / float(max(total_attacks, 1))) * 100)) + "%"
+	
+	var row = [
+		"SEACAT_Connected_Attack_Chain_Game",
+		str(total_rounds),
+		game_duration,
+		"Yes" if red_victory else "No",
+		final_positions[0],
+		final_positions[1], 
+		final_positions[2],
+		most_advanced,
+		str(total_attacks),
+		str(successful_attacks),
+		str(total_defenses),
+		"%.2f" % avg_cost,
+		"%.2f" % avg_time,
+		"%.2f" % avg_maturity,
+		notes
+	]
+	
+	return ",".join(row)
+
+func generate_detailed_round_row(round_data: Dictionary) -> String:
+	"""Generate detailed round analysis row"""
+	var row = []
+	
+	# Basic round info
+	row.append(str(round_data.get("round_number", 0)))
+	row.append(round_data.get("timestamp", ""))
+	row.append("Round_Complete")
+	
+	# Position states (start of round)
+	var starting_positions = round_data.get("starting_positions", [])
+	for i in range(3):
+		if i < starting_positions.size():
+			row.append(starting_positions[i].state)
+		else:
+			row.append("EMPTY")
+	
+	# Attack card details
+	var attack_cards = round_data.get("attack_cards", [])
+	for i in range(3):
+		if i < attack_cards.size():
+			var attack = attack_cards[i]
+			row.append(attack.get("name", "---"))
+			row.append(attack.get("card_type", "---"))
+			row.append(str(attack.get("cost", "---")))
+			row.append(str(attack.get("time", "---")))
+			row.append("Valid")  # Could add validation logic here
+		else:
+			row.append_array(["---", "---", "---", "---", "---"])
+	
+	# Defense card details
+	var defense_cards = round_data.get("defense_cards", [])
+	for i in range(3):
+		if i < defense_cards.size() and defense_cards[i] != null:
+			var defense = defense_cards[i]
+			row.append(defense.get("name", "---"))
+			row.append(str(defense.get("maturity", "---")))
+			row.append("Category_" + str(i + 1))  # Could add actual category lookup
+			row.append("Yes" if defense.get("is_eviction", false) else "No")
+		else:
+			row.append_array(["---", "---", "---", "---"])
+	
+	# Round calculations
+	var total_cost = 0
+	var total_time = 0
+	var total_maturity = 0
+	var defense_count = 0
+	
+	for attack in attack_cards:
+		total_cost += attack.get("cost", 0)
+		total_time += attack.get("time", 0)
+	
+	for defense in defense_cards:
+		if defense != null:
+			total_maturity += defense.get("maturity", 0)
+			defense_count += 1
+	
+	row.append(str(total_cost))
+	row.append(str(total_time))
+	row.append("%.2f" % (total_maturity / float(max(defense_count, 1))))
+	
+	# Analysis
+	row.append("Individual_Card_Calculations")
+	row.append("Base_Attack_Success_Table")
+	row.append("Defense_Maturity_Modifier")
+	row.append("Individual_Thresholds")
+	
+	# Round outcome
+	var results = round_data.get("results", [])
+	var successes = 0
+	for result in results:
+		if result.get("success", false):
+			successes += 1
+	
+	row.append(str(successes) + "_of_" + str(results.size()) + "_succeeded")
+	row.append(str(successes))
+	
+	var notes = "Round " + str(round_data.get("round_number", 0)) + " completed. "
+	notes += str(successes) + "/" + str(results.size()) + " attacks succeeded. "
+	notes += "Total cost: $" + str(total_cost) + ", Total time: " + str(total_time) + " min."
+	row.append(notes)
+	
+	return ",".join(row)
+
+func generate_individual_attack_row(round_data: Dictionary, result: Dictionary) -> String:
+	"""Generate individual attack result row with console-like output"""
+	var row = []
+	
+	row.append(str(round_data.get("round_number", 0)))
+	row.append(str(result.get("position_index", 0) + 1))
+	row.append(result.get("attack_name", "Unknown"))
+	row.append(result.get("intended_step", "Unknown"))
+	row.append(str(result.get("individual_cost", 0)))
+	row.append(str(result.get("individual_time", 0)))
+	row.append(result.get("defense_name", "No Defense"))
+	row.append(str(result.get("defense_maturity", 0)))
+	row.append(result.get("previous_state", "EMPTY"))
+	row.append(result.get("intended_step", "Unknown"))
+	row.append(str(result.get("success_percentage", 0)) + "%")
+	row.append(str(result.get("dice_threshold", 10)))
+	row.append(str(result.get("roll_result", 0)))
+	
+	# Roll method
+	if result.get("auto_success", false):
+		row.append("Auto_Success")
+	elif result.get("invalid_play", false):
+		row.append("Invalid_Play")
+	else:
+		row.append("Dice_Roll")
+	
+	row.append("Yes" if result.get("success", false) else "No")
+	
+	# Reason for success/failure
+	var reason = ""
+	if result.get("auto_success", false):
+		reason = "No_Defense_Present"
+	elif result.get("invalid_play", false):
+		reason = "Invalid_Attack_Chain_Sequence"
+	elif result.get("success", false):
+		reason = "Roll_" + str(result.get("roll_result", 0)) + "_≤_" + str(result.get("dice_threshold", 10))
+	else:
+		reason = "Roll_" + str(result.get("roll_result", 0)) + "_>_" + str(result.get("dice_threshold", 10))
+	row.append(reason)
+	
+	row.append(result.get("previous_state", "EMPTY"))
+	row.append(result.get("new_state", "EMPTY"))
+	
+	# Attack chain progress
+	var progress = get_attack_chain_progress_description(result.get("previous_state", "EMPTY"), result.get("new_state", "EMPTY"))
+	row.append(progress)
+	
+	# Console output equivalent
+	var console_output = "Attack " + str(result.get("position_index", 0) + 1) + ": " + result.get("attack_name", "Unknown")
+	console_output += " | Cost: $" + str(result.get("individual_cost", 0)) + ", Time: " + str(result.get("individual_time", 0)) + " min"
+	console_output += " | " + result.get("previous_state", "EMPTY") + " → " + result.get("new_state", "EMPTY")
+	console_output += " | " + ("SUCCESS" if result.get("success", false) else "FAILURE")
+	if not result.get("auto_success", false) and not result.get("invalid_play", false):
+		console_output += " (Rolled " + str(result.get("roll_result", 0)) + "/" + str(result.get("dice_threshold", 10)) + ")"
+	row.append("\"" + console_output + "\"")
+	
+	return ",".join(row)
+
+func generate_position_tracking_row(round_data: Dictionary) -> String:
+	"""Generate position state tracking row"""
+	var row = []
+	
+	row.append(str(round_data.get("round_number", 0)))
+	row.append("Round_Resolution")
+	
+	var starting_positions = round_data.get("starting_positions", [])
+	var ending_positions = round_data.get("ending_positions", [])
+	
+	var start_most_advanced = "EMPTY"
+	var end_most_advanced = "EMPTY"
+	
+	# Position changes
+	for i in range(3):
+		var start_state = "EMPTY"
+		var end_state = "EMPTY"
+		
+		if i < starting_positions.size():
+			start_state = starting_positions[i].state
+		if i < ending_positions.size():
+			end_state = ending_positions[i].state
+		
+		row.append(start_state)
+		row.append(end_state)
+		
+		# Change description
+		if start_state == end_state:
+			row.append("No_Change")
+		else:
+			row.append(start_state + "_to_" + end_state)
+		
+		# Track most advanced
+		if is_more_advanced(start_state, start_most_advanced):
+			start_most_advanced = start_state
+		if is_more_advanced(end_state, end_most_advanced):
+			end_most_advanced = end_state
+	
+	row.append(start_most_advanced)
+	row.append(end_most_advanced)
+	
+	# Progress level change
+	var start_level = get_progress_level(start_most_advanced)
+	var end_level = get_progress_level(end_most_advanced)
+	row.append(str(end_level - start_level))
+	
+	# Threat level analysis
+	var threat_level = "Low"
+	if end_most_advanced == "E/E":
+		threat_level = "VICTORY_RED_TEAM"
+	elif end_most_advanced == "PEP":
+		threat_level = "Critical"
+	elif end_most_advanced == "IA":
+		threat_level = "Moderate"
+	row.append(threat_level)
+	
+	var analysis = "Round " + str(round_data.get("round_number", 0)) + " changed most advanced position from " + start_most_advanced + " to " + end_most_advanced
+	row.append(analysis)
+	
+	return ",".join(row)
+
+func generate_calculation_detail_row(round_data: Dictionary, attack_index: int) -> String:
+	"""Generate detailed calculation breakdown row"""
+	var row = []
+	var attack_cards = round_data.get("attack_cards", [])
+	var defense_cards = round_data.get("defense_cards", [])
+	
+	if attack_index >= attack_cards.size():
+		# Return empty row if no attack - fix the array multiplication issue
+		var empty_row = []
+		for i in range(15):
+			empty_row.append("---")
+		return ",".join(empty_row)
+	
+	var attack = attack_cards[attack_index]
+	var defense = null
+	if attack_index < defense_cards.size():
+		defense = defense_cards[attack_index]
+	
+	row.append(str(round_data.get("round_number", 0)))
+	row.append(str(attack_index + 1))
+	row.append(str(attack.get("cost", 1)))
+	row.append(str(attack.get("time", 1)))
+	
+	# Lookup key calculation
+	var clamped_cost = clamp(attack.get("cost", 1), 1, 5)
+	var clamped_time = clamp(int(attack.get("time", 1) / 24), 1, 5)
+	var lookup_key = "c" + str(clamped_cost) + "t" + str(clamped_time)
+	row.append(lookup_key)
+	
+	# Get base success rate - ensure it's a number, not array
+	var base_rate = 50  # Default
+	if attack_success_table.has(lookup_key):
+		var table_entry = attack_success_table[lookup_key]
+		base_rate = int(table_entry.likelihood)  # Ensure it's an int
+	row.append(str(base_rate) + "%")
+	
+	row.append("Yes" if defense != null else "No")
+	row.append(str(defense.get("maturity", 0)) if defense else "0")
+	
+	# Calculate modifiers - ensure all values are numbers
+	var defense_modifier = 0.0
+	if defense:
+		var maturity_val = int(defense.get("maturity", 1))
+		defense_modifier = (maturity_val - 1.0) / 4.0 * 0.4
+	row.append("%.3f" % defense_modifier)
+	
+	var eviction_bonus = 0.0
+	if defense and defense.get("is_eviction", false):
+		eviction_bonus = 0.2  # 20% bonus for eviction cards
+	row.append("%.3f" % eviction_bonus)
+	
+	# Final calculations - ensure base_rate is a number
+	var final_rate = float(base_rate) * (1.0 - defense_modifier - eviction_bonus)
+	var rounded_percentage = int(round(final_rate / 10.0) * 10)
+	var dice_threshold = rounded_percentage / 10
+	
+	row.append("%.2f" % final_rate + "%")
+	row.append(str(rounded_percentage) + "%")
+	row.append(str(dice_threshold))
+	
+	# Formula
+	var formula = str(base_rate) + "% × (1 - " + "%.3f" % defense_modifier
+	if eviction_bonus > 0:
+		formula += " - " + "%.3f" % eviction_bonus
+	formula += ") = " + "%.2f" % final_rate + "%"
+	row.append("\"" + formula + "\"")
+	
+	# Console debug equivalent
+	var debug_output = "Individual calculation - Cost: " + str(clamped_cost) + " Time: " + str(clamped_time) + " -> " + str(base_rate) + "% base"
+	if defense:
+		debug_output += ", Defense modifier: -" + "%.1f" % (defense_modifier * 100) + "%"
+	debug_output += " = " + "%.1f" % final_rate + "% final"
+	row.append("\"" + debug_output + "\"")
+	
+	return ",".join(row)
+
+# Helper functions for analysis
+func is_more_advanced(state1: String, state2: String) -> bool:
+	"""Check if state1 is more advanced than state2"""
+	var levels = {"EMPTY": 0, "IA": 1, "PEP": 2, "E/E": 3}
+	return levels.get(state1, 0) > levels.get(state2, 0)
+
+func get_progress_level(state: String) -> int:
+	"""Get numeric progress level for state"""
+	var levels = {"EMPTY": 0, "IA": 1, "PEP": 2, "E/E": 3}
+	return levels.get(state, 0)
+
+func get_attack_chain_progress_description(from_state: String, to_state: String) -> String:
+	"""Get description of attack chain progression"""
+	if from_state == to_state:
+		return "No_Progress"
+	elif to_state == "IA" and from_state == "EMPTY":
+		return "Initial_Access_Established"
+	elif to_state == "PEP" and from_state == "IA":
+		return "Privilege_Escalation_Achieved" 
+	elif to_state == "E/E" and from_state == "PEP":
+		return "Execution_Exfiltration_SUCCESS"
+	elif to_state == "EMPTY":
+		return "Position_Evicted"
+	else:
+		return from_state + "_to_" + to_state
+
+# Function to save enhanced export
+func save_enhanced_game_export():
+	"""Save the enhanced detailed game export"""
+	var enhanced_data = export_detailed_game_data_to_csv()
+	var enhanced_path = OS.get_user_data_dir() + "/seacat_enhanced_detailed_export.csv"
+	var file = FileAccess.open(enhanced_path, FileAccess.WRITE)
+	if file:
+		file.store_string(enhanced_data)
+		file.close()
+		print("Enhanced detailed game data exported to: ", enhanced_path)
+		return enhanced_path
+	else:
+		print("Failed to save enhanced export")
+		return ""

@@ -110,6 +110,11 @@ func initialize_connected_game():
 		print("Round: ", round_number)
 		GameData.debug_show_game_state()
 	
+	# Connect card reset events to clear position tracking
+	for card in aCards + dCards:
+		if card and card.has_signal("card_reset"):
+			card.card_reset.connect(_on_card_reset)
+	
 	# Start background music
 	if has_node("/root/Music"):
 		var music = get_node("/root/Music")
@@ -219,6 +224,12 @@ func setup_single_progress_bar():
 	explanation_label.add_theme_font_override("font", preload("res://pixel font/kongtext.ttf"))
 	explanation_label.add_theme_font_size_override("font_size", 12)  # Reduced from 14 to 12
 	add_child(explanation_label)
+
+func _on_card_reset():
+	"""Handle card reset to clear position tracking in dropdown"""
+	var dropdown = get_node_or_null("dropdown")
+	if dropdown and dropdown.has_method("clear_position_tracking"):
+		dropdown.clear_position_tracking()
 
 func _process(_delta):
 	"""Main game loop"""
@@ -344,24 +355,40 @@ func check_connected_game_end_conditions():
 		handle_blue_team_victory("Time/Timeline completed")
 
 func handle_red_team_victory(reason: String):
-	"""Handle Red Team (connected attack chain) victory"""
+	"""Handle Red Team (connected attack chain) victory with enhanced export"""
 	print("🔴 RED TEAM WINS: ", reason)
 	game_won = true
 	
-	# Export final game data
-	if GameData and GameData.has_method("export_game_data_to_csv"):
-		var final_data = GameData.export_game_data_to_csv()
-		var final_path = OS.get_user_data_dir() + "/seacat_connected_final_export.csv"
-		var file = FileAccess.open(final_path, FileAccess.WRITE)
-		if file:
-			file.store_string(final_data)
-			file.close()
-			print("Final connected game data exported to: ", final_path)
+	# Export both standard and enhanced game data
+	if GameData:
+		# Standard export
+		if GameData.has_method("export_game_data_to_csv"):
+			var final_data = GameData.export_game_data_to_csv()
+			var final_path = OS.get_user_data_dir() + "/seacat_connected_final_export.csv"
+			var file = FileAccess.open(final_path, FileAccess.WRITE)
+			if file:
+				file.store_string(final_data)
+				file.close()
+				print("Final connected game data exported to: ", final_path)
+		
+		# Enhanced detailed export
+		if GameData.has_method("save_enhanced_game_export"):
+			var enhanced_path = GameData.save_enhanced_game_export()
+			if enhanced_path != "":
+				print("Enhanced detailed analysis exported to: ", enhanced_path)
 
 func handle_blue_team_victory(reason: String):
-	"""Handle Blue Team (defense) victory"""
+	"""Handle Blue Team (defense) victory with enhanced export"""
 	print("🔵 BLUE TEAM WINS: ", reason)
 	game_won = true
+	
+	# Export both formats for blue team victory as well
+	if GameData:
+		if GameData.has_method("save_enhanced_game_export"):
+			var enhanced_path = GameData.save_enhanced_game_export()
+			if enhanced_path != "":
+				print("Enhanced detailed analysis exported to: ", enhanced_path)
+	
 	show_victory_screen("🔵 BLUE TEAM VICTORY!", reason, Color.BLUE)
 
 func show_victory_screen(title: String, reason: String, color: Color):
@@ -564,13 +591,20 @@ func build_connected_csv_row() -> Array:
 	return row
 
 func save_connected_game_data(row: Array):
-	"""Save connected game data to CSV file"""
+	"""Save connected game data to CSV file - now calls enhanced export as well"""
+	# Save the original simple format
 	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
 	if file:
 		file.seek_end()
 		file.store_csv_line(row)
 		file.close()
 		print("Connected game data saved for round ", round_number - 1)
+	
+	# Also trigger enhanced export after each round (optional - you may want this only at game end)
+	if GameData and GameData.has_method("save_enhanced_game_export"):
+		var enhanced_path = GameData.save_enhanced_game_export()
+		if enhanced_path != "":
+			print("Enhanced round analysis updated: ", enhanced_path)
 
 func get_defense_name_safe(defense_card) -> String:
 	"""Get defense card name safely"""
@@ -870,6 +904,17 @@ func _on_window_close_requested():
 	if window5:
 		window5.visible = false
 
+func _input(event):
+	"""Handle input events including debug export"""
+	if Input.is_action_just_pressed("exit"):
+		get_tree().quit()
+	
+	# Debug: Press F12 to manually export enhanced CSV
+	if event.is_action_pressed("ui_accept") and Input.is_key_pressed(KEY_F12):
+		if GameData and GameData.has_method("save_enhanced_game_export"):
+			var enhanced_path = GameData.save_enhanced_game_export()
+			print("Manual enhanced export triggered: ", enhanced_path)
+
 # Legacy event handlers for manual input compatibility
 func _on_option_button_item_selected(index):
 	"""Handle manual option selection (legacy compatibility)"""
@@ -881,4 +926,12 @@ func _on_spin_box_value_changed(value):
 
 func _on_button_pressed():
 	"""Handle manual button press (legacy compatibility)"""
+	pass
+
+func _on_spin_box_2_value_changed(value):
+	"""Handle manual spin box 2 value change (legacy compatibility)"""
+	pass
+
+func _on_final_continue_pressed():
+	"""Handle final continue button press (legacy compatibility)"""
 	pass
