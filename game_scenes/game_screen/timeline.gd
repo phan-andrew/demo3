@@ -45,7 +45,7 @@ func increase_time():
 func _on_area_2d_mouse_entered():
 	if is_valid_round(current_round):
 		$CanvasLayer/PanelContainerCurrent.show()
-		$CanvasLayer/PanelContainerCurrent/MarginContainer/Label.text = "Round: " + str(current_round) + " of " + str(round_end) + "\n" + "Time: " + str(Mitre.timeline_dict[current_round][0]) + "\n" + "Description: " + str(Mitre.timeline_dict[current_round][1]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[current_round][2])
+		$CanvasLayer/PanelContainerCurrent/MarginContainer/Label.text = "Round: " + str(current_round) + " of " + str(round_end) + "\n" + "Description: " + str(Mitre.timeline_dict[current_round][2]) + "\n" + "Subsystems not in Play: " + str(Mitre.timeline_dict[current_round][3])
 
 func _on_area_2d_mouse_exited():
 	$CanvasLayer/PanelContainerCurrent.hide()
