@@ -9,10 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://cxtfqcx7g0h0j" path="res://images/UI_images/progress_bar/underwater/Right Seaweed.png" id="4_ar3ec"]
 [ext_resource type="Script" uid="uid://cw3innscx66o1" path="res://game_scenes/game_screen/ParallaxLayer2.gd" id="5_5y0d6"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="7_unjkg"]
-[ext_resource type="Script" uid="uid://dnf1xgboximqf" path="res://game_scenes/game_screen/ScrollingLabelRoot.gd" id="10_pqgl6"]
 [ext_resource type="Texture2D" uid="uid://dn1wao6cxa3kt" path="res://images/UI_images/progress_bar/underwater/Submarine.png" id="11_ksuuw"]
 [ext_resource type="Texture2D" uid="uid://c6uuio6befmmi" path="res://images/UI_images/progress_bar/air/airplane.png" id="12_y2538"]
 [ext_resource type="Texture2D" uid="uid://do6j80xtbrp1b" path="res://images/UI_images/progress_bar/land/Tanks-Stationary.png" id="14_ns7pl"]
+[ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="14_pqgl6"]
 [ext_resource type="Texture2D" uid="uid://bnvpryfb0jwdm" path="res://images/UI_images/progress_bar/land/Tanks-Moving.png" id="14_vxjg4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x4vnv"]
@@ -286,24 +286,6 @@ sprite_frames = SubResource("SpriteFrames_amj5b")
 autoplay = "default"
 frame_progress = 0.402242
 
-[node name="timeline_title" type="Label" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = 800.0
-offset_top = 15.0
-offset_right = 1119.0
-offset_bottom = 41.0
-grow_horizontal = 0
-pivot_offset = Vector2(148, 25)
-theme = ExtResource("7_unjkg")
-text = "lllll"
-horizontal_alignment = 2
-vertical_alignment = 1
-clip_text = true
-text_overrun_behavior = 1
-script = ExtResource("10_pqgl6")
-
 [node name="sub" type="AnimatedSprite2D" parent="."]
 position = Vector2(419, 138)
 scale = Vector2(4.5, 4.5)
@@ -328,6 +310,7 @@ offset_top = 8.0
 offset_right = 157.0
 offset_bottom = 48.0
 theme = ExtResource("7_unjkg")
+theme_override_font_sizes/font_size = 22
 text = "edfdf"
 vertical_alignment = 1
 
@@ -346,6 +329,25 @@ position = Vector2(523, 150)
 shape = SubResource("RectangleShape2D_ljkcy")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="timeline_title" type="Label" parent="CanvasLayer"]
+editor_description = "Test"
+custom_minimum_size = Vector2(200, 25)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -208.0
+offset_top = 13.0
+offset_right = -8.0
+offset_bottom = 62.0
+grow_horizontal = 0
+tooltip_text = "Test right
+"
+theme_override_fonts/font = ExtResource("14_pqgl6")
+theme_override_font_sizes/font_size = 22
+text = "Header
+"
+horizontal_alignment = 2
 
 [node name="PanelContainerCurrent" type="PanelContainer" parent="CanvasLayer"]
 visible = false

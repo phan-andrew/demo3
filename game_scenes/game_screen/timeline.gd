@@ -7,6 +7,12 @@ var round_end = Mitre.timeline_dict.size()-2
 func _ready():
 	vehicle = $sub
 
+	var label = $CanvasLayer/timeline_title
+	label.text = "TEST RIGHT"
+
+
+
+
 func _process(_delta):
 	if $ParallaxBackground/ParallaxLayer.progressing:
 		vehicle.play("move")
@@ -34,7 +40,8 @@ func _process(_delta):
 	# Safe access to timeline_dict
 	if is_valid_round(current_round):
 		$Label.text = "T" + str(int(Mitre.timeline_dict[current_round][0]))
-		$timeline_title.text = str(Mitre.timeline_dict[current_round][1])
+		$CanvasLayer/timeline_title.text = str(Mitre.timeline_dict[current_round][1])
+
 
 func _progress(speed):
 	$ParallaxBackground.progress(speed)
