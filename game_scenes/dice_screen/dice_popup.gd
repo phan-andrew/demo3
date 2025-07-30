@@ -1,7 +1,7 @@
 extends Control
 
-# Enhanced Dice popup with user-controlled flow and smooth animations
-# Fixes: Consistent formatting, dice stability, single roll, complete font application
+# Enhanced Dice popup with user-controlled flow, manual entry, and moderator controls
+# Fixes: Manual entry functionality, moderator controls, consistent formatting
 
 # UI References
 var attack_info_label
@@ -25,13 +25,19 @@ var admin_button
 var discussion_panel
 var round_summary_label
 
+# Moderator controls
+var moderator_container
+var red_win_button
+var blue_win_button
+var skip_button
+var moderator_panel_visible = false
+
 # Game state
 var card_pairings = []
 var current_pairing_index = 0
 var rolling_results = []
 var is_rolling = false
 var is_waiting_for_user = false
-var manual_mode = false
 var rolls_remaining = 0
 var discussion_mode = false
 var current_roll_result = 0
@@ -72,6 +78,7 @@ func _ready():
 	get_ui_references()
 	setup_ui()
 	apply_font_everywhere()
+	create_moderator_controls()
 	connect_signals()
 	initialize_dice_session()
 
@@ -85,8 +92,8 @@ func get_ui_references():
 	dice_result_label = get_node("DialogPanel/DiceContainer/DiceResult")
 	roll_button = get_node("DialogPanel/DiceContainer/ButtonContainer/RollButton")
 	manual_toggle = get_node("DialogPanel/DiceContainer/ButtonContainer/ManualToggle")
-	manual_entry = get_node("DialogPanel/DiceContainer/ManualEntry")
-	manual_submit = get_node("DialogPanel/DiceContainer/ManualSubmit")
+	manual_entry = get_node("DialogPanel/DiceContainer/ManualContainer/ManualEntry")
+	manual_submit = get_node("DialogPanel/DiceContainer/ManualContainer/ManualSubmit")
 	strength_info = get_node("DialogPanel/StrengthContainer/StrengthInfo")
 	red_section = get_node("DialogPanel/StrengthContainer/StrengthBar/RedSection")
 	blue_section = get_node("DialogPanel/StrengthContainer/StrengthBar/BlueSection")
@@ -152,6 +159,66 @@ func create_continue_button():
 	
 	continue_button.pressed.connect(_on_continue_button_pressed)
 
+func create_moderator_controls():
+	"""Create moderator control panel with consistent formatting"""
+	# Create moderator container - initially hidden
+	moderator_container = VBoxContainer.new()
+	moderator_container.name = "ModeratorContainer"
+	moderator_container.visible = false
+	
+	# Add to dice container, after the button container
+	var dice_container = get_node("DialogPanel/DiceContainer")
+	dice_container.add_child(moderator_container)
+	
+	# Add spacing
+	var spacer = Control.new()
+	spacer.custom_minimum_size = Vector2(0, 10)
+	moderator_container.add_child(spacer)
+	
+	# Moderator title
+	var mod_title = Label.new()
+	mod_title.text = "Moderator Controls"
+	mod_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	mod_title.add_theme_font_override("font", kongtext_font)
+	mod_title.add_theme_font_size_override("font_size", 18)
+	mod_title.add_theme_color_override("font_color", Color.YELLOW)
+	moderator_container.add_child(mod_title)
+	
+	# Button container for moderator controls
+	var mod_button_container = HBoxContainer.new()
+	mod_button_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	moderator_container.add_child(mod_button_container)
+	
+	# Red team auto-win button
+	red_win_button = Button.new()
+	red_win_button.text = "🔴 Red Wins"
+	red_win_button.add_theme_font_override("font", kongtext_font)
+	red_win_button.add_theme_font_size_override("font_size", 16)
+	red_win_button.add_theme_color_override("font_color", Color.WHITE)
+	red_win_button.modulate = Color.LIGHT_CORAL
+	red_win_button.pressed.connect(_on_red_win_pressed)
+	mod_button_container.add_child(red_win_button)
+	
+	# Blue team auto-win button
+	blue_win_button = Button.new()
+	blue_win_button.text = "🔵 Blue Wins"
+	blue_win_button.add_theme_font_override("font", kongtext_font)
+	blue_win_button.add_theme_font_size_override("font_size", 16)
+	blue_win_button.add_theme_color_override("font_color", Color.WHITE)
+	blue_win_button.modulate = Color.LIGHT_BLUE
+	blue_win_button.pressed.connect(_on_blue_win_pressed)
+	mod_button_container.add_child(blue_win_button)
+	
+	# Skip button
+	skip_button = Button.new()
+	skip_button.text = "⏭️ Skip (No Result)"
+	skip_button.add_theme_font_override("font", kongtext_font)
+	skip_button.add_theme_font_size_override("font_size", 16)
+	skip_button.add_theme_color_override("font_color", Color.WHITE)
+	skip_button.modulate = Color.LIGHT_GRAY
+	skip_button.pressed.connect(_on_skip_pressed)
+	mod_button_container.add_child(skip_button)
+
 func create_discussion_panel():
 	"""Create discussion time panel with consistent formatting"""
 	discussion_panel = Panel.new()
@@ -209,11 +276,18 @@ func create_discussion_panel():
 
 func setup_ui():
 	"""Setup initial UI state"""
+	# Setup manual entry container visibility
+	var manual_container = get_node_or_null("DialogPanel/DiceContainer/ManualContainer")
+	if manual_container:
+		manual_container.visible = false
+	
 	if manual_entry:
-		manual_entry.visible = false
 		manual_entry.add_theme_font_override("font", kongtext_font)
+		manual_entry.add_theme_font_size_override("font_size", 16)
 	if manual_submit:
-		manual_submit.visible = false
+		manual_submit.add_theme_font_override("font", kongtext_font)
+		manual_submit.add_theme_font_size_override("font_size", 16)
+	
 	if result_indicator:
 		result_indicator.visible = false
 	
@@ -397,10 +471,7 @@ func update_roll_button_for_pairing(pairing: Dictionary):
 			elif pairing.has("invalid_play") and pairing.invalid_play:
 				roll_button.text = "❌ Auto-Resolve (Failure)"
 			else:
-				if manual_mode:
-					roll_button.text = "✏️ Manual Entry"
-				else:
-					roll_button.text = "🎲 Roll Dice"
+				roll_button.text = "🎲 Roll Dice"
 			
 			update_roll_button_text()
 			roll_button.disabled = false
@@ -408,10 +479,14 @@ func update_roll_button_for_pairing(pairing: Dictionary):
 		"rolling":
 			roll_button.visible = false
 			continue_button.visible = false
+			if moderator_container:
+				moderator_container.visible = false
 			
 		"result_shown":
 			roll_button.visible = false
 			continue_button.visible = true
+			if moderator_container:
+				moderator_container.visible = false
 			if rolls_remaining > 1:
 				continue_button.text = "Next Roll (" + str(rolls_remaining - 1) + " remaining)"
 			else:
@@ -473,10 +548,8 @@ func _on_roll_button_pressed():
 	elif pairing.has("invalid_play") and pairing.invalid_play:
 		handle_auto_failure(pairing)
 	else:
-		if manual_mode:
-			show_manual_entry()
-		else:
-			perform_dice_roll(pairing)
+		# Always perform normal dice roll - moderator controls are separate
+		perform_dice_roll(pairing)
 
 func handle_auto_success(pairing: Dictionary):
 	"""Handle auto-success for undefended attacks"""
@@ -632,6 +705,205 @@ func update_result_indicator(roll_result: int, threshold: int):
 	else:
 		result_indicator.color = Color.RED
 
+func show_manual_entry():
+	"""Show manual entry controls (legacy - kept for compatibility)"""
+	var manual_container = get_node_or_null("DialogPanel/DiceContainer/ManualContainer")
+	if manual_container:
+		manual_container.visible = true
+	
+	# Note: Moderator controls are now handled by the manual toggle directly
+
+func _on_manual_toggle_pressed():
+	"""Toggle moderator controls visibility"""
+	if moderator_container:
+		moderator_container.visible = !moderator_container.visible
+		
+		if moderator_container.visible:
+			# Show description when controls are revealed
+			if dice_result_label:
+				dice_result_label.text = "Moderator Controls Available:\n🔴 Red Wins | 🔵 Blue Wins | ⏭️ Skip (No Effect)"
+				dice_result_label.modulate = Color.YELLOW
+		else:
+			# Reset to normal display when controls are hidden
+			if current_pairing_index < card_pairings.size():
+				var pairing = card_pairings[current_pairing_index]
+				update_dice_result_text(pairing)
+
+func _on_manual_submit_pressed():
+	"""Handle manual roll submission (if manual entry SpinBox is used)"""
+	if current_pairing_index >= card_pairings.size() or not manual_entry:
+		return
+	
+	var pairing = card_pairings[current_pairing_index]
+	var manual_roll = int(manual_entry.value)
+	
+	# Validate roll
+	if manual_roll < 1 or manual_roll > 10:
+		if dice_result_label:
+			dice_result_label.text = "Invalid roll! Must be between 1-10"
+		return
+	
+	current_roll_result = manual_roll
+	var success = manual_roll <= pairing.dice_threshold
+	
+	# Store result with individual card data
+	var result = {
+		"attack_index": pairing.attack_index,
+		"attack_name": pairing.attack_name,
+		"defense_name": pairing.defense_name,
+		"roll_result": manual_roll,
+		"success": success,
+		"auto_success": false,
+		"moderator_override": "MANUAL_ENTRY",
+		"success_percentage": pairing.rounded_percentage,
+		"dice_threshold": pairing.dice_threshold,
+		"individual_cost": pairing.individual_cost,
+		"individual_time": pairing.individual_time
+	}
+	
+	rolling_results.append(result)
+	
+	# Update display without changing position
+	set_dice_display_only(manual_roll)
+	update_result_indicator(manual_roll, pairing.dice_threshold)
+	
+	# Ensure dice position is correct after display update
+	force_dice_position()
+	
+	# Hide manual controls
+	var manual_container = get_node_or_null("DialogPanel/DiceContainer/ManualContainer")
+	if manual_container:
+		manual_container.visible = false
+	if moderator_container:
+		moderator_container.visible = false
+	
+	# Show result
+	ui_state = "result_shown"
+	update_dice_result_text(pairing)
+	update_roll_button_for_pairing(pairing)
+
+# Moderator control handlers
+func _on_red_win_pressed():
+	"""Handle moderator red team auto-win"""
+	if current_pairing_index >= card_pairings.size():
+		return
+	
+	var pairing = card_pairings[current_pairing_index]
+	
+	# Force success regardless of dice threshold
+	current_roll_result = 1  # Show as "perfect" roll
+	
+	var result = {
+		"attack_index": pairing.attack_index,
+		"attack_name": pairing.attack_name,
+		"defense_name": pairing.defense_name,
+		"roll_result": 1,
+		"success": true,
+		"auto_success": false,
+		"moderator_override": "RED_WIN",
+		"success_percentage": pairing.rounded_percentage,
+		"dice_threshold": pairing.dice_threshold,
+		"individual_cost": pairing.individual_cost,
+		"individual_time": pairing.individual_time
+	}
+	
+	rolling_results.append(result)
+	
+	# Update display
+	set_dice_display_only(1)
+	update_result_indicator(1, pairing.dice_threshold)
+	force_dice_position()
+	
+	# Hide moderator controls after use
+	if moderator_container:
+		moderator_container.visible = false
+	
+	# Show result with special text
+	ui_state = "result_shown"
+	if dice_result_label:
+		dice_result_label.text = "MODERATOR OVERRIDE: Red Team Wins!\nRoll: 1 (Perfect Success)"
+		dice_result_label.modulate = Color.RED
+	update_roll_button_for_pairing(pairing)
+
+func _on_blue_win_pressed():
+	"""Handle moderator blue team auto-win"""
+	if current_pairing_index >= card_pairings.size():
+		return
+	
+	var pairing = card_pairings[current_pairing_index]
+	
+	# Force failure regardless of dice threshold
+	current_roll_result = 10  # Show as "worst" roll
+	
+	var result = {
+		"attack_index": pairing.attack_index,
+		"attack_name": pairing.attack_name,
+		"defense_name": pairing.defense_name,
+		"roll_result": 10,
+		"success": false,
+		"auto_success": false,
+		"moderator_override": "BLUE_WIN",
+		"success_percentage": pairing.rounded_percentage,
+		"dice_threshold": pairing.dice_threshold,
+		"individual_cost": pairing.individual_cost,
+		"individual_time": pairing.individual_time
+	}
+	
+	rolling_results.append(result)
+	
+	# Update display
+	set_dice_display_only(10)
+	update_result_indicator(10, pairing.dice_threshold)
+	force_dice_position()
+	
+	# Hide moderator controls after use
+	if moderator_container:
+		moderator_container.visible = false
+	
+	# Show result with special text
+	ui_state = "result_shown"
+	if dice_result_label:
+		dice_result_label.text = "MODERATOR OVERRIDE: Blue Team Wins!\nRoll: 10 (Complete Failure)"
+		dice_result_label.modulate = Color.BLUE
+	update_roll_button_for_pairing(pairing)
+
+func _on_skip_pressed():
+	"""Handle moderator skip (no result)"""
+	if current_pairing_index >= card_pairings.size():
+		return
+	
+	var pairing = card_pairings[current_pairing_index]
+	
+	# Create a "skipped" result that doesn't affect game state
+	var result = {
+		"attack_index": pairing.attack_index,
+		"attack_name": pairing.attack_name,
+		"defense_name": pairing.defense_name,
+		"roll_result": 0,
+		"success": false,
+		"auto_success": false,
+		"moderator_override": "SKIP",
+		"skipped": true,
+		"success_percentage": pairing.rounded_percentage,
+		"dice_threshold": pairing.dice_threshold,
+		"individual_cost": pairing.individual_cost,
+		"individual_time": pairing.individual_time
+	}
+	
+	rolling_results.append(result)
+	current_roll_result = 0
+	
+	# Hide moderator controls after use
+	if moderator_container:
+		moderator_container.visible = false
+	
+	# Show result with special text
+	ui_state = "result_shown"
+	if dice_result_label:
+		dice_result_label.text = "MODERATOR OVERRIDE: Skipped\nNo effect on game state"
+		dice_result_label.modulate = Color.GRAY
+	update_roll_button_for_pairing(pairing)
+
 func _on_continue_button_pressed():
 	"""Handle continue button press - user-controlled flow"""
 	if ui_state == "result_shown":
@@ -650,6 +922,8 @@ func advance_to_next_pairing():
 		# Reset UI for next roll
 		if result_indicator:
 			result_indicator.visible = false
+		if moderator_container:
+			moderator_container.visible = false
 		
 		ui_state = "ready"
 		current_roll_result = 0
@@ -695,6 +969,19 @@ func generate_round_summary():
 			summary_text += "[color=green]Result: AUTO SUCCESS (No Defense)[/color]\n"
 		elif result.get("invalid_play", false):
 			summary_text += "[color=red]Result: INVALID PLAY (Auto Failure)[/color]\n"
+		elif result.get("skipped", false):
+			summary_text += "[color=gray]Result: SKIPPED (No Effect)[/color]\n"
+		elif result.get("moderator_override", "") != "":
+			var override_type = result.moderator_override
+			if override_type == "RED_WIN":
+				summary_text += "[color=red]Result: MODERATOR OVERRIDE - RED WINS[/color]\n"
+			elif override_type == "BLUE_WIN":
+				summary_text += "[color=blue]Result: MODERATOR OVERRIDE - BLUE WINS[/color]\n"
+			elif override_type == "MANUAL_ENTRY":
+				var success_text = "SUCCESS" if result.success else "FAILURE"
+				var color = "green" if result.success else "red"
+				summary_text += "Manual Roll: " + str(result.roll_result) + "/10 (needed ≤" + str(result.dice_threshold) + ")\n"
+				summary_text += "[color=" + color + "]Result: MANUAL " + success_text + "[/color]\n"
 		else:
 			var success_text = "SUCCESS" if result.success else "FAILURE"
 			var color = "green" if result.success else "red"
@@ -722,7 +1009,9 @@ func generate_round_summary():
 		var projected_change = "[color=gray]No attack[/color]"
 		for result in rolling_results:
 			if result.attack_index == i:
-				if result.success:
+				if result.get("skipped", false):
+					projected_change = "[color=gray]→ Skipped[/color]"
+				elif result.success:
 					projected_change = "[color=yellow]→ Advance[/color]"
 				else:
 					projected_change = "[color=gray]→ No change[/color]"
@@ -760,83 +1049,6 @@ func complete_all_rolls():
 	# Wait a moment, then emit completion signal
 	await get_tree().create_timer(1.0).timeout
 	emit_signal("dice_completed", rolling_results)
-
-func show_manual_entry():
-	"""Show manual entry controls"""
-	if manual_entry:
-		manual_entry.visible = true
-	if manual_submit:
-		manual_submit.visible = true
-
-func _on_manual_toggle_pressed():
-	"""Toggle between manual and automatic rolling"""
-	manual_mode = !manual_mode
-	
-	if manual_toggle:
-		if manual_mode:
-			manual_toggle.text = "🎲 Auto Roll"
-		else:
-			manual_toggle.text = "✏️ Manual Entry"
-			if manual_entry:
-				manual_entry.visible = false
-			if manual_submit:
-				manual_submit.visible = false
-	
-	# Update the current pairing display
-	if current_pairing_index < card_pairings.size():
-		var pairing = card_pairings[current_pairing_index]
-		update_roll_button_for_pairing(pairing)
-
-func _on_manual_submit_pressed():
-	"""Handle manual roll submission"""
-	if current_pairing_index >= card_pairings.size() or not manual_entry:
-		return
-	
-	var pairing = card_pairings[current_pairing_index]
-	var manual_roll = int(manual_entry.value)
-	
-	# Validate roll
-	if manual_roll < 1 or manual_roll > 10:
-		if dice_result_label:
-			dice_result_label.text = "Invalid roll! Must be between 1-10"
-		return
-	
-	current_roll_result = manual_roll
-	var success = manual_roll <= pairing.dice_threshold
-	
-	# Store result with individual card data
-	var result = {
-		"attack_index": pairing.attack_index,
-		"attack_name": pairing.attack_name,
-		"defense_name": pairing.defense_name,
-		"roll_result": manual_roll,
-		"success": success,
-		"auto_success": false,
-		"success_percentage": pairing.rounded_percentage,
-		"dice_threshold": pairing.dice_threshold,
-		"individual_cost": pairing.individual_cost,
-		"individual_time": pairing.individual_time
-	}
-	
-	rolling_results.append(result)
-	
-	# Update display without changing position
-	set_dice_display_only(manual_roll)
-	update_result_indicator(manual_roll, pairing.dice_threshold)
-	
-	# Ensure dice position is correct after display update
-	force_dice_position()
-	
-	# Hide manual controls
-	if manual_entry:
-		manual_entry.visible = false
-	if manual_submit:
-		manual_submit.visible = false
-	
-	# Show result
-	ui_state = "result_shown"
-	update_dice_result_text(pairing)
-	update_roll_button_for_pairing(pairing)
 
 func _on_close_button_pressed():
 	"""Handle close button press"""

@@ -18,6 +18,7 @@ var game_won = false
 # Connected attack chain system variables
 var current_roll_results = []
 var progress_bar_sprite = null  # Single progress bar sprite
+var victory_overlay = null  # Victory screen overlay
 
 # UI icons
 var playIcon = preload("res://images/UI_images/play_button.png")
@@ -38,6 +39,9 @@ var progress_bar_images = [
 	"res://images/bar/2.png",  # PEP filled
 	"res://images/bar/3.png"   # E/E filled
 ]
+
+# Font resource
+var kongtext_font = preload("res://pixel font/kongtext.ttf")
 
 func _ready():
 	initialize_connected_game()
@@ -109,11 +113,6 @@ func initialize_connected_game():
 		print("=== CONNECTED ATTACK CHAIN SYSTEM INITIALIZED ===")
 		print("Round: ", round_number)
 		GameData.debug_show_game_state()
-	
-	# Connect card reset events to clear position tracking
-	for card in aCards + dCards:
-		if card and card.has_signal("card_reset"):
-			card.card_reset.connect(_on_card_reset)
 	
 	# Start background music
 	if has_node("/root/Music"):
@@ -221,15 +220,9 @@ func setup_single_progress_bar():
 	explanation_label.size = Vector2(576, 25)  # Half screen width for proper centering
 	explanation_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	explanation_label.add_theme_color_override("font_color", Color.WHITE)
-	explanation_label.add_theme_font_override("font", preload("res://pixel font/kongtext.ttf"))
+	explanation_label.add_theme_font_override("font", kongtext_font)
 	explanation_label.add_theme_font_size_override("font_size", 12)  # Reduced from 14 to 12
 	add_child(explanation_label)
-
-func _on_card_reset():
-	"""Handle card reset to clear position tracking in dropdown"""
-	var dropdown = get_node_or_null("dropdown")
-	if dropdown and dropdown.has_method("clear_position_tracking"):
-		dropdown.clear_position_tracking()
 
 func _process(_delta):
 	"""Main game loop"""
@@ -355,61 +348,111 @@ func check_connected_game_end_conditions():
 		handle_blue_team_victory("Time/Timeline completed")
 
 func handle_red_team_victory(reason: String):
-	"""Handle Red Team (connected attack chain) victory with enhanced export"""
+	"""Handle Red Team (connected attack chain) victory"""
 	print("🔴 RED TEAM WINS: ", reason)
 	game_won = true
 	
-	# Export both standard and enhanced game data
-	if GameData:
-		# Standard export
-		if GameData.has_method("export_game_data_to_csv"):
-			var final_data = GameData.export_game_data_to_csv()
-			var final_path = OS.get_user_data_dir() + "/seacat_connected_final_export.csv"
-			var file = FileAccess.open(final_path, FileAccess.WRITE)
-			if file:
-				file.store_string(final_data)
-				file.close()
-				print("Final connected game data exported to: ", final_path)
-		
-		# Enhanced detailed export
-		if GameData.has_method("save_enhanced_game_export"):
-			var enhanced_path = GameData.save_enhanced_game_export()
-			if enhanced_path != "":
-				print("Enhanced detailed analysis exported to: ", enhanced_path)
+	# Export final game data
+	if GameData and GameData.has_method("export_game_data_to_csv"):
+		var final_data = GameData.export_game_data_to_csv()
+		var final_path = OS.get_user_data_dir() + "/seacat_connected_final_export.csv"
+		var file = FileAccess.open(final_path, FileAccess.WRITE)
+		if file:
+			file.store_string(final_data)
+			file.close()
+			print("Final connected game data exported to: ", final_path)
+	
+	# Show red team victory screen
+	show_victory_screen("🔴 RED TEAM VICTORY!", reason, Color.RED)
 
 func handle_blue_team_victory(reason: String):
-	"""Handle Blue Team (defense) victory with enhanced export"""
+	"""Handle Blue Team (defense) victory"""
 	print("🔵 BLUE TEAM WINS: ", reason)
 	game_won = true
-	
-	# Export both formats for blue team victory as well
-	if GameData:
-		if GameData.has_method("save_enhanced_game_export"):
-			var enhanced_path = GameData.save_enhanced_game_export()
-			if enhanced_path != "":
-				print("Enhanced detailed analysis exported to: ", enhanced_path)
-	
 	show_victory_screen("🔵 BLUE TEAM VICTORY!", reason, Color.BLUE)
 
 func show_victory_screen(title: String, reason: String, color: Color):
-	"""Show victory screen with team colors"""
-	var victory_label = get_node_or_null("VictoryLabel")
-	if not victory_label:
-		victory_label = Label.new()
-		victory_label.name = "VictoryLabel"
-		victory_label.position = Vector2(400, 300)
-		victory_label.add_theme_font_size_override("font_size", 32)
-		victory_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		victory_label.add_theme_color_override("font_color", Color.WHITE)
-		add_child(victory_label)
+	"""Show victory screen with team colors, proper centering, and kongtext font"""
+	# Remove any existing victory overlay
+	if victory_overlay:
+		victory_overlay.queue_free()
+		victory_overlay = null
 	
-	victory_label.text = title + "\n" + reason
-	victory_label.modulate = color
-	victory_label.visible = true
+	# Create full-screen victory overlay
+	victory_overlay = Control.new()
+	victory_overlay.name = "VictoryOverlay"
+	victory_overlay.anchors_preset = Control.PRESET_FULL_RECT
+	victory_overlay.z_index = 1000  # Ensure it's on top
+	add_child(victory_overlay)
 	
-	# Auto-transition to game over after delay
-	await get_tree().create_timer(3.0).timeout
-	_on_quit_button_pressed()
+	# Semi-transparent background
+	var background = ColorRect.new()
+	background.color = Color(0, 0, 0, 0.8)
+	background.anchors_preset = Control.PRESET_FULL_RECT
+	victory_overlay.add_child(background)
+	
+	# Main victory panel - centered
+	var victory_panel = Panel.new()
+	victory_panel.position = Vector2(276, 200)  # Centered position
+	victory_panel.size = Vector2(600, 300)
+	victory_panel.modulate = color * 0.3 + Color.WHITE * 0.7  # Tinted background
+	victory_overlay.add_child(victory_panel)
+	
+	# Victory title - large and centered
+	var title_label = Label.new()
+	title_label.text = title
+	title_label.position = Vector2(50, 50)
+	title_label.size = Vector2(500, 80)
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_override("font", kongtext_font)
+	title_label.add_theme_font_size_override("font_size", 36)
+	title_label.add_theme_color_override("font_color", color)
+	victory_panel.add_child(title_label)
+	
+	# Reason text - smaller, centered
+	var reason_label = Label.new()
+	reason_label.text = reason
+	reason_label.position = Vector2(50, 140)
+	reason_label.size = Vector2(500, 60)
+	reason_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	reason_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	reason_label.add_theme_font_override("font", kongtext_font)
+	reason_label.add_theme_font_size_override("font_size", 24)
+	reason_label.add_theme_color_override("font_color", Color.WHITE)
+	reason_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	victory_panel.add_child(reason_label)
+	
+	# Continue button - centered at bottom
+	var continue_button = Button.new()
+	continue_button.text = "Continue to Game Over"
+	continue_button.position = Vector2(200, 220)
+	continue_button.size = Vector2(200, 50)
+	continue_button.add_theme_font_override("font", kongtext_font)
+	continue_button.add_theme_font_size_override("font_size", 18)
+	continue_button.pressed.connect(_on_victory_continue_pressed)
+	victory_panel.add_child(continue_button)
+	
+	# Optional: Add pulsing animation to title
+	var tween = create_tween()
+	tween.set_loops()
+	tween.tween_property(title_label, "modulate", color * 1.2, 1.0)
+	tween.tween_property(title_label, "modulate", color * 0.8, 1.0)
+
+func _on_victory_continue_pressed():
+	"""Handle victory screen continue button - transition to game over"""
+	if has_node("/root/Music"):
+		var music = get_node("/root/Music")
+		if music.has_method("mouse_click"):
+			music.mouse_click()
+	
+	# Clean up victory overlay
+	if victory_overlay:
+		victory_overlay.queue_free()
+		victory_overlay = null
+	
+	# Transition to game over screen
+	get_tree().change_scene_to_file("res://game_scenes/game_over_screen/game_over.tscn")
 
 # Enhanced dice system event handlers
 func show_enhanced_dice_popup():
@@ -472,6 +515,10 @@ func process_connected_attack_results():
 			status = "INVALID PLAY"
 		elif result.auto_success:
 			status = "AUTO SUCCESS"
+		elif result.has("skipped") and result.skipped:
+			status = "SKIPPED"
+		elif result.has("moderator_override"):
+			status = "MODERATOR OVERRIDE: " + result.moderator_override
 		
 		print("Attack ", result.attack_index + 1, ": ", result.attack_name, " - ", status)
 		if result.has("individual_cost"):
@@ -550,8 +597,13 @@ func build_connected_csv_row() -> Array:
 		var found_result = false
 		for result in current_roll_results:
 			if result.attack_index == i:
-				row.append("Success" if result.success else "Failure")
-				row.append("AUTO" if result.auto_success else result.roll_result)
+				if result.has("skipped") and result.skipped:
+					row.append("Skipped")
+				elif result.has("moderator_override"):
+					row.append("Moderator: " + result.moderator_override)
+				else:
+					row.append("Success" if result.success else "Failure")
+				row.append("AUTO" if result.auto_success else str(result.roll_result))
 				row.append("Yes" if result.success else "No")
 				# Determine new state
 				var new_state = "Unknown"
@@ -583,7 +635,7 @@ func build_connected_csv_row() -> Array:
 	var notes = "Round " + str(round_number - 1) + " completed. "
 	var successes = 0
 	for result in current_roll_results:
-		if result.success:
+		if result.success and not (result.has("skipped") and result.skipped):
 			successes += 1
 	notes += str(successes) + "/" + str(current_roll_results.size()) + " attacks succeeded."
 	row.append(notes)
@@ -591,20 +643,13 @@ func build_connected_csv_row() -> Array:
 	return row
 
 func save_connected_game_data(row: Array):
-	"""Save connected game data to CSV file - now calls enhanced export as well"""
-	# Save the original simple format
+	"""Save connected game data to CSV file"""
 	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
 	if file:
 		file.seek_end()
 		file.store_csv_line(row)
 		file.close()
 		print("Connected game data saved for round ", round_number - 1)
-	
-	# Also trigger enhanced export after each round (optional - you may want this only at game end)
-	if GameData and GameData.has_method("save_enhanced_game_export"):
-		var enhanced_path = GameData.save_enhanced_game_export()
-		if enhanced_path != "":
-			print("Enhanced round analysis updated: ", enhanced_path)
 
 func get_defense_name_safe(defense_card) -> String:
 	"""Get defense card name safely"""
@@ -665,7 +710,7 @@ func calculate_total_time_used() -> int:
 	"""Calculate total time used by all successful attacks"""
 	var total_time = 0
 	for result in current_roll_results:
-		if result.success and result.has("individual_time"):
+		if result.success and result.has("individual_time") and not (result.has("skipped") and result.skipped):
 			total_time += result.individual_time
 	return total_time
 
@@ -904,17 +949,6 @@ func _on_window_close_requested():
 	if window5:
 		window5.visible = false
 
-func _input(event):
-	"""Handle input events including debug export"""
-	if Input.is_action_just_pressed("exit"):
-		get_tree().quit()
-	
-	# Debug: Press F12 to manually export enhanced CSV
-	if event.is_action_pressed("ui_accept") and Input.is_key_pressed(KEY_F12):
-		if GameData and GameData.has_method("save_enhanced_game_export"):
-			var enhanced_path = GameData.save_enhanced_game_export()
-			print("Manual enhanced export triggered: ", enhanced_path)
-
 # Legacy event handlers for manual input compatibility
 func _on_option_button_item_selected(index):
 	"""Handle manual option selection (legacy compatibility)"""
@@ -926,12 +960,4 @@ func _on_spin_box_value_changed(value):
 
 func _on_button_pressed():
 	"""Handle manual button press (legacy compatibility)"""
-	pass
-
-func _on_spin_box_2_value_changed(value):
-	"""Handle manual spin box 2 value change (legacy compatibility)"""
-	pass
-
-func _on_final_continue_pressed():
-	"""Handle final continue button press (legacy compatibility)"""
 	pass
