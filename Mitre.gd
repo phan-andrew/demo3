@@ -76,7 +76,10 @@ func import_resources_data(user_attack_profile, user_defend_profile, user_timeli
 			var time = timeline_data_set[0].strip_edges()
 			var header = timeline_data_set[1].strip_edges()
 			var description = ""
-			var subsystems = timeline_data_set.size() > 3 and timeline_data_set[3].strip_edges() or ""
+			var subsystems = ""
+			if timeline_data_set.size() > 3:
+				subsystems = str(timeline_data_set[3]).strip_edges()
+
 
 			if timeline_data_set.size() > 2:
 				description = timeline_data_set[2].strip_edges()
