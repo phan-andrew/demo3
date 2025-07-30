@@ -70,7 +70,7 @@ func setCard(index):
 		setTimeValue(time)
 
 	if cardType == "d":
-		var defend = Mitre.defend_dict[int(index) + 1]
+		var defend = Mitre.defend_dict[int(index)]
 		$card.texture = load(defend[5])
 		$card/sliders/cost_slider.hide()
 		$card/sliders/time_slider.hide()
@@ -169,11 +169,11 @@ func disable_flip(state):
 func setText(index):
 	if cardType=="a":
 		# Attack cards: index 3 = Description
-		$card/definition.text=(Mitre.attack_dict[index+1][3])
+		$card/definition.text=(Mitre.attack_dict[index][3])
 		$card/definition.hide()
 	if cardType=="d":
 		# Defense cards: index 4 = Description (index 3 = Name)
-		$card/definition.text=(Mitre.defend_dict[int(index)+1][4])
+		$card/definition.text=(Mitre.defend_dict[int(index)][4])
 		$card/definition.hide()
 
 func setCost(Cost):
@@ -215,11 +215,11 @@ func getMaturityValue():
 func getString():
 	if cardType == "a":
 		# Attack cards: index 2 = Name
-		var printable = Mitre.attack_dict[card_index+1][2] + ": $" + str(cost_value) + " " + str(time_value) + " minutes"
+		var printable = Mitre.attack_dict[card_index][2] + ": $" + str(cost_value) + " " + str(time_value) + " minutes"
 		return printable
 	if cardType == "d":
 		# Defense cards: index 3 = Name (NOT index 2!)
-		var printable = Mitre.defend_dict[card_index+1][3] + ": " + str(maturity_level) + " stars"
+		var printable = Mitre.defend_dict[card_index][3] + ": " + str(maturity_level) + " stars"
 		return printable
 
 func _on_flip_button_pressed():

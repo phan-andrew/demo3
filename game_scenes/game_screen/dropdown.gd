@@ -139,8 +139,13 @@ func add_defend_options():
 	for i in range(2, Mitre.d3fendprof_dict.size()):
 		if not Mitre.d3fendprof_dict.has(i):
 			continue
-			
+
 		var defense_row = Mitre.d3fendprof_dict[i]
+
+		# ✅ Skip header rows that accidentally made it into the mission file
+		if defense_row.size() > 3 and str(defense_row[3]).strip_edges().to_lower() == "name":
+			continue
+
 		if defense_row.size() < 1:
 			continue
 		

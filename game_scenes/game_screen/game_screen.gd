@@ -576,12 +576,16 @@ func get_defense_name_safe(defense_card) -> String:
 	"""Get defense card name safely"""
 	if not defense_card:
 		return "No Defense"
-	
+
 	var card_index = defense_card.card_index
+	if card_index == 0:
+		print("Skipping card_index 0 (likely header row)")
+		return "Unknown Defense"
+
 	if has_node("/root/Mitre"):
 		var mitre = get_node("/root/Mitre")
-		if mitre.defend_dict.has(card_index + 1):
-			return mitre.defend_dict[card_index + 1][3]  # Defense: index 3 = Name
+		if mitre.defend_dict.has(card_index):
+			return mitre.defend_dict[card_index][3]  # Defense: index 3 = Name
 	return "Defense Card"
 
 func continue_connected_game_flow():

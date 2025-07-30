@@ -1,4 +1,3 @@
-Index,ID,Category,Name,Description
 0,D3-AL,3,Account Locking,The process of temporarily disabling user accounts on a system or domain.,res://images/card_images/defense/Account Locking.png
 1,D3-ANAA,2,Administrative Network Activity Analysis,Detection of unauthorized use of administrative network protocols by analyzing network activity against a baseline.,res://images/card_images/defense/Administrative Network Activity Analysis.png
 2,D3-ACH,1,Application Configuration Hardening,Modifying an application's configuration to reduce its attack surface.,res://images/card_images/defense/Application Configuration Hardening.png
