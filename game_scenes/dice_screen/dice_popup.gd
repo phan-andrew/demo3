@@ -718,12 +718,7 @@ func _on_manual_toggle_pressed():
 	if moderator_container:
 		moderator_container.visible = !moderator_container.visible
 		
-		if moderator_container.visible:
-			# Show description when controls are revealed
-			if dice_result_label:
-				dice_result_label.text = "Moderator Controls Available:\n🔴 Red Wins | 🔵 Blue Wins | ⏭️ Skip (No Effect)"
-				dice_result_label.modulate = Color.YELLOW
-		else:
+		if not moderator_container.visible:
 			# Reset to normal display when controls are hidden
 			if current_pairing_index < card_pairings.size():
 				var pairing = card_pairings[current_pairing_index]
