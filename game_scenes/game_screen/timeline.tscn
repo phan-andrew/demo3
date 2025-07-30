@@ -294,6 +294,32 @@ animation = &"move"
 autoplay = "hover"
 frame_progress = 0.320669
 
+[node name="UIHeader" type="Control" parent="."]
+z_index = -1
+layout_mode = 3
+anchors_preset = 0
+offset_top = -16.0
+offset_right = 40.0
+offset_bottom = 24.0
+
+[node name="timeline_title" type="Label" parent="UIHeader"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 707.0
+offset_top = 10.0
+offset_right = 1099.0
+offset_bottom = 74.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("14_pqgl6")
+theme_override_font_sizes/font_size = 15
+text = "Right"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="plane" type="AnimatedSprite2D" parent="."]
 visible = false
 modulate = Color(0.439216, 0.517647, 0.329412, 1)
@@ -327,54 +353,6 @@ autoplay = "hover"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(523, 150)
 shape = SubResource("RectangleShape2D_ljkcy")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="UIHeader" type="Control" parent="CanvasLayer"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="timeline_title" type="Label" parent="CanvasLayer/UIHeader"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = 707.0
-offset_top = 10.0
-offset_right = 1099.0
-offset_bottom = 74.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("14_pqgl6")
-theme_override_font_sizes/font_size = 15
-text = "Right"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="PanelContainerCurrent" type="PanelContainer" parent="CanvasLayer"]
-visible = false
-z_as_relative = false
-offset_left = 501.0
-offset_top = 152.0
-offset_right = 1123.0
-offset_bottom = 198.0
-
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainerCurrent"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="Label" type="Label" parent="CanvasLayer/PanelContainerCurrent/MarginContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme = ExtResource("7_unjkg")
-text = "text"
-vertical_alignment = 1
-autowrap_mode = 3
 
 [node name="StartArea2D" type="Area2D" parent="."]
 position = Vector2(-368, 0)
@@ -483,6 +461,31 @@ layout_mode = 2
 theme = ExtResource("7_unjkg")
 text = "Finish"
 vertical_alignment = 1
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PanelContainerCurrent" type="PanelContainer" parent="CanvasLayer"]
+visible = false
+z_as_relative = false
+offset_left = 501.0
+offset_top = 152.0
+offset_right = 1123.0
+offset_bottom = 198.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainerCurrent"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="CanvasLayer/PanelContainerCurrent/MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("7_unjkg")
+text = "text"
+vertical_alignment = 1
+autowrap_mode = 3
 
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
 [connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
