@@ -648,6 +648,11 @@ func process_connected_attack_results():
 	round_number += 1
 	if GameData:
 		GameData.prepare_next_round()
+	if has_node("timeline"):
+		var timeline = get_node("timeline")
+		if timeline.has_method("increase_time"):
+			timeline.increase_time()
+
 	
 	# Reset for next round
 	current_roll_results.clear()
@@ -849,8 +854,6 @@ func continue_connected_game_flow_resume():
 	var total_time = calculate_total_time_used()
 	if timeline and timeline.has_method("_progress"):
 		timeline._progress(total_time * 25)
-	if timeline and timeline.has_method("increase_time"):
-		timeline.increase_time()
 
 	if dropdown and dropdown.has_method("set_card_references"):
 		dropdown.set_card_references(aCards, dCards)
