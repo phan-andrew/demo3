@@ -149,11 +149,23 @@ func add_defend_options():
 		return
 	
 	for i in range(2, Mitre.d3fendprof_dict.size()):
-		var defense_id = int(Mitre.d3fendprof_dict[i][0])
+		var raw = Mitre.d3fendprof_dict[i]
+		if typeof(raw) != TYPE_ARRAY or raw.size() < 1:
+			print("⚠️ Skipping malformed profile at index", i)
+			continue
+
+		var defense_id = int(raw[0])
+
 		if Mitre.defend_dict.has(defense_id + 1):
-			# FIXED: Defense cards have Name at index 3, not index 2
-			var defense_name = Mitre.defend_dict[defense_id + 1][3]  # Defense: index 3 = Name
-			drop.add_item(defense_name)
+			var entry = Mitre.defend_dict[defense_id + 1]
+			if typeof(entry) == TYPE_ARRAY and entry.size() > 3:
+				var defense_name = str(entry[3])
+				drop.add_item(defense_name)
+			else:
+				print("⚠️ Bad defend_dict entry at index", defense_id + 1, "→", entry)
+		else:
+			print("⚠️ No defend_dict for index", defense_id + 1)
+
 	
 	drop.select(-1)
 
