@@ -47,6 +47,7 @@ theme_override_fonts/font = ExtResource("1_s2h3v")
 theme_override_font_sizes/font_size = 19
 text = "Round Info"
 horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="DescLabel" type="RichTextLabel" parent="VBoxContainer"]
 layout_mode = 2

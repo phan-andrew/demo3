@@ -590,20 +590,25 @@ func show_enhanced_dice_popup():
 		active_dice_popup.dice_cancelled.connect(_on_dice_popup_cancelled)
 
 func _on_enhanced_dice_completed(results: Array):
-	"""Handle completion of enhanced dice rolling with individual results"""
 	print("=== ENHANCED DICE COMPLETED ===")
 	print("Individual results received: ", results.size())
-	
+
 	current_roll_results = results.duplicate()
-	
-	# Record individual results in GameData (this will process the connected logic)
+
 	if GameData:
 		GameData.record_dice_results(results)
-	
+
 	close_dice_popup()
-	
-	# Process results and continue connected game flow
-	process_connected_attack_results()
+
+	if results.size() > 0:
+		process_connected_attack_results()
+	else:
+		print("⚠️ No results — skipping to next round anyway")
+		round_number += 1
+		if GameData:
+			GameData.prepare_next_round()
+		continue_connected_game_flow()
+
 
 func _on_discussion_time_completed(results: Array):
 	"""Handle discussion time completion from GameData"""
@@ -986,13 +991,12 @@ func _on_pause_pressed():
 			disable_defend_buttons(false)
 
 func _on_start_game_pressed():
-	"""Handle start game button press"""
 	var timer1 = get_node_or_null("Timer_Label")
 	var pause_button = get_node_or_null("Timer_Label/pause")
 	var start_game = get_node_or_null("CanvasLayer/StartGame")
 	var color_rect = get_node_or_null("CanvasLayer/ColorRect")
 	var end_game = get_node_or_null("EndGame")
-	
+
 	if timer1:
 		timer1.play = true
 	disable_attack_buttons(false)
@@ -1007,9 +1011,13 @@ func _on_start_game_pressed():
 		color_rect.visible = false
 	if end_game:
 		end_game.visible = true
-	
+
 	print("=== CONNECTED ATTACK CHAIN GAME STARTED ===")
 	print("Round: ", round_number)
+
+	# 👇 Add this line:
+	show_round_info_popup(round_number - 1)
+
 
 func _on_attack_submit_pressed():
 	"""Handle attack submit button press"""

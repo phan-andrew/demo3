@@ -72,7 +72,7 @@ func generate_attack_card():
 	# Find first available attack card slot - EXACTLY like original
 	for card in aCards:
 		if not card.inPlay:
-			var choice_index = attack_choice + 1
+			var choice_index = attack_choice + 2
 			if Mitre.opforprof_dict.has(choice_index):
 				var attack_data = Mitre.opforprof_dict[choice_index]
 				
@@ -128,7 +128,7 @@ func add_attack_options():
 	"""Populate attack dropdown with available options"""
 	var drop = $attack_option
 	drop.clear()
-	drop.add_item("Select Attack Card")  
+	#drop.add_item("Select Attack Card")  
 	
 	if not Mitre:
 		print("Warning: Mitre not available for attack options")
@@ -147,7 +147,7 @@ func add_defend_options():
 	var drop = $defend_option
 	drop.clear()
 	defend_index_map.clear()  # Reset the mapping
-	drop.add_item("Select Defense Card")  # This is index 0
+	#drop.add_item("Select Defense Card")  # This is index 0
 
 	if not Mitre:
 		print("Warning: Mitre not available for defense options")
