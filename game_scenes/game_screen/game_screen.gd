@@ -49,6 +49,9 @@ func _ready():
 
 func initialize_connected_game():
 	"""Initialize the game with connected attack chain system"""
+	# Test file system access first
+	test_file_system_access()
+	
 	# Initialize card arrays with null checks
 	aCards = []
 	dCards = []
@@ -120,6 +123,34 @@ func initialize_connected_game():
 		if music.has_method("play_music"):
 			music.play_music()
 
+func test_file_system_access():
+	"""Test if we can write files to the user data directory"""
+	print("=== TESTING FILE SYSTEM ACCESS ===")
+	print("User data directory: ", OS.get_user_data_dir())
+	
+	var test_path = OS.get_user_data_dir() + "/seacat_write_test.txt"
+	var test_file = FileAccess.open(test_path, FileAccess.WRITE)
+	
+	if test_file:
+		test_file.store_string("File system write test successful at " + Time.get_time_string_from_system())
+		test_file.close()
+		print("✅ File system write test PASSED")
+		
+		# Test reading it back
+		var read_file = FileAccess.open(test_path, FileAccess.READ)
+		if read_file:
+			var content = read_file.get_as_text()
+			read_file.close()
+			print("✅ File system read test PASSED: ", content.substr(0, 50), "...")
+		else:
+			print("❌ File system read test FAILED")
+	else:
+		print("❌ File system write test FAILED")
+		print("❌ Error code: ", FileAccess.get_open_error())
+		print("❌ This will prevent CSV data from being saved!")
+	
+	print("=== FILE SYSTEM TEST COMPLETE ===")
+
 func setup_button_arrays():
 	"""Setup attack and defense button arrays"""
 	attackbuttons = []
@@ -182,6 +213,9 @@ func setup_connections():
 
 func setup_connected_save_file():
 	"""Setup CSV with headers for connected attack chain tracking"""
+	print("=== SETTING UP CSV FILE ===")
+	print("Save path: ", save_path)
+	
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
 	if file:
 		var headers = [
@@ -200,7 +234,40 @@ func setup_connected_save_file():
 		]
 		file.store_csv_line(headers)
 		file.close()
-		print("Connected attack chain save file initialized: ", save_path)
+		print("✅ Connected attack chain save file initialized: ", save_path)
+		
+		# Test write a sample row to verify everything works
+		test_csv_writing()
+	else:
+		print("❌ ERROR: Could not create CSV file: ", save_path)
+		print("❌ Error code: ", FileAccess.get_open_error())
+		print("❌ User data dir: ", OS.get_user_data_dir())
+
+func test_csv_writing():
+	"""Test CSV writing functionality"""
+	print("=== TESTING CSV WRITING ===")
+	
+	var test_row = ["TEST", Time.get_time_string_from_system(), "Data", "Writing", "Test"]
+	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
+	if file:
+		file.seek_end()
+		file.store_csv_line(test_row)
+		file.close()
+		print("✅ Test row written successfully")
+		
+		# Read back to verify
+		var verify_file = FileAccess.open(save_path, FileAccess.READ)
+		if verify_file:
+			var content = verify_file.get_as_text()
+			verify_file.close()
+			print("📄 File content preview (last 200 chars):")
+			print(content.substr(max(0, content.length() - 200)))
+		else:
+			print("❌ Could not read back test file")
+	else:
+		print("❌ Could not write test row")
+	
+	print("=== CSV TEST COMPLETE ===")
 
 func setup_single_progress_bar():
 	"""Setup single progress bar UI element"""
@@ -352,15 +419,8 @@ func handle_red_team_victory(reason: String):
 	print("🔴 RED TEAM WINS: ", reason)
 	game_won = true
 	
-	# Export final game data
-	if GameData and GameData.has_method("export_game_data_to_csv"):
-		var final_data = GameData.export_game_data_to_csv()
-		var final_path = OS.get_user_data_dir() + "/seacat_connected_final_export.csv"
-		var file = FileAccess.open(final_path, FileAccess.WRITE)
-		if file:
-			file.store_string(final_data)
-			file.close()
-			print("Final connected game data exported to: ", final_path)
+	# Export final game data from both sources
+	export_final_game_data("RED_TEAM_VICTORY")
 	
 	# Show red team victory screen
 	show_victory_screen("🔴 RED TEAM VICTORY!", reason, Color.RED)
@@ -369,7 +429,55 @@ func handle_blue_team_victory(reason: String):
 	"""Handle Blue Team (defense) victory"""
 	print("🔵 BLUE TEAM WINS: ", reason)
 	game_won = true
+	
+	# Export final game data from both sources  
+	export_final_game_data("BLUE_TEAM_VICTORY")
+	
 	show_victory_screen("🔵 BLUE TEAM VICTORY!", reason, Color.BLUE)
+
+func export_final_game_data(victory_type: String):
+	"""Export final game data with comprehensive information"""
+	print("=== EXPORTING FINAL GAME DATA ===")
+	
+	# Export from GameData if available
+	if GameData and GameData.has_method("export_game_data_to_csv"):
+		var gamedata_export = GameData.export_game_data_to_csv()
+		var gamedata_path = OS.get_user_data_dir() + "/seacat_gamedata_final_export.csv"
+		var gamedata_file = FileAccess.open(gamedata_path, FileAccess.WRITE)
+		if gamedata_file:
+			gamedata_file.store_string(gamedata_export)
+			gamedata_file.close()
+			print("✅ GameData final export saved to: ", gamedata_path)
+		else:
+			print("❌ Could not save GameData export")
+	
+	# Copy and finalize the main game CSV
+	var main_file = FileAccess.open(save_path, FileAccess.READ)
+	if main_file:
+		var content = main_file.get_as_text()
+		main_file.close()
+		
+		# Add victory information to the end
+		content += "\n# GAME ENDED: " + victory_type + " at " + Time.get_time_string_from_system()
+		content += "\n# Total Rounds: " + str(round_number - 1)
+		
+		var final_path = OS.get_user_data_dir() + "/seacat_final_game_complete.csv"
+		var final_file = FileAccess.open(final_path, FileAccess.WRITE)
+		if final_file:
+			final_file.store_string(content)
+			final_file.close()
+			print("✅ Complete final game data saved to: ", final_path)
+			print("📊 Final file size: ", content.length(), " characters")
+		else:
+			print("❌ Could not save complete final file")
+	else:
+		print("❌ Could not read main CSV file for final export")
+	
+	print("=== FINAL EXPORT COMPLETE ===")
+	print("📁 Check these files:")
+	print("  1. Live game data: ", save_path)
+	print("  2. GameData export: ", OS.get_user_data_dir() + "/seacat_gamedata_final_export.csv")
+	print("  3. Complete final: ", OS.get_user_data_dir() + "/seacat_final_game_complete.csv")
 
 func show_victory_screen(title: String, reason: String, color: Color):
 	"""Show victory screen with team colors, proper centering, and kongtext font"""
@@ -527,6 +635,7 @@ func process_connected_attack_results():
 	# Build and save comprehensive CSV data
 	var row = build_connected_csv_row()
 	save_connected_game_data(row)
+	print("CSV row built and saved for round ", round_number)
 	
 	# Progress to next round
 	round_number += 1
@@ -538,8 +647,12 @@ func process_connected_attack_results():
 
 func build_connected_csv_row() -> Array:
 	"""Build CSV row for connected attack chain system"""
+	print("=== BUILDING CSV ROW ===")
+	
 	var timestamp = Time.get_time_string_from_system()
 	var row = [str(round_number - 1), timestamp]  # -1 because we increment after
+	
+	print("Round: ", round_number - 1, " | Timestamp: ", timestamp)
 	
 	# Get position states from GameData
 	var starting_positions = []
@@ -547,10 +660,13 @@ func build_connected_csv_row() -> Array:
 	
 	if GameData:
 		var history = GameData.game_history
+		print("GameData history size: ", history.size())
 		if history.size() > 0:
 			var latest_round = history[history.size() - 1]
 			starting_positions = latest_round.get("starting_positions", [])
 			ending_positions = latest_round.get("ending_positions", [])
+			print("Starting positions: ", starting_positions)
+			print("Ending positions: ", ending_positions)
 	
 	# Add starting positions
 	for i in range(3):
@@ -558,6 +674,8 @@ func build_connected_csv_row() -> Array:
 			row.append(starting_positions[i].state)
 		else:
 			row.append("EMPTY")
+	
+	print("Current roll results: ", current_roll_results.size())
 	
 	# Add individual attack card data
 	for i in range(3):
@@ -573,24 +691,31 @@ func build_connected_csv_row() -> Array:
 					attack_type = GameData.current_attack_cards[i].get("card_type", "IA")
 				row.append(attack_type)
 				found_result = true
+				print("Added attack ", i + 1, ": ", result.attack_name)
 				break
 		
 		if not found_result:
 			row.append_array(["---", "---", "---", "---"])
+			print("No attack found for position ", i + 1)
 	
 	# Add defense data
+	print("Defense cards: ", dCards.size())
 	for i in range(3):
 		if i < dCards.size() and dCards[i] and dCards[i].card_index != -1:
 			var card = dCards[i]
-			row.append(get_defense_name_safe(card))
-			row.append(card.getMaturityValue() if card.has_method("getMaturityValue") else 1)
+			var defense_name = get_defense_name_safe(card)
+			var maturity = card.getMaturityValue() if card.has_method("getMaturityValue") else 1
 			# Check if eviction card
 			var is_eviction = false
 			if GameData:
 				is_eviction = GameData.is_eviction_card(card)
+			row.append(defense_name)
+			row.append(maturity)
 			row.append("Yes" if is_eviction else "No")
+			print("Added defense ", i + 1, ": ", defense_name, " (Maturity: ", maturity, ")")
 		else:
 			row.append_array(["---", "---", "---"])
+			print("No defense found for position ", i + 1)
 	
 	# Add individual results
 	for i in range(3):
@@ -611,10 +736,12 @@ func build_connected_csv_row() -> Array:
 					new_state = ending_positions[i].state
 				row.append(new_state)
 				found_result = true
+				print("Added result ", i + 1, ": ", ("Success" if result.success else "Failure"))
 				break
 		
 		if not found_result:
 			row.append_array(["---", "---", "---", "---"])
+			print("No result found for position ", i + 1)
 	
 	# Add ending positions
 	for i in range(3):
@@ -640,16 +767,36 @@ func build_connected_csv_row() -> Array:
 	notes += str(successes) + "/" + str(current_roll_results.size()) + " attacks succeeded."
 	row.append(notes)
 	
+	print("Final row size: ", row.size())
+	print("=== CSV ROW COMPLETE ===")
+	
 	return row
 
 func save_connected_game_data(row: Array):
 	"""Save connected game data to CSV file"""
+	print("=== SAVING CSV DATA ===")
+	print("Row data: ", row)
+	print("Save path: ", save_path)
+	
 	var file = FileAccess.open(save_path, FileAccess.READ_WRITE)
 	if file:
 		file.seek_end()
 		file.store_csv_line(row)
 		file.close()
-		print("Connected game data saved for round ", round_number - 1)
+		print("✅ Connected game data saved for round ", round_number - 1)
+		
+		# Verify the file was written
+		var verify_file = FileAccess.open(save_path, FileAccess.READ)
+		if verify_file:
+			var content = verify_file.get_as_text()
+			print("📄 Current CSV file size: ", content.length(), " characters")
+			print("📄 Lines in file: ", content.split("\n").size())
+			verify_file.close()
+		else:
+			print("❌ Could not verify CSV file")
+	else:
+		print("❌ ERROR: Could not open CSV file for writing: ", save_path)
+		print("❌ Error code: ", FileAccess.get_open_error())
 
 func get_defense_name_safe(defense_card) -> String:
 	"""Get defense card name safely"""
@@ -918,6 +1065,17 @@ func _on_end_game_pressed():
 
 func _on_quit_button_pressed():
 	"""Handle quit button press"""
+	print("=== GAME ENDING ===")
+	
+	# Save any remaining data before quitting
+	if current_roll_results.size() > 0:
+		print("Saving remaining roll results before quit...")
+		var row = build_connected_csv_row()
+		save_connected_game_data(row)
+	
+	# Export final data
+	export_final_game_data("MANUAL_QUIT")
+	
 	if has_node("/root/Music"):
 		var music = get_node("/root/Music")
 		if music.has_method("mouse_click"):
@@ -938,10 +1096,56 @@ func _on_continue_button_pressed():
 		window2.visible = false
 
 func _on_help_pressed():
-	"""Handle help button press"""
+	"""Handle help button press - also export current data for debugging"""
+	# Export current game state for debugging
+	debug_export_current_state()
+	
 	var window5 = get_node_or_null("Window5")
 	if window5:
 		window5.visible = true
+
+func debug_export_current_state():
+	"""Debug function to export current game state"""
+	print("=== DEBUG: EXPORTING CURRENT STATE ===")
+	
+	# Show current round data
+	print("Current round: ", round_number)
+	print("Current roll results: ", current_roll_results.size())
+	for i in range(current_roll_results.size()):
+		var result = current_roll_results[i]
+		print("  Result ", i, ": Attack ", result.attack_index + 1, " - ", result.attack_name, " - ", ("Success" if result.success else "Failure"))
+	
+	# Show GameData history
+	if GameData:
+		print("GameData history size: ", GameData.game_history.size())
+		for i in range(GameData.game_history.size()):
+			var round_data = GameData.game_history[i]
+			print("  Round ", round_data.round_number, ": ", round_data.results.size(), " results")
+	
+	# Create debug export
+	var debug_data = {
+		"current_round": round_number,
+		"roll_results": current_roll_results,
+		"gamedata_history": GameData.game_history if GameData else [],
+		"export_time": Time.get_time_string_from_system()
+	}
+	
+	var debug_path = OS.get_user_data_dir() + "/seacat_debug_export.json"
+	var debug_file = FileAccess.open(debug_path, FileAccess.WRITE)
+	if debug_file:
+		debug_file.store_string(JSON.stringify(debug_data, "  "))
+		debug_file.close()
+		print("✅ Debug export saved to: ", debug_path)
+	else:
+		print("❌ Could not save debug export")
+	
+	# Also try to save current CSV data if we have results
+	if current_roll_results.size() > 0:
+		print("Forcing CSV save of current results...")
+		var row = build_connected_csv_row()
+		save_connected_game_data(row)
+	
+	print("=== DEBUG EXPORT COMPLETE ===")
 
 func _on_window_close_requested():
 	"""Handle help window close"""

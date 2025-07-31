@@ -816,9 +816,11 @@ func _on_red_win_pressed():
 	# Show result with special text
 	ui_state = "result_shown"
 	if dice_result_label:
-		dice_result_label.text = "MODERATOR OVERRIDE: Red Team Wins!\nRoll: 1 (Perfect Success)"
+		dice_result_label.text = "MODERATOR OVERRIDE: Red Team Wins!\nAttack " + str(pairing.attack_index + 1) + " - Roll: 1 (Perfect Success)"
 		dice_result_label.modulate = Color.RED
 	update_roll_button_for_pairing(pairing)
+	
+	print("DEBUG: Red win for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
 
 func _on_blue_win_pressed():
 	"""Handle moderator blue team auto-win"""
@@ -858,9 +860,11 @@ func _on_blue_win_pressed():
 	# Show result with special text
 	ui_state = "result_shown"
 	if dice_result_label:
-		dice_result_label.text = "MODERATOR OVERRIDE: Blue Team Wins!\nRoll: 10 (Complete Failure)"
+		dice_result_label.text = "MODERATOR OVERRIDE: Blue Team Wins!\nAttack " + str(pairing.attack_index + 1) + " - Roll: 10 (Complete Failure)"
 		dice_result_label.modulate = Color.BLUE
 	update_roll_button_for_pairing(pairing)
+	
+	print("DEBUG: Blue win for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
 
 func _on_skip_pressed():
 	"""Handle moderator skip (no result)"""
@@ -895,9 +899,11 @@ func _on_skip_pressed():
 	# Show result with special text
 	ui_state = "result_shown"
 	if dice_result_label:
-		dice_result_label.text = "MODERATOR OVERRIDE: Skipped\nNo effect on game state"
+		dice_result_label.text = "MODERATOR OVERRIDE: Skipped\nAttack " + str(pairing.attack_index + 1) + " - No effect on game state"
 		dice_result_label.modulate = Color.GRAY
 	update_roll_button_for_pairing(pairing)
+	
+	print("DEBUG: Skip for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
 
 func _on_continue_button_pressed():
 	"""Handle continue button press - user-controlled flow"""
@@ -908,12 +914,19 @@ func _on_continue_button_pressed():
 
 func advance_to_next_pairing():
 	"""Advance to the next card pairing or complete"""
+	print("DEBUG: Advancing from pairing ", current_pairing_index, " to ", current_pairing_index + 1)
+	print("DEBUG: Total pairings: ", card_pairings.size())
+	print("DEBUG: Results so far: ", rolling_results.size())
+	
 	current_pairing_index += 1
 	rolls_remaining -= 1
 	
 	if current_pairing_index >= card_pairings.size():
+		print("DEBUG: All pairings complete, showing discussion")
 		show_discussion_time()
 	else:
+		print("DEBUG: Moving to next pairing - Attack ", card_pairings[current_pairing_index].attack_index + 1, ": ", card_pairings[current_pairing_index].attack_name)
+		
 		# Reset UI for next roll
 		if result_indicator:
 			result_indicator.visible = false
