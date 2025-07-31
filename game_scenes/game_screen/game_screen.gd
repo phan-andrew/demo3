@@ -42,6 +42,8 @@ var progress_bar_images = [
 
 # Font resource
 var kongtext_font = preload("res://pixel font/kongtext.ttf")
+var round_info_popup_scene = preload("res://game_scenes/round_info_popup/RoundInfoPopup.tscn")
+
 
 func _ready():
 	initialize_connected_game()
@@ -816,42 +818,60 @@ func get_defense_name_safe(defense_card) -> String:
 
 func continue_connected_game_flow():
 	"""Continue game flow after connected attack resolution"""
+	reset_cards_for_next_round()
+	show_round_info_popup(round_number)
+
+func continue_connected_game_flow_resume():
+	"""Resume gameplay after round popup is dismissed"""
 	var timer1 = get_node_or_null("Timer_Label")
 	var pause_button = get_node_or_null("Timer_Label/pause")
 	var timeline = get_node_or_null("timeline")
 	var attack_dropdown = get_node_or_null("dropdown/attack_option")
 	var defend_dropdown = get_node_or_null("dropdown/defend_option")
-	
-	# Reset and prepare for next round
-	reset_cards_for_next_round()
-	
-	# Resume attack phase
+
 	disable_attack_buttons(false)
 	for card in aCards:
 		if card and card.has_method("disable_buttons"):
 			card.disable_buttons(true)
-	
+
 	if pause_button:
 		pause_button.disabled = false
 	if timer1:
 		timer1.play = true
-	
-	# Progress timeline (if applicable)
+
 	var total_time = calculate_total_time_used()
 	if timeline and timeline.has_method("_progress"):
 		timeline._progress(total_time * 25)
 	if timeline and timeline.has_method("increase_time"):
 		timeline.increase_time()
-	
-	# Reset dropdowns
+
 	if attack_dropdown and attack_dropdown.has_method("select"):
 		attack_dropdown.select(-1)
 	if defend_dropdown and defend_dropdown.has_method("select"):
 		defend_dropdown.select(-1)
-	
+
 	print("=== ROUND ", round_number, " READY ===")
 	if GameData:
 		GameData.debug_show_game_state()
+
+func show_round_info_popup(round_index: int):
+	var mitre = get_node("/root/Mitre")
+	if not mitre or not mitre.timeline_dict.has(round_index):
+		print("⚠️ No timeline data for round ", round_index)
+		continue_connected_game_flow_resume()
+		return
+
+	var timeline_data = mitre.timeline_dict[round_index]
+	var time = timeline_data[0]
+	var header = timeline_data[1]
+	var description = timeline_data[2]
+	var subsystems = timeline_data[3]
+
+	var popup = round_info_popup_scene.instantiate()
+	add_child(popup)
+	popup.set_round_info(round_index, header, description, subsystems)
+	popup.round_info_closed.connect(continue_connected_game_flow_resume)
+
 
 func calculate_total_time_used() -> int:
 	"""Calculate total time used by all successful attacks"""
