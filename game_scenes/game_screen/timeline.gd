@@ -2,7 +2,7 @@ extends Node2D
 
 var vehicle
 var current_round = 0
-var round_end = Mitre.timeline_dict.size()-2
+var round_end = Mitre.timeline_dict.size()-1
 
 func _ready():
 	vehicle = $sub
