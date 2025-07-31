@@ -833,6 +833,8 @@ func continue_connected_game_flow_resume():
 	var timeline = get_node_or_null("timeline")
 	var attack_dropdown = get_node_or_null("dropdown/attack_option")
 	var defend_dropdown = get_node_or_null("dropdown/defend_option")
+	var dropdown = get_node_or_null("dropdown")
+
 
 	disable_attack_buttons(false)
 	for card in aCards:
@@ -850,10 +852,9 @@ func continue_connected_game_flow_resume():
 	if timeline and timeline.has_method("increase_time"):
 		timeline.increase_time()
 
-	if attack_dropdown and attack_dropdown.has_method("select"):
-		attack_dropdown.select(-1)
-	if defend_dropdown and defend_dropdown.has_method("select"):
-		defend_dropdown.select(-1)
+	if dropdown and dropdown.has_method("set_card_references"):
+		dropdown.set_card_references(aCards, dCards)
+
 
 	print("=== ROUND ", round_number, " READY ===")
 	if GameData:
