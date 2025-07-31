@@ -1,7 +1,7 @@
 extends Control
 
 # Enhanced Dice popup with user-controlled flow, manual entry, and moderator controls
-# Fixes: Manual entry functionality, moderator controls, consistent formatting
+# FIXED: Unified flow to prevent duplicates and inconsistent state
 
 # UI References
 var attack_info_label
@@ -44,6 +44,9 @@ var current_roll_result = 0
 
 # UI state tracking
 var ui_state = "ready"  # ready, rolling, result_shown, discussion
+
+# FIXED: Add flag to prevent duplicate processing
+var current_pairing_processed = false
 
 # Dice position consistency - NEVER change this once set
 var dice_base_position = Vector2(200, 75)
@@ -92,8 +95,8 @@ func get_ui_references():
 	dice_result_label = get_node("DialogPanel/DiceContainer/DiceResult")
 	roll_button = get_node("DialogPanel/DiceContainer/ButtonContainer/RollButton")
 	manual_toggle = get_node("DialogPanel/DiceContainer/ButtonContainer/ManualToggle")
-	manual_entry = get_node("DialogPanel/DiceContainer/ManualContainer/ManualEntry")
-	manual_submit = get_node("DialogPanel/DiceContainer/ManualContainer/ManualSubmit")
+	manual_entry = get_node("DialogPanel/DiceContainer/ManualContainer/ManualEntryContainer/ManualEntry")
+	manual_submit = get_node("DialogPanel/DiceContainer/ManualContainer/ManualButtonContainer/ManualSubmit")
 	strength_info = get_node("DialogPanel/StrengthContainer/StrengthInfo")
 	red_section = get_node("DialogPanel/StrengthContainer/StrengthBar/RedSection")
 	blue_section = get_node("DialogPanel/StrengthContainer/StrengthBar/BlueSection")
@@ -339,6 +342,7 @@ func initialize_dice_session():
 	rolls_remaining = card_pairings.size()
 	discussion_mode = false
 	ui_state = "ready"
+	current_pairing_processed = false  # FIXED: Initialize processing flag
 	
 	# Display first pairing
 	display_current_pairing()
@@ -384,6 +388,9 @@ func display_current_pairing():
 	force_dice_position()
 	
 	var pairing = card_pairings[current_pairing_index]
+	
+	# FIXED: Reset processing flag when displaying new pairing
+	current_pairing_processed = false
 	
 	# Update attack info with individual card details
 	if attack_info_label:
@@ -473,7 +480,8 @@ func update_roll_button_for_pairing(pairing: Dictionary):
 			else:
 				roll_button.text = "🎲 Roll Dice"
 			
-			update_roll_button_text()
+			# FIXED: Update remaining count properly
+			update_roll_button_text_fixed()
 			roll_button.disabled = false
 			
 		"rolling":
@@ -487,6 +495,7 @@ func update_roll_button_for_pairing(pairing: Dictionary):
 			continue_button.visible = true
 			if moderator_container:
 				moderator_container.visible = false
+			# FIXED: Better remaining count for continue button
 			if rolls_remaining > 1:
 				continue_button.text = "Next Roll (" + str(rolls_remaining - 1) + " remaining)"
 			else:
@@ -515,26 +524,34 @@ func update_strength_display(pairing: Dictionary):
 			strength_info.text = "Individual Success Rate: " + str(success_percentage) + "% | Roll " + str(pairing.dice_threshold) + " or lower"
 			strength_info.text += "\nBased on Cost: " + str(pairing.individual_cost) + ", Time: " + str(pairing.individual_time)
 
-func update_roll_button_text():
-	"""Update the roll button text with remaining rolls"""
+# FIXED: New function to properly update button text
+func update_roll_button_text_fixed():
+	"""Update the roll button text with accurate remaining count"""
 	if not roll_button or ui_state != "ready":
 		return
 		
 	var base_text = roll_button.text
-	var remaining_text = ""
 	
+	# Remove any existing remaining text
+	if base_text.contains("("):
+		var paren_index = base_text.find("(")
+		base_text = base_text.substr(0, paren_index).strip_edges()
+	
+	var remaining_text = ""
 	if rolls_remaining > 1:
 		remaining_text = " (" + str(rolls_remaining) + " Remaining)"
 	elif rolls_remaining == 1:
 		remaining_text = " (Last Roll)"
 	
-	# Only add remaining text if it doesn't already contain it
-	if not base_text.contains("("):
-		roll_button.text = base_text + remaining_text
+	roll_button.text = base_text + remaining_text
+
+func update_roll_button_text():
+	"""Legacy function - redirects to fixed version"""
+	update_roll_button_text_fixed()
 
 func _on_roll_button_pressed():
 	"""Handle roll button press"""
-	if is_rolling or discussion_mode or ui_state != "ready":
+	if is_rolling or discussion_mode or ui_state != "ready" or current_pairing_processed:
 		return
 	
 	if current_pairing_index >= card_pairings.size():
@@ -551,6 +568,29 @@ func _on_roll_button_pressed():
 		# Always perform normal dice roll - moderator controls are separate
 		perform_dice_roll(pairing)
 
+# FIXED: Unified result processing function
+func process_result_and_advance(result: Dictionary):
+	"""Unified function to process results and advance consistently"""
+	if current_pairing_processed:
+		print("WARNING: Current pairing already processed, ignoring duplicate")
+		return
+	
+	# Add result to collection
+	rolling_results.append(result)
+	current_pairing_processed = true
+	
+	print("DEBUG: Processed result for attack ", result.attack_index + 1, " (", result.attack_name, ")")
+	print("DEBUG: Total results now: ", rolling_results.size())
+	
+	# Set UI to result shown
+	ui_state = "result_shown"
+	
+	# Update UI for current pairing
+	if current_pairing_index < card_pairings.size():
+		var pairing = card_pairings[current_pairing_index]
+		update_dice_result_text(pairing)
+		update_roll_button_for_pairing(pairing)
+
 func handle_auto_success(pairing: Dictionary):
 	"""Handle auto-success for undefended attacks"""
 	var result = {
@@ -566,13 +606,8 @@ func handle_auto_success(pairing: Dictionary):
 		"individual_time": pairing.individual_time
 	}
 	
-	rolling_results.append(result)
 	current_roll_result = 0
-	
-	# Show result immediately
-	ui_state = "result_shown"
-	update_dice_result_text(pairing)
-	update_roll_button_for_pairing(pairing)
+	process_result_and_advance(result)  # FIXED: Use unified processing
 
 func handle_auto_failure(pairing: Dictionary):
 	"""Handle auto-failure for invalid plays"""
@@ -590,17 +625,12 @@ func handle_auto_failure(pairing: Dictionary):
 		"individual_time": pairing.individual_time
 	}
 	
-	rolling_results.append(result)
 	current_roll_result = 0
-	
-	# Show result immediately
-	ui_state = "result_shown"
-	update_dice_result_text(pairing)
-	update_roll_button_for_pairing(pairing)
+	process_result_and_advance(result)  # FIXED: Use unified processing
 
 func perform_dice_roll(pairing: Dictionary):
 	"""Perform actual dice roll with individual calculations"""
-	if is_rolling or ui_state != "ready":
+	if is_rolling or ui_state != "ready" or current_pairing_processed:
 		return
 	
 	# Ensure dice starts in correct position
@@ -636,16 +666,11 @@ func perform_dice_roll(pairing: Dictionary):
 		"individual_time": pairing.individual_time
 	}
 	
-	rolling_results.append(result)
-	
 	# Update result indicator
 	update_result_indicator(roll_result, pairing.dice_threshold)
 	
-	# Show result
 	is_rolling = false
-	ui_state = "result_shown"
-	update_dice_result_text(pairing)
-	update_roll_button_for_pairing(pairing)
+	process_result_and_advance(result)  # FIXED: Use unified processing
 
 func animate_dice_roll_simple(final_result: int) -> void:
 	"""Simple dice animation - show final result then cup reveal"""
@@ -710,8 +735,6 @@ func show_manual_entry():
 	var manual_container = get_node_or_null("DialogPanel/DiceContainer/ManualContainer")
 	if manual_container:
 		manual_container.visible = true
-	
-	# Note: Moderator controls are now handled by the manual toggle directly
 
 func _on_manual_toggle_pressed():
 	"""Toggle moderator controls visibility"""
@@ -726,7 +749,7 @@ func _on_manual_toggle_pressed():
 
 func _on_manual_submit_pressed():
 	"""Handle manual roll submission (if manual entry SpinBox is used)"""
-	if current_pairing_index >= card_pairings.size() or not manual_entry:
+	if current_pairing_index >= card_pairings.size() or not manual_entry or current_pairing_processed:
 		return
 	
 	var pairing = card_pairings[current_pairing_index]
@@ -756,13 +779,9 @@ func _on_manual_submit_pressed():
 		"individual_time": pairing.individual_time
 	}
 	
-	rolling_results.append(result)
-	
 	# Update display without changing position
 	set_dice_display_only(manual_roll)
 	update_result_indicator(manual_roll, pairing.dice_threshold)
-	
-	# Ensure dice position is correct after display update
 	force_dice_position()
 	
 	# Hide manual controls
@@ -772,15 +791,12 @@ func _on_manual_submit_pressed():
 	if moderator_container:
 		moderator_container.visible = false
 	
-	# Show result
-	ui_state = "result_shown"
-	update_dice_result_text(pairing)
-	update_roll_button_for_pairing(pairing)
+	process_result_and_advance(result)  # FIXED: Use unified processing
 
-# Moderator control handlers
+# FIXED: All moderator control handlers now use unified processing
 func _on_red_win_pressed():
 	"""Handle moderator red team auto-win"""
-	if current_pairing_index >= card_pairings.size():
+	if current_pairing_index >= card_pairings.size() or current_pairing_processed:
 		return
 	
 	var pairing = card_pairings[current_pairing_index]
@@ -802,8 +818,6 @@ func _on_red_win_pressed():
 		"individual_time": pairing.individual_time
 	}
 	
-	rolling_results.append(result)
-	
 	# Update display
 	set_dice_display_only(1)
 	update_result_indicator(1, pairing.dice_threshold)
@@ -813,18 +827,18 @@ func _on_red_win_pressed():
 	if moderator_container:
 		moderator_container.visible = false
 	
-	# Show result with special text
-	ui_state = "result_shown"
+	# Custom result text for moderator override
 	if dice_result_label:
 		dice_result_label.text = "MODERATOR OVERRIDE: Red Team Wins!\nAttack " + str(pairing.attack_index + 1) + " - Roll: 1 (Perfect Success)"
 		dice_result_label.modulate = Color.RED
-	update_roll_button_for_pairing(pairing)
+	
+	process_result_and_advance(result)  # FIXED: Use unified processing
 	
 	print("DEBUG: Red win for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
 
 func _on_blue_win_pressed():
 	"""Handle moderator blue team auto-win"""
-	if current_pairing_index >= card_pairings.size():
+	if current_pairing_index >= card_pairings.size() or current_pairing_processed:
 		return
 	
 	var pairing = card_pairings[current_pairing_index]
@@ -846,8 +860,6 @@ func _on_blue_win_pressed():
 		"individual_time": pairing.individual_time
 	}
 	
-	rolling_results.append(result)
-	
 	# Update display
 	set_dice_display_only(10)
 	update_result_indicator(10, pairing.dice_threshold)
@@ -857,18 +869,18 @@ func _on_blue_win_pressed():
 	if moderator_container:
 		moderator_container.visible = false
 	
-	# Show result with special text
-	ui_state = "result_shown"
+	# Custom result text for moderator override
 	if dice_result_label:
 		dice_result_label.text = "MODERATOR OVERRIDE: Blue Team Wins!\nAttack " + str(pairing.attack_index + 1) + " - Roll: 10 (Complete Failure)"
 		dice_result_label.modulate = Color.BLUE
-	update_roll_button_for_pairing(pairing)
+	
+	process_result_and_advance(result)  # FIXED: Use unified processing
 	
 	print("DEBUG: Blue win for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
 
 func _on_skip_pressed():
 	"""Handle moderator skip (no result)"""
-	if current_pairing_index >= card_pairings.size():
+	if current_pairing_index >= card_pairings.size() or current_pairing_processed:
 		return
 	
 	var pairing = card_pairings[current_pairing_index]
@@ -889,19 +901,18 @@ func _on_skip_pressed():
 		"individual_time": pairing.individual_time
 	}
 	
-	rolling_results.append(result)
 	current_roll_result = 0
 	
 	# Hide moderator controls after use
 	if moderator_container:
 		moderator_container.visible = false
 	
-	# Show result with special text
-	ui_state = "result_shown"
+	# Custom result text for skip
 	if dice_result_label:
 		dice_result_label.text = "MODERATOR OVERRIDE: Skipped\nAttack " + str(pairing.attack_index + 1) + " - No effect on game state"
 		dice_result_label.modulate = Color.GRAY
-	update_roll_button_for_pairing(pairing)
+	
+	process_result_and_advance(result)  # FIXED: Use unified processing
 	
 	print("DEBUG: Skip for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
 
@@ -918,6 +929,7 @@ func advance_to_next_pairing():
 	print("DEBUG: Total pairings: ", card_pairings.size())
 	print("DEBUG: Results so far: ", rolling_results.size())
 	
+	# FIXED: Only advance if we haven't already processed all pairings
 	current_pairing_index += 1
 	rolls_remaining -= 1
 	
@@ -935,6 +947,7 @@ func advance_to_next_pairing():
 		
 		ui_state = "ready"
 		current_roll_result = 0
+		current_pairing_processed = false  # FIXED: Reset processing flag
 		
 		# Ensure dice stays in correct position
 		force_dice_position()
@@ -1032,6 +1045,9 @@ func generate_round_summary():
 	summary_text += "[color=red]When ANY position reaches E/E[/color]\n"
 	summary_text += "[color=blue]Preventing this until time expires[/color]\n"
 	
+	# FIXED: Add final result count for verification
+	summary_text += "\n[b]Total Attacks Resolved: " + str(rolling_results.size()) + "[/b]"
+	
 	round_summary_label.text = summary_text
 
 func _on_discussion_continue_pressed():
@@ -1048,6 +1064,11 @@ func _on_discussion_continue_pressed():
 func complete_all_rolls():
 	"""Complete all dice rolls and return results"""
 	print("All dice rolls completed. Results: ", rolling_results.size())
+	
+	# FIXED: Verification - ensure we have the expected number of results
+	if rolling_results.size() != card_pairings.size():
+		print("WARNING: Result count mismatch! Expected: ", card_pairings.size(), ", Got: ", rolling_results.size())
+		# Don't prevent completion, just warn
 	
 	# Show completion message briefly
 	if dice_result_label:
