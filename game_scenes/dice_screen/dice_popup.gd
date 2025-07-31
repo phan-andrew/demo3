@@ -629,30 +629,24 @@ func handle_auto_failure(pairing: Dictionary):
 	process_result_and_advance(result)  # FIXED: Use unified processing
 
 func perform_dice_roll(pairing: Dictionary):
-	"""Perform actual dice roll with individual calculations"""
 	if is_rolling or ui_state != "ready" or current_pairing_processed:
 		return
-	
-	# Ensure dice starts in correct position
+
 	force_dice_position()
-	
+
 	is_rolling = true
 	ui_state = "rolling"
 	update_roll_button_for_pairing(pairing)
-	
-	# Update text to show rolling state
 	update_dice_result_text(pairing)
-	
-	# Generate result ONCE before animation
+
 	var roll_result = randi_range(1, 10)
 	current_roll_result = roll_result
-	
-	# Simple dice animation - NO random changes during animation
+
+	# ⬇️ Don't set dice face yet
 	await animate_dice_roll_simple(roll_result)
-	
+
 	var success = roll_result <= pairing.dice_threshold
-	
-	# Store result with individual card data
+
 	var result = {
 		"attack_index": pairing.attack_index,
 		"attack_name": pairing.attack_name,
@@ -665,32 +659,43 @@ func perform_dice_roll(pairing: Dictionary):
 		"individual_cost": pairing.individual_cost,
 		"individual_time": pairing.individual_time
 	}
-	
-	# Update result indicator
+
 	update_result_indicator(roll_result, pairing.dice_threshold)
-	
+
 	is_rolling = false
-	process_result_and_advance(result)  # FIXED: Use unified processing
+	process_result_and_advance(result)
+
 
 func animate_dice_roll_simple(final_result: int) -> void:
-	"""Simple dice animation - show final result then cup reveal"""
-	# Set the dice to show the final result immediately
+	# Step 1: Instantly hide the die
+	if dice_sprite:
+		dice_sprite.visible = false  # ⬅️ Move this up here
+
+	# Step 2: Immediately play cup_cover — no delay
+	if animation_player and animation_player.has_animation("cup_cover"):
+		animation_player.play("cup_cover")
+		await animation_player.animation_finished
+
+	# Step 3: Set the dice face
 	set_dice_display_only(final_result)
-	
-	# Store original dice position before animation
-	var original_dice_pos = dice_base_position
-	
-	# Brief pause to show the roll
-	await get_tree().create_timer(0.5).timeout
-	
-	# Play cup reveal animation if available
+
+	# Step 4: Wait briefly if you want suspense
+	await get_tree().create_timer(0.1).timeout  # Optional – reduce to 0.1s
+
+	# Step 5: Show the dice (still hidden by cup)
+	if dice_sprite:
+		dice_sprite.visible = true
+
+	# Step 6: Lift the cup
 	if animation_player and animation_player.has_animation("cup_reveal"):
 		animation_player.play("cup_reveal")
 		await animation_player.animation_finished
-	
-	# Force dice back to original position after animation
-	if dice_sprite:
-		dice_sprite.position = original_dice_pos
+
+	# Step 7: Force final position
+	force_dice_position()
+
+
+
 
 func set_dice_display_only(face_number: int):
 	"""Update ONLY the dice display without touching position"""
