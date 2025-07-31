@@ -42,7 +42,7 @@ func _on_attack_option_item_selected(index):
 		generateACard = true
 	else:
 		# Reset dropdown if all slots are full
-		$attack_option.select(-1)
+		$attack_option.select(0)
 		print("All attack slots are full! Remove a card first.")
 
 func _on_defend_option_item_selected(index):
@@ -58,7 +58,7 @@ func _on_defend_option_item_selected(index):
 		generateDCard = true
 	else:
 		# Reset dropdown if all slots are full
-		$defend_option.select(-1)
+		$defend_option.select(0)
 		print("All defense slots are full! Remove a card first.")
 
 func generate_attack_card():
@@ -84,7 +84,7 @@ func generate_attack_card():
 				print("Attack card generated: ", Mitre.attack_dict[int(attack_data[0]) + 1][2])  # Attack: index 2 = Name
 				
 				# RESET DROPDOWN SELECTION so you can select the same item again
-				$attack_option.select(-1)
+				$attack_option.select(0)
 				attack_choice = -1
 				break
 			else:
@@ -114,7 +114,7 @@ func generate_defense_card():
 				print("Defense card generated: ", Mitre.defend_dict[int(defense_data[0]) + 1][3])  # Defense: index 3 = Name
 				
 				# RESET DROPDOWN SELECTION so you can select the same item again
-				$defend_option.select(-1)
+				$defend_option.select(0)
 				defend_choice = -1
 				break
 			else:
@@ -126,6 +126,7 @@ func add_attack_options():
 	"""Populate attack dropdown with available options"""
 	var drop = $attack_option
 	drop.clear()
+	drop.add_item("Select Attack Card")  
 	
 	if not Mitre:
 		print("Warning: Mitre not available for attack options")
@@ -137,12 +138,14 @@ func add_attack_options():
 			var attack_name = Mitre.attack_dict[attack_id + 1][2]  # Attack: index 2 = Name
 			drop.add_item(attack_name)
 	
-	drop.select(-1)
+	drop.select(0)
 
 func add_defend_options():
 	"""Populate defense dropdown with available options"""
 	var drop = $defend_option
 	drop.clear()
+		# Add placeholder
+	drop.add_item("Select Defense Card")  # This will be index 0
 	
 	if not Mitre:
 		print("Warning: Mitre not available for defense options")
@@ -167,7 +170,7 @@ func add_defend_options():
 			print("⚠️ No defend_dict for index", defense_id + 1)
 
 	
-	drop.select(-1)
+	drop.select(0)
 
 func reset_selections():
 	"""Reset dropdown selections"""
