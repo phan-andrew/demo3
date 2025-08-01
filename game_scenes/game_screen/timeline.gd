@@ -33,7 +33,8 @@ func _process(_delta):
 	
 	# Safe access to timeline_dict
 	if is_valid_round(current_round):
-		$Label.text = "T" + str(int(Mitre.timeline_dict[current_round][0]))
+		$Label.text = "Round: " + str(int(Mitre.timeline_dict[current_round][0])) + "/" + str(round_end)
+
 		$UIHeader/timeline_title.text = str(Mitre.timeline_dict[current_round][1])
 
 
