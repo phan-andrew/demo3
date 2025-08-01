@@ -5,7 +5,7 @@
 4,D3-ANET,2,Authentication Event Thresholding,Collecting authentication events and creating a baseline user profile,res://images/card_images/defense/Authentication Event Thresholding.png
 5,D3-AZET,2,Authorization Event Thresholding,Collecting authorization events and creating a baseline user profile,res://images/card_images/defense/Authorization Event Thresholding.png
 6,D3-BAN,1,Biometric Authentication,Using biological measures in order to authenticate a user.,res://images/card_images/defense/Biometric Authentication.png
-7,D3-BA,1,Bootloader Authentication,Cryptographically authenticating the bootloader software before system boot.,res://images/card_images/defense/BootloaderAuthentication.png
+7,D3-BA,1,Bootloader Authentication,Cryptographically authenticating the bootloader software before system boot.,res://images/card_images/defense/Bootloader Authentication.png
 8,D3-BDI,3,Broadcast Domain Isolation,Broadcast isolation restricts the number of computers a host can contact on their LAN.,res://images/card_images/defense/BroadcastDomainIsolation.png
 9,D3-BSE,2,Byte Sequence Emulation,Analyzing sequences of bytes and determining if they likely represent malicious shellcode.,res://images/card_images/defense/Byte Sequence Emulation.png
 10,D3-CA,2,Certificate Analysis,Analyzing Public Key Infrastructure certificates to detect if they have been misconfigured or spoofed using both network traffic and certificate fields and third-party logs.,res://images/card_images/defense/Certificate Analysis.png
@@ -15,7 +15,7 @@
 14,D3-CAA,2,Connection Attempt Analysis,Analyzing failed connections in a network to detect unauthorized activity.,res://images/card_images/defense/Connection Attempt Analysis.png
 15,D3-CCSA,2,Credential Compromise Scope Analysis,Determining which credentials may have been compromised by analyzing the user logon history of a particular system.,res://images/card_images/defense/Credential Compromise Scope Analysis.png
 16,D3-CH,1,Credential Hardening,Credential Hardening techniques modify system or network properties in order to protect system or network/domain credentials.,res://images/card_images/defense/Credential Revoking.png
-17,D3-CR,3,Credential Revoking,Deleting a set of credentials permanently to prevent them from being used to authenticate.,res://images/card_images/defense/Credential Rotation.png
+17,D3-CR,3,Credential Revoking,Deleting a set of credentials permanently to prevent them from being used to authenticate.,res://images/card_images/defense/Credential Revoking.png
 18,D3-CTS,3,Credential Transmission Scoping,Limiting the transmission of a credential to a scoped set of relying parties.,res://images/card_images/defense/Credential Transmission Scoping.png
 19,D3-DQSA,2,Database Query String Analysis,Analyzing database queries to detect SQL Injection.,res://images/card_images/defense/Database Query String Analysis.png
 20,D3-DCE,1,Dead Code Elimination,Removing unreachable or dead code from compiled source code.,res://images/card_images/defense/DeadCodeElimination.png
@@ -69,7 +69,7 @@
 68,D3-NTA,3,Network Traffic Analysis,Analyzing intercepted or summarized computer network traffic to detect unauthorized activity.,res://images/card_images/defense/Network Traffic Filtering.png
 69,D3-NTCD,2,Network Traffic Community Deviation,Establishing baseline communities of network hosts and identifying statistically divergent inter-community communication.,res://images/card_images/defense/NetworkTrafficCommunityDeviation.png
 70,D3-OTP,1,One-time Password,A one-time password is valid for only one user authentication.,res://images/card_images/defense/One Time Password.png
-71,D3-OSM,2,Operating System Monitoring,The operating system software monitoring for D3FEND purposes,res://images/card_images/defense/Operating System Monitoring.png
+71,D3-OSM,2,Operating System Monitoring,Monitoring the operating system for unauthorized activity or anomalies.,res://images/card_images/defense/Operating System Monitoring.png
 72,D3-PHDURA,2,Per Host Download-Upload Ratio Analysis,Detecting anomalies that indicate malicious activity by comparing the amount of data downloaded versus data uploaded by a host.,res://images/card_images/defense/PerHostDownloadUploadRatioAnalysis.png
 73,D3-PAN,1,Pointer Authentication,Comparing the cryptographic hash or derivative of a pointer's value to an expected value.,res://images/card_images/defense/PointerAuthentication.png
 74,D3-PCSV,2,Process Code Segment Verification,Comparing the text or code memory segments to a source of truth.,res://images/card_images/defense/Process Code Segment Verification.png
