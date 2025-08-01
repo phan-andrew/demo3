@@ -28,6 +28,6 @@ theme = ExtResource("3_mo277")
 theme_override_constants/arrow_margin = 498
 alignment = 2
 
-[connection signal="item_selected" from="attack_option" to="." method="_on_option_button_item_selected"]
 [connection signal="item_selected" from="attack_option" to="." method="_on_attack_option_item_selected"]
+[connection signal="item_selected" from="attack_option" to="." method="_on_option_button_item_selected"]
 [connection signal="item_selected" from="defend_option" to="." method="_on_defend_option_item_selected"]

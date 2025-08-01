@@ -760,7 +760,7 @@ func build_connected_csv_row() -> Array:
 		if i < ending_positions.size():
 			row.append(ending_positions[i].state)
 		else:
-			row.append("EMPTY")
+			row.append("Unbreached")
 	
 	# Check for red team victory
 	var red_victory = false

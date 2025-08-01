@@ -399,7 +399,11 @@ func display_current_pairing():
 		attack_text += "\n[color=yellow]Individual Stats:[/color]"
 		attack_text += "\nCost: $" + str(pairing.individual_cost)
 		attack_text += "\nTime: " + str(pairing.individual_time) + " minutes"
-		attack_text += "\nCurrent Position: " + pairing.current_position_state
+		var display_state = pairing.current_position_state
+		if display_state == "EMPTY":
+			display_state = "Unbreached"  # ← or "Secure", "Uncompromised", etc.
+
+		attack_text += "\nCurrent Position: " + display_state
 		
 		if pairing.has("invalid_play") and pairing.invalid_play:
 			attack_text += "\n[color=red]INVALID PLAY![/color]"
@@ -1022,7 +1026,7 @@ func generate_round_summary():
 	
 	# Combine current state and projected changes on same line
 	for i in range(3):
-		var current_state = "EMPTY"  # Default
+		var current_state = "NOT ENGAGED"  # Default
 		if GameData and GameData.has_method("get_position_states_snapshot"):
 			var position_states = GameData.get_position_states_snapshot()
 			if i < position_states.size():

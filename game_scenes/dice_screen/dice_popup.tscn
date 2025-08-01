@@ -135,6 +135,7 @@ grow_horizontal = 2
 
 [node name="TitleLabel" type="Label" parent="DialogPanel/HeaderContainer"]
 layout_mode = 2
+size_flags_stretch_ratio = 75.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_tjbuc")
 theme_override_font_sizes/font_size = 24
@@ -169,6 +170,7 @@ grow_horizontal = 2
 [node name="AttackInfo" type="RichTextLabel" parent="DialogPanel/InfoContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 2.5
 theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_fonts/normal_font = ExtResource("3_tjbuc")
 theme_override_fonts/mono_font = ExtResource("3_tjbuc")
@@ -179,6 +181,7 @@ theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
 text = "[b]Current Attack:[/b]
 Loading attack information..."
+scroll_active = false
 
 [node name="DefenseInfo" type="RichTextLabel" parent="DialogPanel/InfoContainer"]
 layout_mode = 2

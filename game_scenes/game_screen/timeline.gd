@@ -42,7 +42,8 @@ func _process(_delta):
 
 
 func _progress(speed):
-	$ParallaxBackground.progress(speed)
+	$ParallaxBackground/ParallaxLayer.progress(speed)
+
 
 func increase_time():
 	current_round = current_round + 1
