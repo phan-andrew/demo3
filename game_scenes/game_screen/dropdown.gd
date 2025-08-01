@@ -95,34 +95,46 @@ func generate_attack_card():
 				break
 
 func generate_defense_card():
-	"""Generate defense card based on current selection - SIMPLE LOGIC"""
-	if not Mitre or defend_choice < 0:
+	if not Mitre or defend_choice < 1:
 		generateDCard = false
 		return
-	
-	# Find first available defense card slot - EXACTLY like original
+
+	var index = defend_choice -1 # because 0 = placeholder
+	if index >= defend_index_map.size():
+		print("❌ Invalid dropdown index selected: ", index)
+		generateDCard = false
+		return
+
+	var card_data = defend_index_map[index]
+	var card_id = card_data[0]
+	var profile_index = card_data[1]
+
+	if not Mitre.d3fendprof_dict.has(profile_index):
+		print("❌ Missing profile index: ", profile_index)
+		generateDCard = false
+		return
+
+	var profile = Mitre.d3fendprof_dict[profile_index]
+
 	for card in dCards:
 		if not card.inPlay:
-			var choice_index = defend_choice + 2
-			if Mitre.d3fendprof_dict.has(choice_index):
-				var defense_data = Mitre.d3fendprof_dict[choice_index]
-				
-				card.setCard(defense_data[0])
-				card.setText(defense_data[0])
-				card.setMaturity(int(defense_data[1]))
-				card.play()
-				
-				generateDCard = false
-				print("Defense card generated: ", Mitre.defend_dict[int(defense_data[0]) + 1][3])  # Defense: index 3 = Name
-				
-				# RESET DROPDOWN SELECTION so you can select the same item again
-				$defend_option.select(0)
-				defend_choice = -1
-				break
+			card.setCard(card_id)
+			card.setText(card_id)
+			card.setMaturity(int(profile[1]))
+			card.play()
+
+			if Mitre.defend_dict.has(card_id):
+				print("✅ Defense card generated: ", Mitre.defend_dict[card_id][3])
 			else:
-				print("Error: Defense choice index not found")
-				generateDCard = false
-				break
+				print("⚠️ Card generated but no defend_dict entry for card_id: ", card_id)
+
+			generateDCard = false
+			$defend_option.select(0)
+			defend_choice = -1
+			break
+
+
+
 
 func add_attack_options():
 	"""Populate attack dropdown with available options"""
@@ -143,37 +155,28 @@ func add_attack_options():
 	drop.select(0)
 
 func add_defend_options():
-	"""Populate defense dropdown with available options"""
 	var drop = $defend_option
 	drop.clear()
-	defend_index_map.clear()  # Reset the mapping
-	drop.add_item("Select Defense Card")  # This is index 0
+	defend_index_map.clear()
+	drop.add_item("Select Defense Card")  # index 0 = placeholder
 
 	if not Mitre:
-		print("Warning: Mitre not available for defense options")
+		print("⚠️ Mitre not ready")
 		return
 
-	for i in range(2, Mitre.d3fendprof_dict.size()):
-		var raw = Mitre.d3fendprof_dict[i]
-		if typeof(raw) != TYPE_ARRAY or raw.size() < 1:
-			print("⚠️ Skipping malformed profile at index", i)
+	for profile_index in Mitre.d3fendprof_dict.keys():
+		var profile = Mitre.d3fendprof_dict[profile_index]
+		if typeof(profile) != TYPE_ARRAY or profile.size() < 2:
 			continue
 
-		var defense_id = int(raw[0])
-
-		if Mitre.defend_dict.has(defense_id + 1):
-			var entry = Mitre.defend_dict[defense_id + 1]
+		var card_id = int(profile[0])
+		if Mitre.defend_dict.has(card_id):
+			var entry = Mitre.defend_dict[card_id]
 			if typeof(entry) == TYPE_ARRAY and entry.size() > 3:
-				var defense_name = str(entry[3])
-				drop.add_item(defense_name)
-				defend_index_map.append(i)  # ✅ Track the correct d3fendprof_dict key
-			else:
-				print("⚠️ Bad defend_dict entry at index", defense_id + 1, "→", entry)
-		else:
-			print("⚠️ No defend_dict for index", defense_id + 1)
-
-	drop.select(0)
-
+				var name = str(entry[3])
+				drop.add_item(name)
+				# Track both card_id and profile_index for later
+				defend_index_map.append([card_id, profile_index])
 
 
 func reset_selections():
