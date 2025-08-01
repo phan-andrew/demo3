@@ -47,75 +47,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_wpo57"]
-atlas = ExtResource("11_ksuuw")
-region = Rect2(70, 0, 35, 25)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_beyqj"]
-atlas = ExtResource("11_ksuuw")
-region = Rect2(0, 0, 35, 25)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0dont"]
-atlas = ExtResource("11_ksuuw")
-region = Rect2(35, 25, 35, 25)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_omq5c"]
-atlas = ExtResource("11_ksuuw")
-region = Rect2(105, 25, 35, 25)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xl3v6"]
-atlas = ExtResource("11_ksuuw")
-region = Rect2(70, 50, 35, 25)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_eg7js"]
-atlas = ExtResource("11_ksuuw")
-region = Rect2(0, 50, 35, 25)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_78nx4"]
-atlas = ExtResource("11_ksuuw")
-region = Rect2(35, 75, 35, 25)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_r0u6i"]
-atlas = ExtResource("11_ksuuw")
-region = Rect2(105, 75, 35, 25)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_ki2sm"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wpo57")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_beyqj")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0dont")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_omq5c")
-}],
-"loop": true,
-"name": &"hover",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xl3v6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_eg7js")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_78nx4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_r0u6i")
-}],
-"loop": true,
-"name": &"move",
-"speed": 5.0
-}]
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_3406i"]
 atlas = ExtResource("12_y2538")
 region = Rect2(0, 0, 40, 25)
@@ -179,6 +110,75 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_0vyji")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wpo57"]
+atlas = ExtResource("11_ksuuw")
+region = Rect2(70, 0, 35, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_beyqj"]
+atlas = ExtResource("11_ksuuw")
+region = Rect2(0, 0, 35, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0dont"]
+atlas = ExtResource("11_ksuuw")
+region = Rect2(35, 25, 35, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_omq5c"]
+atlas = ExtResource("11_ksuuw")
+region = Rect2(105, 25, 35, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xl3v6"]
+atlas = ExtResource("11_ksuuw")
+region = Rect2(70, 50, 35, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eg7js"]
+atlas = ExtResource("11_ksuuw")
+region = Rect2(0, 50, 35, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_78nx4"]
+atlas = ExtResource("11_ksuuw")
+region = Rect2(35, 75, 35, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r0u6i"]
+atlas = ExtResource("11_ksuuw")
+region = Rect2(105, 75, 35, 25)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ki2sm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wpo57")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_beyqj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0dont")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_omq5c")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xl3v6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eg7js")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_78nx4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r0u6i")
 }],
 "loop": true,
 "name": &"move",
@@ -275,10 +275,10 @@ scale = Vector2(1.1495, 1.15)
 texture = ExtResource("2_aeoal")
 region_rect = Rect2(0, 0, 50, 10)
 
-[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground/ParallaxLayer"]
 script = ExtResource("5_5y0d6")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ParallaxBackground/ParallaxLayer2"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ParallaxBackground/ParallaxLayer/ParallaxLayer2"]
 visible = false
 position = Vector2(618, 133)
 scale = Vector2(2, 2)
@@ -312,14 +312,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="sub" type="AnimatedSprite2D" parent="."]
-position = Vector2(419, 138)
-scale = Vector2(4.5, 4.5)
-sprite_frames = SubResource("SpriteFrames_ki2sm")
-animation = &"move"
-autoplay = "hover"
-frame_progress = 0.320669
-
 [node name="plane" type="AnimatedSprite2D" parent="."]
 visible = false
 modulate = Color(0.439216, 0.517647, 0.329412, 1)
@@ -330,10 +322,18 @@ animation = &"move"
 autoplay = "hover"
 frame_progress = 0.774695
 
+[node name="sub" type="AnimatedSprite2D" parent="."]
+position = Vector2(419, 138)
+scale = Vector2(4.5, 4.5)
+sprite_frames = SubResource("SpriteFrames_ki2sm")
+animation = &"move"
+autoplay = "hover"
+frame_progress = 0.320669
+
 [node name="Label" type="Label" parent="."]
-offset_left = 32.0
+offset_left = 35.0
 offset_top = 8.0
-offset_right = 157.0
+offset_right = 160.0
 offset_bottom = 48.0
 theme = ExtResource("7_unjkg")
 theme_override_font_sizes/font_size = 22

@@ -37,12 +37,10 @@ func _process(_delta):
 
 		$UIHeader/timeline_title.text = str(Mitre.timeline_dict[current_round][1])
 
+\
+func _progress(_speed):
+	$ParallaxBackground/ParallaxLayer.progress()
 
-
-
-
-func _progress(speed):
-	$ParallaxBackground/ParallaxLayer.progress(speed)
 
 
 func increase_time():

@@ -73,5 +73,6 @@ autowrap_mode = 2
 [node name="CloseButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200, 10)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("1_s2h3v")
 text = "Continue to Round
 "
