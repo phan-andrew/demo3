@@ -270,6 +270,7 @@ func record_dice_results(results: Array):
 			"roll_result": result.roll_result,
 			"auto_success": result.get("auto_success", false),
 			"invalid_play": result.get("invalid_play", false),
+			"moderator_override": result.get("moderator_override", ""),
 			"previous_state": get_step_name(attack_positions[position_index]["state"]),
 			"intended_step": attack_data.card_type if attack_data else "Unknown"
 		}
@@ -277,7 +278,15 @@ func record_dice_results(results: Array):
 		# Apply results to connected attack chain
 		if success and not result.get("invalid_play", false):
 			var previous_state = attack_positions[position_index]["state"]
-			advance_position_state(position_index, attack_data.card_type)
+			
+			# Check if this is a moderator override that should bypass normal rules
+			if result.get("moderator_override", "") in ["RED_WIN"]:
+				# For moderator overrides, use forced advancement that bypasses all checks
+				advance_position_state_forced(position_index, attack_data.card_type, result.get("moderator_override", ""))
+			else:
+				# Normal advancement with prerequisite checks
+				advance_position_state(position_index, attack_data.card_type)
+			
 			result_data["new_state"] = get_step_name(attack_positions[position_index]["state"])
 			print("Position ", position_index + 1, " advanced from ", result_data.previous_state, " to ", result_data.new_state)
 		else:
@@ -307,7 +316,7 @@ func record_dice_results(results: Array):
 	emit_signal("discussion_time_needed", round_results)
 
 func advance_position_state(position_index: int, card_type: String):
-	"""Advance a position state based on successful attack"""
+	"""Advance a position state based on successful attack (with prerequisite checks)"""
 	var current_state = attack_positions[position_index]["state"]
 	
 	match card_type:
@@ -319,6 +328,22 @@ func advance_position_state(position_index: int, card_type: String):
 		"E/E":
 			if current_state >= AttackStep.PEP:
 				attack_positions[position_index]["state"] = AttackStep.E_E
+
+func advance_position_state_forced(position_index: int, card_type: String, override_reason: String = ""):
+	"""Force advance position state for moderator overrides (bypasses all checks)"""
+	print("FORCED ADVANCEMENT: Position ", position_index + 1, " -> ", card_type, " (Reason: ", override_reason, ")")
+	
+	match card_type:
+		"IA":
+			attack_positions[position_index]["state"] = AttackStep.IA
+		"PEP":
+			# For moderator override, always allow PEP regardless of current state
+			attack_positions[position_index]["state"] = AttackStep.PEP
+		"E/E":
+			# For moderator override, always allow E/E regardless of current state
+			# This is the critical fix - moderator can force E/E win from any state
+			attack_positions[position_index]["state"] = AttackStep.E_E
+			print("FORCED E/E ACHIEVEMENT - RED TEAM VICTORY FORCED!")
 
 func process_defense_evictions():
 	"""Process defense eviction cards that can reset positions"""
@@ -426,7 +451,6 @@ func get_defense_name(defense_card) -> String:
 			print("ERROR: Defense key not found in defend_dict: ", key)
 			return "Defense (Missing)"
 	return "Defense Card"
-
 
 func get_attack_type(attack_card) -> String:
 	"""Determine attack card type (IA, PEP, E/E) based on MITRE classification"""
@@ -1055,6 +1079,8 @@ func generate_individual_attack_row(round_data: Dictionary, result: Dictionary) 
 		row.append("Auto_Success")
 	elif result.get("invalid_play", false):
 		row.append("Invalid_Play")
+	elif result.get("moderator_override", "") != "":
+		row.append("Moderator_Override")
 	else:
 		row.append("Dice_Roll")
 	
@@ -1062,7 +1088,11 @@ func generate_individual_attack_row(round_data: Dictionary, result: Dictionary) 
 	
 	# Reason for success/failure
 	var reason = ""
-	if result.get("auto_success", false):
+	if result.get("moderator_override", "") == "RED_WIN":
+		reason = "Moderator_Red_Win"
+	elif result.get("moderator_override", "") == "BLUE_WIN":
+		reason = "Moderator_Blue_Win"
+	elif result.get("auto_success", false):
 		reason = "No_Defense_Present"
 	elif result.get("invalid_play", false):
 		reason = "Invalid_Attack_Chain_Sequence"
@@ -1084,7 +1114,9 @@ func generate_individual_attack_row(round_data: Dictionary, result: Dictionary) 
 	console_output += " | Cost: $" + str(result.get("individual_cost", 0)) + ", Time: " + str(result.get("individual_time", 0)) + " min"
 	console_output += " | " + result.get("previous_state", "EMPTY") + " → " + result.get("new_state", "EMPTY")
 	console_output += " | " + ("SUCCESS" if result.get("success", false) else "FAILURE")
-	if not result.get("auto_success", false) and not result.get("invalid_play", false):
+	if result.get("moderator_override", "") != "":
+		console_output += " (MODERATOR: " + result.get("moderator_override", "") + ")"
+	elif not result.get("auto_success", false) and not result.get("invalid_play", false):
 		console_output += " (Rolled " + str(result.get("roll_result", 0)) + "/" + str(result.get("dice_threshold", 10)) + ")"
 	row.append("\"" + console_output + "\"")
 	

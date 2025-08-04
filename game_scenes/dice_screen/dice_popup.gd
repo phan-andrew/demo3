@@ -30,6 +30,8 @@ var moderator_container
 var red_win_button
 var blue_win_button
 var skip_button
+var manual_entry_mod
+var manual_submit_mod
 var moderator_panel_visible = false
 
 # Game state
@@ -163,7 +165,7 @@ func create_continue_button():
 	continue_button.pressed.connect(_on_continue_button_pressed)
 
 func create_moderator_controls():
-	"""Create moderator control panel with consistent formatting"""
+	"""Create moderator control panel with toggle between win buttons and manual entry"""
 	# Create moderator container - initially hidden
 	moderator_container = VBoxContainer.new()
 	moderator_container.name = "ModeratorContainer"
@@ -175,52 +177,95 @@ func create_moderator_controls():
 	
 	# Add spacing
 	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 10)
+	spacer.custom_minimum_size = Vector2(0, 5)
 	moderator_container.add_child(spacer)
 	
-	# Moderator title
-	var mod_title = Label.new()
-	mod_title.text = "Moderator Controls"
-	mod_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	mod_title.add_theme_font_override("font", kongtext_font)
-	mod_title.add_theme_font_size_override("font_size", 18)
-	mod_title.add_theme_color_override("font_color", Color.YELLOW)
-	moderator_container.add_child(mod_title)
+	# Toggle button to switch between modes
+	var mode_toggle = Button.new()
+	mode_toggle.name = "ModeToggle"
+	mode_toggle.text = "Switch to Probability Entry"
+	mode_toggle.add_theme_font_override("font", kongtext_font)
+	mode_toggle.add_theme_font_size_override("font_size", 14)
+	mode_toggle.pressed.connect(_on_mode_toggle_pressed)
+	moderator_container.add_child(mode_toggle)
 	
-	# Button container for moderator controls
-	var mod_button_container = HBoxContainer.new()
-	mod_button_container.alignment = BoxContainer.ALIGNMENT_CENTER
-	moderator_container.add_child(mod_button_container)
+	# Container for win buttons (Mode 1)
+	var win_buttons_container = VBoxContainer.new()
+	win_buttons_container.name = "WinButtonsContainer"
+	moderator_container.add_child(win_buttons_container)
+	
+	var win_button_row = HBoxContainer.new()
+	win_button_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	win_buttons_container.add_child(win_button_row)
 	
 	# Red team auto-win button
 	red_win_button = Button.new()
 	red_win_button.text = "🔴 Red Wins"
 	red_win_button.add_theme_font_override("font", kongtext_font)
-	red_win_button.add_theme_font_size_override("font_size", 16)
+	red_win_button.add_theme_font_size_override("font_size", 14)
 	red_win_button.add_theme_color_override("font_color", Color.WHITE)
 	red_win_button.modulate = Color.LIGHT_CORAL
 	red_win_button.pressed.connect(_on_red_win_pressed)
-	mod_button_container.add_child(red_win_button)
+	win_button_row.add_child(red_win_button)
 	
 	# Blue team auto-win button
 	blue_win_button = Button.new()
 	blue_win_button.text = "🔵 Blue Wins"
 	blue_win_button.add_theme_font_override("font", kongtext_font)
-	blue_win_button.add_theme_font_size_override("font_size", 16)
+	blue_win_button.add_theme_font_size_override("font_size", 14)
 	blue_win_button.add_theme_color_override("font_color", Color.WHITE)
 	blue_win_button.modulate = Color.LIGHT_BLUE
 	blue_win_button.pressed.connect(_on_blue_win_pressed)
-	mod_button_container.add_child(blue_win_button)
+	win_button_row.add_child(blue_win_button)
 	
 	# Skip button
 	skip_button = Button.new()
-	skip_button.text = "⏭️ Skip (No Result)"
+	skip_button.text = "⏭️ Skip"
 	skip_button.add_theme_font_override("font", kongtext_font)
-	skip_button.add_theme_font_size_override("font_size", 16)
+	skip_button.add_theme_font_size_override("font_size", 14)
 	skip_button.add_theme_color_override("font_color", Color.WHITE)
 	skip_button.modulate = Color.LIGHT_GRAY
 	skip_button.pressed.connect(_on_skip_pressed)
-	mod_button_container.add_child(skip_button)
+	win_button_row.add_child(skip_button)
+	
+	# Container for manual entry (Mode 2) - initially hidden
+	var manual_container = VBoxContainer.new()
+	manual_container.name = "ManualContainer"
+	manual_container.visible = false
+	moderator_container.add_child(manual_container)
+	
+	var manual_label = Label.new()
+	manual_label.text = "Set Success Probability:"
+	manual_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	manual_label.add_theme_font_override("font", kongtext_font)
+	manual_label.add_theme_font_size_override("font_size", 14)
+	manual_label.add_theme_color_override("font_color", Color.WHITE)
+	manual_container.add_child(manual_label)
+	
+	var manual_row = HBoxContainer.new()
+	manual_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	manual_container.add_child(manual_row)
+	
+	# Probability entry spinbox (0-100%)
+	manual_entry_mod = SpinBox.new()
+	manual_entry_mod.min_value = 0.0
+	manual_entry_mod.max_value = 100.0
+	manual_entry_mod.value = 50.0
+	manual_entry_mod.step = 10.0
+	manual_entry_mod.suffix = "%"
+	manual_entry_mod.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	manual_entry_mod.add_theme_font_override("font", kongtext_font)
+	manual_entry_mod.add_theme_font_size_override("font_size", 14)
+	manual_entry_mod.value_changed.connect(_on_probability_value_changed)  # Update bar when value changes
+	manual_row.add_child(manual_entry_mod)
+	
+	# Manual submit button
+	manual_submit_mod = Button.new()
+	manual_submit_mod.text = "Roll with Probability"
+	manual_submit_mod.add_theme_font_override("font", kongtext_font)
+	manual_submit_mod.add_theme_font_size_override("font_size", 14)
+	manual_submit_mod.pressed.connect(_on_manual_submit_mod_pressed)
+	manual_row.add_child(manual_submit_mod)
 
 func create_discussion_panel():
 	"""Create discussion time panel with consistent formatting"""
@@ -293,6 +338,11 @@ func setup_ui():
 	
 	if result_indicator:
 		result_indicator.visible = false
+	
+	# Move the strength container down by 25 pixels total
+	var strength_container = get_node_or_null("DialogPanel/StrengthContainer")
+	if strength_container:
+		strength_container.position.y += 25
 	
 	# Set dice to default display without changing position
 	set_dice_display_only(5)
@@ -669,7 +719,6 @@ func perform_dice_roll(pairing: Dictionary):
 	is_rolling = false
 	process_result_and_advance(result)
 
-
 func animate_dice_roll_simple(final_result: int) -> void:
 	# Step 1: Instantly hide the die
 	if dice_sprite:
@@ -697,9 +746,6 @@ func animate_dice_roll_simple(final_result: int) -> void:
 
 	# Step 7: Force final position
 	force_dice_position()
-
-
-
 
 func set_dice_display_only(face_number: int):
 	"""Update ONLY the dice display without touching position"""
@@ -756,8 +802,132 @@ func _on_manual_toggle_pressed():
 				var pairing = card_pairings[current_pairing_index]
 				update_dice_result_text(pairing)
 
+func _on_mode_toggle_pressed():
+	"""Toggle between win buttons mode and manual entry mode"""
+	var win_container = moderator_container.get_node("WinButtonsContainer")
+	var manual_container = moderator_container.get_node("ManualContainer")
+	var toggle_button = moderator_container.get_node("ModeToggle")
+	
+	if win_container.visible:
+		# Switch to probability entry mode
+		win_container.visible = false
+		manual_container.visible = true
+		toggle_button.text = "Switch to Win Buttons"
+	else:
+		# Switch to win buttons mode
+		win_container.visible = true
+		manual_container.visible = false
+		toggle_button.text = "Switch to Probability Entry"
+
+func _on_probability_value_changed(value):
+	"""Update strength bar when probability value changes"""
+	if current_pairing_index < card_pairings.size():
+		update_strength_display_for_probability(value)
+
+# New moderator manual entry function with probability
+func _on_manual_submit_mod_pressed():
+	"""Handle probability-based roll submission from moderator controls"""
+	if current_pairing_index >= card_pairings.size() or current_pairing_processed:
+		return
+	
+	var pairing = card_pairings[current_pairing_index]
+	var target_probability = manual_entry_mod.value  # 0-100%
+	
+	# Update the strength bar to show the custom probability
+	update_strength_display_for_probability(target_probability)
+	
+	# Start rolling animation
+	force_dice_position()
+	is_rolling = true
+	ui_state = "rolling"
+	update_roll_button_for_pairing(pairing)
+	update_dice_result_text(pairing)
+	
+	# Generate a random number 1-100 and check if it's <= target probability
+	var random_roll = randi_range(1, 100)
+	var success = random_roll <= target_probability
+	
+	# Convert to dice equivalent for display (1-10 scale)
+	var dice_equivalent = int((random_roll / 10.0)) + 1
+	if dice_equivalent > 10:
+		dice_equivalent = 10
+	
+	current_roll_result = dice_equivalent
+	
+	# Animate the dice roll
+	await animate_dice_roll_simple(dice_equivalent)
+	
+	# Update result indicator on the strength bar
+	update_result_indicator_for_probability(target_probability, success)
+	
+	# Store result with individual card data - FIXED: Store the custom threshold
+	var custom_threshold = target_probability / 10.0
+	var result = {
+		"attack_index": pairing.attack_index,
+		"attack_name": pairing.attack_name,
+		"defense_name": pairing.defense_name,
+		"roll_result": dice_equivalent,
+		"success": success,
+		"auto_success": false,
+		"moderator_override": "MANUAL_PROBABILITY",
+		"success_percentage": target_probability,  # Use the custom probability
+		"dice_threshold": custom_threshold,  # Store the custom threshold for display
+		"custom_threshold": custom_threshold,  # Also store separately for clarity
+		"individual_cost": pairing.individual_cost,
+		"individual_time": pairing.individual_time
+	}
+	
+	# Hide moderator controls after use
+	if moderator_container:
+		moderator_container.visible = false
+	
+	# Custom result text for probability entry - FIXED: Show correct threshold
+	if dice_result_label:
+		dice_result_label.text = "PROBABILITY ROLL: " + str(target_probability) + "% chance set\n"
+		dice_result_label.text += "Random: " + str(random_roll) + "/100 → " + ("SUCCESS!" if success else "FAILURE")
+		dice_result_label.text += "\nDice equivalent: " + str(dice_equivalent) + " (needed ≤" + str(int(custom_threshold)) + ")"
+		dice_result_label.modulate = Color.GREEN if success else Color.RED
+	
+	is_rolling = false
+	process_result_and_advance(result)
+
+func update_strength_display_for_probability(probability: float):
+	"""Update the strength bar display with custom probability"""
+	var bar_width = 500.0
+	var red_width = (probability / 100.0) * bar_width
+	
+	# Update sections
+	if red_section:
+		red_section.size.x = red_width
+	if blue_section:
+		blue_section.position.x = red_width
+		blue_section.size.x = bar_width - red_width
+	
+	# Update info text
+	if strength_info:
+		strength_info.text = "Custom Probability: " + str(probability) + "% | Moderator Override"
+
+func update_result_indicator_for_probability(probability: float, success: bool):
+	"""Update the result indicator on the strength bar for probability roll"""
+	if not result_indicator:
+		return
+		
+	var bar_width = 500.0
+	# Position indicator based on the probability threshold
+	var indicator_position = (probability / 100.0) * bar_width
+	
+	result_indicator.position.x = indicator_position - 2
+	result_indicator.size.x = 4
+	result_indicator.visible = true
+	
+	# Color based on success/failure
+	if success:
+		result_indicator.color = Color.GREEN
+	else:
+		result_indicator.color = Color.RED
+
 func _on_manual_submit_pressed():
-	"""Handle manual roll submission (if manual entry SpinBox is used)"""
+	"""Handle manual roll submission (legacy - using old manual entry)"""
 	if current_pairing_index >= card_pairings.size() or not manual_entry or current_pairing_processed:
 		return
 	
@@ -802,15 +972,15 @@ func _on_manual_submit_pressed():
 	
 	process_result_and_advance(result)  # FIXED: Use unified processing
 
-# FIXED: All moderator control handlers now use unified processing
+# FIXED: All moderator control handlers now use unified processing and work correctly
 func _on_red_win_pressed():
-	"""Handle moderator red team auto-win"""
+	"""Handle moderator red team auto-win - FIXED"""
 	if current_pairing_index >= card_pairings.size() or current_pairing_processed:
 		return
 	
 	var pairing = card_pairings[current_pairing_index]
 	
-	# Force success regardless of dice threshold
+	# Force success regardless of dice threshold or game state
 	current_roll_result = 1  # Show as "perfect" roll
 	
 	var result = {
@@ -838,15 +1008,16 @@ func _on_red_win_pressed():
 	
 	# Custom result text for moderator override
 	if dice_result_label:
-		dice_result_label.text = "MODERATOR OVERRIDE: Red Team Wins!\nAttack " + str(pairing.attack_index + 1) + " - Roll: 1 (Perfect Success)"
+		dice_result_label.text = "MODERATOR OVERRIDE: Red Team Wins!\nAttack " + str(pairing.attack_index + 1) + " - FORCED SUCCESS"
+		dice_result_label.text += "\nThis will bypass all game rules and force advancement"
 		dice_result_label.modulate = Color.RED
 	
-	process_result_and_advance(result)  # FIXED: Use unified processing
+	process_result_and_advance(result)
 	
-	print("DEBUG: Red win for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
+	print("DEBUG: Moderator Red win for attack index ", pairing.attack_index, " (", pairing.attack_name, ")")
 
 func _on_blue_win_pressed():
-	"""Handle moderator blue team auto-win"""
+	"""Handle moderator blue team auto-win - FIXED"""
 	if current_pairing_index >= card_pairings.size() or current_pairing_processed:
 		return
 	
@@ -880,15 +1051,15 @@ func _on_blue_win_pressed():
 	
 	# Custom result text for moderator override
 	if dice_result_label:
-		dice_result_label.text = "MODERATOR OVERRIDE: Blue Team Wins!\nAttack " + str(pairing.attack_index + 1) + " - Roll: 10 (Complete Failure)"
+		dice_result_label.text = "MODERATOR OVERRIDE: Blue Team Wins!\nAttack " + str(pairing.attack_index + 1) + " - FORCED FAILURE"
 		dice_result_label.modulate = Color.BLUE
 	
-	process_result_and_advance(result)  # FIXED: Use unified processing
+	process_result_and_advance(result)
 	
-	print("DEBUG: Blue win for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
+	print("DEBUG: Moderator Blue win for attack index ", pairing.attack_index, " (", pairing.attack_name, ")")
 
 func _on_skip_pressed():
-	"""Handle moderator skip (no result)"""
+	"""Handle moderator skip (no result) - FIXED"""
 	if current_pairing_index >= card_pairings.size() or current_pairing_processed:
 		return
 	
@@ -921,9 +1092,9 @@ func _on_skip_pressed():
 		dice_result_label.text = "MODERATOR OVERRIDE: Skipped\nAttack " + str(pairing.attack_index + 1) + " - No effect on game state"
 		dice_result_label.modulate = Color.GRAY
 	
-	process_result_and_advance(result)  # FIXED: Use unified processing
+	process_result_and_advance(result)
 	
-	print("DEBUG: Skip for attack index ", pairing.attack_index, " (", pairing.attack_name, ") - Current pairing: ", current_pairing_index)
+	print("DEBUG: Moderator Skip for attack index ", pairing.attack_index, " (", pairing.attack_name, ")")
 
 func _on_continue_button_pressed():
 	"""Handle continue button press - user-controlled flow"""
@@ -1012,6 +1183,11 @@ func generate_round_summary():
 				var color = "green" if result.success else "red"
 				summary_text += "Manual Roll: " + str(result.roll_result) + "/10 (needed ≤" + str(result.dice_threshold) + ")\n"
 				summary_text += "[color=" + color + "]Result: MANUAL " + success_text + "[/color]\n"
+			elif override_type == "MANUAL_PROBABILITY":
+				var success_text = "SUCCESS" if result.success else "FAILURE"
+				var color = "green" if result.success else "red"
+				summary_text += "Probability Roll: Custom probability set by moderator\n"
+				summary_text += "[color=" + color + "]Result: PROBABILITY " + success_text + "[/color]\n"
 		else:
 			var success_text = "SUCCESS" if result.success else "FAILURE"
 			var color = "green" if result.success else "red"
