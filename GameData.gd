@@ -408,16 +408,25 @@ func get_attack_name(attack_card) -> String:
 	return "Attack Card"
 
 func get_defense_name(defense_card) -> String:
-	"""Get defense card name safely"""
 	if not defense_card:
 		return "No Defense"
-	
+
 	var card_index = defense_card.card_index
 	if has_node("/root/Mitre"):
 		var mitre = get_node("/root/Mitre")
-		if mitre.defend_dict.has(card_index + 1):
-			return mitre.defend_dict[card_index + 1][3]  # Defense: index 3 = Name
+		var key = card_index + 1
+		if mitre.defend_dict.has(key):
+			var entry = mitre.defend_dict[key]
+			if entry.size() > 3:
+				return entry[3]  # Name
+			else:
+				print("ERROR: Defense entry too short for index ", key, ": ", entry)
+				return "Defense (Invalid Entry)"
+		else:
+			print("ERROR: Defense key not found in defend_dict: ", key)
+			return "Defense (Missing)"
 	return "Defense Card"
+
 
 func get_attack_type(attack_card) -> String:
 	"""Determine attack card type (IA, PEP, E/E) based on MITRE classification"""
