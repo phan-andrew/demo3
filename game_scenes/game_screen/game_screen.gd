@@ -8,6 +8,8 @@ var dCards = []
 var attackbuttons = []
 var defendbuttons = []
 var timers = []
+var continue_button: Button = null
+
 
 # Game state variables
 var save_path = OS.get_user_data_dir() + "/seacat_connected_game_data.csv"
@@ -490,6 +492,8 @@ func show_victory_screen(title: String, reason: String, color: Color):
 	
 	# Create full-screen victory overlay
 	victory_overlay = Control.new()
+	victory_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+
 	victory_overlay.name = "VictoryOverlay"
 	victory_overlay.anchors_preset = Control.PRESET_FULL_RECT
 	victory_overlay.z_index = 1000  # Ensure it's on top
@@ -497,26 +501,34 @@ func show_victory_screen(title: String, reason: String, color: Color):
 	
 	# Semi-transparent background
 	var background = ColorRect.new()
-	background.color = Color(0, 0, 0, 0.8)
+	background.color = Color(0, 0, 0, 0.7)
 	background.anchors_preset = Control.PRESET_FULL_RECT
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 👈 this lets clicks pass through
 	victory_overlay.add_child(background)
+
 	
 	# Main victory panel - centered
 	var victory_panel = Panel.new()
+	victory_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+
 	victory_panel.position = Vector2(276, 200)  # Centered position
 	victory_panel.size = Vector2(600, 300)
-	victory_panel.modulate = color * 0.3 + Color.WHITE * 0.7  # Tinted background
+	#victory_panel.modulate = color * 0.4 + Color.WHITE * 0.6 # Tinted background
+	victory_panel.add_theme_stylebox_override("panel", StyleBoxFlat.new())
+	var stylebox = victory_panel.get_theme_stylebox("panel")
+	stylebox.bg_color = Color(0.1, 0.1, 0.1, 0.9)  # nearly black with slight transparency
+
 	victory_overlay.add_child(victory_panel)
 	
 	# Victory title - large and centered
 	var title_label = Label.new()
 	title_label.text = title
-	title_label.position = Vector2(50, 50)
-	title_label.size = Vector2(500, 80)
+	title_label.position = Vector2(25, 40)
+	title_label.size = Vector2(550, 60)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title_label.add_theme_font_override("font", kongtext_font)
-	title_label.add_theme_font_size_override("font_size", 36)
+	title_label.add_theme_font_size_override("font_size", 28)
 	title_label.add_theme_color_override("font_color", color)
 	victory_panel.add_child(title_label)
 	
@@ -534,9 +546,13 @@ func show_victory_screen(title: String, reason: String, color: Color):
 	victory_panel.add_child(reason_label)
 	
 	# Continue button - centered at bottom
-	var continue_button = Button.new()
+	continue_button = Button.new()
 	continue_button.text = "Continue to Game Over"
-	continue_button.position = Vector2(200, 220)
+	continue_button.anchor_left = 0.5
+	continue_button.anchor_top = 1.0
+	continue_button.offset_left = -100  # half width of button
+	continue_button.offset_top = -70    # from bottom of panel
+
 	continue_button.size = Vector2(200, 50)
 	continue_button.add_theme_font_override("font", kongtext_font)
 	continue_button.add_theme_font_size_override("font_size", 18)
@@ -1001,8 +1017,6 @@ func _on_start_game_pressed():
 	var color_rect = get_node_or_null("CanvasLayer/ColorRect")
 	var end_game = get_node_or_null("EndGame")
 
-	if timer1:
-		timer1.play = true
 	disable_attack_buttons(false)
 	for card in aCards:
 		if card and card.has_method("disable_buttons"):

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhrm52jek5t32"
-path="res://.godot/imported/Exploitation For Privelige Escalation.png-409e3d0dcdcafaa9d14c5b57fe6a25ad.ctex"
+uid="uid://cqp10ws4if1xa"
+path="res://.godot/imported/Identifier Analysis.png-fb476e4eec3e0bc230a8925572b55d3d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/Exploitation For Privelige Escalation.png"
-dest_files=["res://.godot/imported/Exploitation For Privelige Escalation.png-409e3d0dcdcafaa9d14c5b57fe6a25ad.ctex"]
+source_file="res://images/card_images/defense/Identifier Analysis.png"
+dest_files=["res://.godot/imported/Identifier Analysis.png-fb476e4eec3e0bc230a8925572b55d3d.ctex"]
 
 [params]
 

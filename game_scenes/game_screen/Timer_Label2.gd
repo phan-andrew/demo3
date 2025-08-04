@@ -10,10 +10,13 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if startTimer && play:
-		initialTime -= delta
-		var minutes = int(initialTime) / 60
-		var seconds = int(initialTime) % 60
+	if startTimer and play:
+		initialTime = max(0, initialTime - delta)
+
+		var clamped = max(initialTime, 0)
+		var minutes = int(clamped) / 60
+		var seconds = int(clamped) % 60
+
 		if seconds < 10:
 			text = str(minutes) + ":0" + str(seconds)
 		else:

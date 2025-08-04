@@ -14,7 +14,7 @@
 13,D3-CHN,1,Connected Honeynet,A decoy service or system or network designed to be probed attacked or compromised.,res://images/card_images/defense/ConnectedHoneynet.png
 14,D3-CAA,2,Connection Attempt Analysis,Analyzing failed connections in a network to detect unauthorized activity.,res://images/card_images/defense/Connection Attempt Analysis.png
 15,D3-CCSA,2,Credential Compromise Scope Analysis,Determining which credentials may have been compromised by analyzing the user logon history of a particular system.,res://images/card_images/defense/Credential Compromise Scope Analysis.png
-16,D3-CH,1,Credential Hardening,Credential Hardening techniques modify system or network properties in order to protect system or network/domain credentials.,res://images/card_images/defense/Credential Revoking.png
+16,D3-CH,1,Credential Hardening,Credential Hardening techniques modify system or network properties in order to protect system or network/domain credentials.,res://images/card_images/defense/Credential Hardening.png
 17,D3-CR,3,Credential Revoking,Deleting a set of credentials permanently to prevent them from being used to authenticate.,res://images/card_images/defense/Credential Revoking.png
 18,D3-CTS,3,Credential Transmission Scoping,Limiting the transmission of a credential to a scoped set of relying parties.,res://images/card_images/defense/Credential Transmission Scoping.png
 19,D3-DQSA,2,Database Query String Analysis,Analyzing database queries to detect SQL Injection.,res://images/card_images/defense/Database Query String Analysis.png
