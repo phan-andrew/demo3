@@ -8,6 +8,14 @@ enum AttackStep {
 	E_E     # Execution/Exfiltration achieved - WIN CONDITION
 }
 
+# Defense types enum
+enum DefenseType {
+	PROTECT = 1,  # Works against IA attacks
+	DETECT = 2,   # Works against PEP attacks
+	RESPOND = 3,  # Works against E/E attacks
+	RECOVER = 4   # Wildcard - works against any attack, resets to EMPTY on win
+}
+
 # Position tracking - 3 independent positions that can progress
 var attack_positions = [
 	{"state": AttackStep.EMPTY, "name": "Position 1"},
@@ -104,10 +112,11 @@ func capture_current_cards(attack_cards: Array, defense_cards: Array):
 				"position_index": i,
 				"maturity": card.getMaturityValue() if card.has_method("getMaturityValue") else 1,
 				"name": get_defense_name(card),
-				"is_eviction": is_eviction_card(card)  # Check if it's an eviction card
+				"defense_type": get_defense_type(card),  # PROTECT, DETECT, RESPOND, RECOVER
+				"is_eviction": is_eviction_card(card)  # Keep for backwards compatibility
 			}
 			current_defense_cards.append(card_data)
-			print("Defense ", i + 1, ": ", card_data.name, " (Maturity: ", card_data.maturity, ", Eviction: ", card_data.is_eviction, ")")
+			print("Defense ", i + 1, ": ", card_data.name, " (Type: ", get_defense_type_name(card_data.defense_type), ", Maturity: ", card_data.maturity, ")")
 		else:
 			current_defense_cards.append(null)
 	
@@ -138,16 +147,18 @@ func get_card_pairing_info() -> Array:
 		
 		print("Pairing ", position_index + 1, ":")
 		print("  Attack: ", pairing.attack_name, " (", pairing.intended_step, ")")
-		print("  Defense: ", pairing.defense_name)
+		print("  Defense: ", pairing.defense_name, " (", pairing.defense_match_status, ")")
 		print("  Individual Success Rate: ", pairing.success_percentage, "% -> Threshold: ", pairing.dice_threshold)
 		print("  Valid Play: ", pairing.is_valid_play, " | Auto Success: ", pairing.auto_success)
+		print("  Defense Effective: ", pairing.defense_effective)
 	
 	return pairings
 
 func create_individual_card_pairing(attack_data: Dictionary, defense_data, position_index: int) -> Dictionary:
-	"""Create pairing with individual card calculations"""
+	"""Create pairing with individual card calculations and defense type matching"""
 	var current_position_state = attack_positions[position_index]["state"]
 	var intended_step = determine_intended_step(attack_data.card_type, current_position_state)
+	var is_valid_attack = is_valid_attack_play(attack_data.card_type, current_position_state)
 	
 	var pairing = {
 		"attack_index": position_index,
@@ -157,45 +168,84 @@ func create_individual_card_pairing(attack_data: Dictionary, defense_data, posit
 		"individual_time": attack_data.time,
 		"current_position_state": get_step_name(current_position_state),
 		"intended_step": intended_step,
-		"is_valid_play": is_valid_attack_play(attack_data.card_type, current_position_state),
+		"is_valid_play": is_valid_attack,
 		"auto_success": false,
+		"auto_failure": false,
 		"success_percentage": 0.0,
 		"rounded_percentage": 0,
-		"dice_threshold": 10
+		"dice_threshold": 10,
+		"defense_effective": false,
+		"defense_match_status": "No Defense",
+		"is_wildcard_defense": false
 	}
 	
-	# Check if this is a valid play
-	if not pairing.is_valid_play:
+	# RULE 1: Red team invalid plays = Auto-fail
+	if not is_valid_attack:
 		pairing.success_percentage = 0.0
 		pairing.rounded_percentage = 0
 		pairing.dice_threshold = 10
 		pairing.invalid_play = true
-		print("INVALID PLAY: Cannot play ", attack_data.card_type, " when position is at ", get_step_name(current_position_state))
+		pairing.auto_failure = true
+		pairing.defense_match_status = "Red Invalid Play - Auto Fail"
+		print("RED INVALID PLAY: Cannot play ", attack_data.card_type, " when position is at ", get_step_name(current_position_state), " - AUTO FAIL")
 		return pairing
 	
-	# Calculate individual success rate
-	var base_rate = calculate_individual_attack_success_rate(attack_data.cost, attack_data.time)
-	
+	# Red team play is valid, now check defense
 	if defense_data == null:
-		# No defense - auto success
+		# No defense - auto success for red
 		pairing.auto_success = true
 		pairing.success_percentage = 100.0
 		pairing.rounded_percentage = 100
 		pairing.dice_threshold = 10
+		pairing.defense_match_status = "No Defense - Auto Success"
+		print("NO DEFENSE: Red team auto success")
 	else:
-		# Apply defense modifiers
-		var defense_modifier = calculate_defense_modifier(defense_data.maturity)
+		# Check defense type matching
+		var defense_effective = is_defense_effective_against_attack(defense_data.defense_type, attack_data.card_type)
+		pairing.defense_effective = defense_effective
+		pairing.is_wildcard_defense = (defense_data.defense_type == DefenseType.RECOVER)
 		
-		# Special case: Eviction cards
-		if defense_data.is_eviction and current_position_state != AttackStep.EMPTY:
-			defense_modifier += 0.2  # 20% bonus against established positions
-		
-		var final_rate = base_rate * (1.0 - defense_modifier)
-		pairing.success_percentage = final_rate * 100.0
-		pairing.rounded_percentage = round_to_nearest_ten(pairing.success_percentage)
-		pairing.dice_threshold = pairing.rounded_percentage / 10
+		if defense_effective:
+			# Defense is effective - normal dice roll
+			if defense_data.defense_type == DefenseType.RECOVER:
+				pairing.defense_match_status = "Wildcard Match (Recover) - Dice Roll"
+			else:
+				pairing.defense_match_status = "Type Match - Dice Roll"
+			
+			# Calculate individual success rate and apply defense modifiers
+			var base_rate = calculate_individual_attack_success_rate(attack_data.cost, attack_data.time)
+			var defense_modifier = calculate_defense_modifier(defense_data.maturity)
+			var final_rate = base_rate * (1.0 - defense_modifier)
+			pairing.success_percentage = final_rate * 100.0
+			pairing.rounded_percentage = round_to_nearest_ten(pairing.success_percentage)
+			pairing.dice_threshold = pairing.rounded_percentage / 10
+			print("EFFECTIVE DEFENSE: ", get_defense_type_name(defense_data.defense_type), " vs ", attack_data.card_type, " - Normal dice roll")
+		else:
+			# RULE 2: Blue team incompatible defense = Red team auto-win
+			pairing.defense_match_status = "Incompatible Defense - Red Auto Win"
+			pairing.auto_success = true
+			pairing.success_percentage = 100.0
+			pairing.rounded_percentage = 100
+			pairing.dice_threshold = 10
+			print("INCOMPATIBLE DEFENSE: ", get_defense_type_name(defense_data.defense_type), " vs ", attack_data.card_type, " - RED AUTO WIN")
+	
+	print("Final Analysis: ", pairing.defense_match_status, " | Auto Success: ", pairing.auto_success, " | Auto Failure: ", pairing.auto_failure)
 	
 	return pairing
+
+func is_defense_effective_against_attack(defense_type: int, attack_type: String) -> bool:
+	"""Check if defense type is effective against attack type"""
+	match defense_type:
+		DefenseType.PROTECT:
+			return attack_type == "IA"
+		DefenseType.DETECT:
+			return attack_type == "PEP"
+		DefenseType.RESPOND:
+			return attack_type == "E/E"
+		DefenseType.RECOVER:
+			return true  # Wildcard - effective against all
+		_:
+			return false
 
 func determine_intended_step(card_type: String, current_state: AttackStep) -> String:
 	"""Determine what step this card is trying to achieve"""
@@ -248,16 +298,17 @@ func round_to_nearest_ten(percentage: float) -> int:
 	return int(round(percentage / 10.0) * 10)
 
 func record_dice_results(results: Array):
-	"""Record dice results and process connected attack chain logic"""
-	print("=== PROCESSING DICE RESULTS ===")
+	"""Record dice results and process connected attack chain logic with defense regression"""
+	print("=== PROCESSING DICE RESULTS WITH ENHANCED AUTO-RESOLUTION ===")
 	
 	var round_results = []
 	
 	# Process each individual result
 	for result in results:
 		var position_index = result.attack_index
-		var success = result.success
+		var red_success = result.success
 		var attack_data = current_attack_cards[position_index] if position_index < current_attack_cards.size() else null
+		var defense_data = current_defense_cards[position_index] if position_index < current_defense_cards.size() else null
 		
 		if not attack_data:
 			continue
@@ -266,40 +317,68 @@ func record_dice_results(results: Array):
 			"position_index": position_index,
 			"attack_name": result.attack_name,
 			"defense_name": result.defense_name,
-			"success": success,
+			"red_success": red_success,
+			"blue_success": not red_success,
 			"roll_result": result.roll_result,
 			"auto_success": result.get("auto_success", false),
+			"auto_failure": result.get("auto_failure", false),
 			"invalid_play": result.get("invalid_play", false),
 			"moderator_override": result.get("moderator_override", ""),
 			"previous_state": get_step_name(attack_positions[position_index]["state"]),
-			"intended_step": attack_data.card_type if attack_data else "Unknown"
+			"intended_step": attack_data.card_type if attack_data else "Unknown",
+			"defense_was_effective": false,
+			"is_wildcard_defense": false,
+			"auto_resolution_reason": result.get("auto_resolution_reason", "")
 		}
 		
-		# Apply results to connected attack chain
-		if success and not result.get("invalid_play", false):
-			var previous_state = attack_positions[position_index]["state"]
-			
-			# Check if this is a moderator override that should bypass normal rules
-			if result.get("moderator_override", "") in ["RED_WIN"]:
-				# For moderator overrides, use forced advancement that bypasses all checks
-				advance_position_state_forced(position_index, attack_data.card_type, result.get("moderator_override", ""))
+		# Check if defense was effective in this engagement
+		if defense_data and not result.get("auto_success", false) and not result.get("auto_failure", false):
+			result_data.defense_was_effective = is_defense_effective_against_attack(defense_data.defense_type, attack_data.card_type)
+			result_data.is_wildcard_defense = (defense_data.defense_type == DefenseType.RECOVER)
+		
+		# Apply results to connected attack chain with enhanced auto-resolution logic
+		if result.get("invalid_play", false) or result.get("auto_failure", false):
+			# Invalid plays or auto-failures don't change position state
+			result_data.new_state = result_data.previous_state
+			if result.get("auto_failure", false):
+				print("Position ", position_index + 1, " - AUTO FAILURE: ", result.get("auto_resolution_reason", "Invalid red team play"))
 			else:
-				# Normal advancement with prerequisite checks
-				advance_position_state(position_index, attack_data.card_type)
-			
-			result_data["new_state"] = get_step_name(attack_positions[position_index]["state"])
-			print("Position ", position_index + 1, " advanced from ", result_data.previous_state, " to ", result_data.new_state)
-		else:
-			result_data["new_state"] = result_data.previous_state
-			if result.get("invalid_play", false):
 				print("Position ", position_index + 1, " - INVALID PLAY: ", result.attack_name)
+		elif result.get("moderator_override", "") in ["RED_WIN"]:
+			# Moderator overrides bypass normal rules
+			advance_position_state_forced(position_index, attack_data.card_type, result.get("moderator_override", ""))
+			result_data.new_state = get_step_name(attack_positions[position_index]["state"])
+			print("Position ", position_index + 1, " - MODERATOR RED WIN: Advanced to ", result_data.new_state)
+		elif result.get("moderator_override", "") in ["BLUE_WIN"]:
+			# Moderator blue win causes regression
+			if defense_data and result_data.defense_was_effective:
+				regress_position_state(position_index, defense_data.defense_type)
+				result_data.new_state = get_step_name(attack_positions[position_index]["state"])
+				print("Position ", position_index + 1, " - MODERATOR BLUE WIN: Regressed to ", result_data.new_state)
 			else:
-				print("Position ", position_index + 1, " - FAILED: ", result.attack_name)
+				result_data.new_state = result_data.previous_state
+				print("Position ", position_index + 1, " - MODERATOR BLUE WIN: No regression (ineffective defense)")
+		elif red_success or result.get("auto_success", false):
+			# Red team wins (normal or auto) - advance normally
+			var previous_state = attack_positions[position_index]["state"]
+			advance_position_state(position_index, attack_data.card_type)
+			result_data.new_state = get_step_name(attack_positions[position_index]["state"])
+			if result.get("auto_success", false):
+				print("Position ", position_index + 1, " - AUTO SUCCESS: ", result.get("auto_resolution_reason", "No/incompatible defense"), " - Advanced to ", result_data.new_state)
+			else:
+				print("Position ", position_index + 1, " - DICE SUCCESS: Advanced from ", result_data.previous_state, " to ", result_data.new_state)
+		else:
+			# Blue team wins (red fails) - check for regression
+			if defense_data and result_data.defense_was_effective:
+				regress_position_state(position_index, defense_data.defense_type)
+				result_data.new_state = get_step_name(attack_positions[position_index]["state"])
+				print("Position ", position_index + 1, " - BLUE SUCCESS: Regressed from ", result_data.previous_state, " to ", result_data.new_state)
+			else:
+				# Defense not effective or no defense - no change
+				result_data.new_state = result_data.previous_state
+				print("Position ", position_index + 1, " - BLUE SUCCESS: No regression (ineffective/no defense)")
 		
 		round_results.append(result_data)
-	
-	# Process defense evictions
-	process_defense_evictions()
 	
 	# Save round data to history
 	current_round_data["results"] = round_results
@@ -345,17 +424,35 @@ func advance_position_state_forced(position_index: int, card_type: String, overr
 			attack_positions[position_index]["state"] = AttackStep.E_E
 			print("FORCED E/E ACHIEVEMENT - RED TEAM VICTORY FORCED!")
 
+func regress_position_state(position_index: int, defense_type: int):
+	"""Regress position state when blue team wins with effective defense"""
+	var current_state = attack_positions[position_index]["state"]
+	
+	if defense_type == DefenseType.RECOVER:
+		# Wildcard recover resets to EMPTY
+		attack_positions[position_index]["state"] = AttackStep.EMPTY
+		print("RECOVER WILDCARD: Position ", position_index + 1, " reset to EMPTY")
+	else:
+		# Normal regression: go back one stage
+		match current_state:
+			AttackStep.E_E:
+				attack_positions[position_index]["state"] = AttackStep.PEP
+				print("DEFENSE SUCCESS: Position ", position_index + 1, " regressed from E/E to PEP")
+			AttackStep.PEP:
+				attack_positions[position_index]["state"] = AttackStep.IA
+				print("DEFENSE SUCCESS: Position ", position_index + 1, " regressed from PEP to IA")
+			AttackStep.IA:
+				attack_positions[position_index]["state"] = AttackStep.EMPTY
+				print("DEFENSE SUCCESS: Position ", position_index + 1, " regressed from IA to EMPTY")
+			AttackStep.EMPTY:
+				# Already at lowest state
+				print("DEFENSE SUCCESS: Position ", position_index + 1, " already at EMPTY - no regression")
+
 func process_defense_evictions():
-	"""Process defense eviction cards that can reset positions"""
-	for i in range(current_defense_cards.size()):
-		var defense_data = current_defense_cards[i]
-		if defense_data != null and defense_data.is_eviction:
-			# Check if this defense successfully evicted
-			# This would be determined by the specific eviction card logic
-			# For now, we'll implement basic eviction on high maturity
-			if defense_data.maturity >= 4 and attack_positions[i]["state"] != AttackStep.EMPTY:
-				print("EVICTION: Position ", i + 1, " evicted by ", defense_data.name)
-				attack_positions[i]["state"] = AttackStep.EMPTY
+	"""Process defense eviction cards that can reset positions - DEPRECATED"""
+	# This function is kept for backwards compatibility but no longer used
+	# The new defense system handles regression through regress_position_state()
+	pass
 
 func check_red_team_victory() -> bool:
 	"""Check if red team has won (any position reached E/E)"""
@@ -453,7 +550,7 @@ func get_defense_name(defense_card) -> String:
 	return "Defense Card"
 
 func get_attack_type(attack_card) -> String:
-	"""Determine attack card type (IA, PEP, E/E) based on MITRE classification"""
+	"""Determine attack card type (IA, PEP, E/E) based on MITRE classification (1-3)"""
 	if not attack_card:
 		return "IA"
 	
@@ -473,8 +570,6 @@ func get_attack_type(attack_card) -> String:
 						return "PEP"  # Privilege Escalation/Persistence
 					3:
 						return "E/E"  # Impact/Exfiltration
-					4:
-						return "PEP"  # Persistence (treat as PEP)
 					_:
 						return "IA"  # Default to IA
 			else:
@@ -484,22 +579,72 @@ func get_attack_type(attack_card) -> String:
 	print("Warning: Could not determine attack type for card_index: ", card_index)
 	return "IA"  # Default
 
+func get_defense_type(defense_card) -> int:
+	"""Determine defense card type (1-4) based on database classification"""
+	if not defense_card:
+		return DefenseType.PROTECT  # Default
+	
+	var card_index = defense_card.card_index
+	if has_node("/root/Mitre"):
+		var mitre = get_node("/root/Mitre")
+		if mitre.defend_dict.has(card_index + 1):
+			var defense_entry = mitre.defend_dict[card_index + 1]
+			# Try to find classification in the defense entry
+			# This assumes there's a classification field - you may need to adjust based on actual database structure
+			if defense_entry.size() > 6:
+				# If there's a classification field at index 6
+				var classification = int(defense_entry[6])
+				if classification >= 1 and classification <= 4:
+					return classification
+			
+			# If no classification field, determine by name patterns (fallback)
+			var defense_name = defense_entry[3] if defense_entry.size() > 3 else ""
+			return determine_defense_type_by_name(defense_name)
+	
+	print("Warning: Could not determine defense type for card_index: ", card_index)
+	return DefenseType.PROTECT  # Default
+
+func determine_defense_type_by_name(defense_name: String) -> int:
+	"""Determine defense type by name patterns (fallback method)"""
+	var name_lower = defense_name.to_lower()
+	
+	# Recover keywords
+	if "recover" in name_lower or "restore" in name_lower or "reissue" in name_lower:
+		return DefenseType.RECOVER
+	
+	# Respond keywords (for E/E attacks)
+	if "respond" in name_lower or "terminat" in name_lower or "stop" in name_lower or "shutdown" in name_lower or "removal" in name_lower:
+		return DefenseType.RESPOND
+	
+	# Detect keywords (for PEP attacks)
+	if "detect" in name_lower or "monitor" in name_lower or "analysis" in name_lower or "discovery" in name_lower:
+		return DefenseType.DETECT
+	
+	# Protect keywords (for IA attacks) - default
+	return DefenseType.PROTECT
+
+func get_defense_type_name(defense_type: int) -> String:
+	"""Get readable name for defense type"""
+	match defense_type:
+		DefenseType.PROTECT:
+			return "PROTECT"
+		DefenseType.DETECT:
+			return "DETECT"
+		DefenseType.RESPOND:
+			return "RESPOND"
+		DefenseType.RECOVER:
+			return "RECOVER"
+		_:
+			return "UNKNOWN"
+
 func is_eviction_card(defense_card) -> bool:
-	"""Check if defense card is an eviction card"""
+	"""Check if defense card is an eviction card - DEPRECATED, use defense_type instead"""
+	# Keep for backwards compatibility, but new system uses defense types
 	if not defense_card:
 		return false
 	
-	var card_name = get_defense_name(defense_card)
-	# Define eviction cards by name - you can expand this list
-	var eviction_cards = [
-		"Process Termination",
-		"File Removal", 
-		"Credential Revoking",
-		"System Shutdown",
-		"Account Access Removal"
-	]
-	
-	return card_name in eviction_cards
+	var defense_type = get_defense_type(defense_card)
+	return defense_type == DefenseType.RECOVER or defense_type == DefenseType.RESPOND
 
 # Data export functions
 func export_game_data_to_csv() -> String:
@@ -512,12 +657,12 @@ func export_game_data_to_csv() -> String:
 		"Attack_1", "Attack_1_Cost", "Attack_1_Time", "Attack_1_Type", "Attack_1_Valid",
 		"Attack_2", "Attack_2_Cost", "Attack_2_Time", "Attack_2_Type", "Attack_2_Valid", 
 		"Attack_3", "Attack_3_Cost", "Attack_3_Time", "Attack_3_Type", "Attack_3_Valid",
-		"Defense_1", "Defense_1_Maturity", "Defense_1_Eviction",
-		"Defense_2", "Defense_2_Maturity", "Defense_2_Eviction",
-		"Defense_3", "Defense_3_Maturity", "Defense_3_Eviction",
-		"Result_1", "Roll_1", "Success_1", "New_State_1",
-		"Result_2", "Roll_2", "Success_2", "New_State_2", 
-		"Result_3", "Roll_3", "Success_3", "New_State_3",
+		"Defense_1", "Defense_1_Type", "Defense_1_Maturity", "Defense_1_Effective",
+		"Defense_2", "Defense_2_Type", "Defense_2_Maturity", "Defense_2_Effective",
+		"Defense_3", "Defense_3_Type", "Defense_3_Maturity", "Defense_3_Effective",
+		"Result_1", "Resolution_1", "Roll_1", "Red_Success_1", "Blue_Success_1", "New_State_1",
+		"Result_2", "Resolution_2", "Roll_2", "Red_Success_2", "Blue_Success_2", "New_State_2", 
+		"Result_3", "Resolution_3", "Roll_3", "Red_Success_3", "Blue_Success_3", "New_State_3",
 		"Position_1_End", "Position_2_End", "Position_3_End",
 		"Red_Victory", "Round_Notes"
 	]
@@ -546,26 +691,51 @@ func export_game_data_to_csv() -> String:
 			else:
 				row.append_array(["---", "---", "---", "---", "---"])
 		
-		# Defense card data
+		# Defense card data with new type system
 		for i in range(3):
 			if i < round_data.defense_cards.size() and round_data.defense_cards[i] != null:
 				var defense = round_data.defense_cards[i]
 				row.append(defense.name)
+				row.append(get_defense_type_name(defense.defense_type))
 				row.append(str(defense.maturity))
-				row.append("Yes" if defense.is_eviction else "No")
+				# Check if defense was effective in this round's results
+				var effective = false
+				if round_data.has("results"):
+					for result in round_data.results:
+						if result.position_index == i:
+							effective = result.get("defense_was_effective", false)
+							break
+				row.append("Yes" if effective else "No")
 			else:
-				row.append_array(["---", "---", "---"])
+				row.append_array(["---", "---", "---", "---"])
 		
-		# Results data
+		# Results data with new blue/red success tracking and resolution types
 		for i in range(3):
 			if i < round_data.results.size():
 				var result = round_data.results[i]
-				row.append("Success" if result.success else "Failure")
+				
+				# Determine result description
+				var result_desc = "Red_Success" if result.red_success else "Blue_Success"
+				row.append(result_desc)
+				
+				# Determine resolution type
+				var resolution_type = "Dice_Roll"
+				if result.get("auto_success", false):
+					resolution_type = "Auto_Success"
+				elif result.get("auto_failure", false):
+					resolution_type = "Auto_Failure"
+				elif result.get("invalid_play", false):
+					resolution_type = "Invalid_Play"
+				elif result.get("moderator_override", "") != "":
+					resolution_type = "Moderator_Override"
+				row.append(resolution_type)
+				
 				row.append(str(result.roll_result) if result.has("roll_result") else "AUTO")
-				row.append("Yes" if result.success else "No")
+				row.append("Yes" if result.red_success else "No")
+				row.append("Yes" if result.blue_success else "No")
 				row.append(result.new_state)
 			else:
-				row.append_array(["---", "---", "---", "---"])
+				row.append_array(["---", "---", "---", "---", "---", "---"])
 		
 		# Ending positions
 		for pos_data in round_data.ending_positions:
@@ -578,7 +748,22 @@ func export_game_data_to_csv() -> String:
 				victory = true
 				break
 		row.append("Yes" if victory else "No")
-		row.append("Round " + str(round_data.round_number) + " completed")
+		
+		# Enhanced round notes with auto-resolution info
+		var auto_successes = 0
+		var auto_failures = 0
+		if round_data.has("results"):
+			for result in round_data.results:
+				if result.get("auto_success", false):
+					auto_successes += 1
+				elif result.get("auto_failure", false):
+					auto_failures += 1
+		
+		var notes = "Round " + str(round_data.round_number) + " completed with enhanced defense system. "
+		if auto_successes > 0 or auto_failures > 0:
+			notes += "Auto-resolutions: " + str(auto_successes) + " red wins, " + str(auto_failures) + " red fails. "
+		
+		row.append(notes)
 		
 		csv_data += ",".join(row) + "\n"
 	
@@ -610,6 +795,121 @@ func debug_show_attack_table():
 		var entry = attack_success_table[key]
 		print(key, " -> Cost:", entry.cost, " Time:", entry.time, " Likelihood:", entry.likelihood, "%")
 	print("=== END TABLE ===")
+
+func debug_defense_type_matching():
+	"""Debug function to show defense type matching"""
+	print("=== DEFENSE TYPE MATCHING DEBUG ===")
+	print("PROTECT (1) vs IA: ", is_defense_effective_against_attack(DefenseType.PROTECT, "IA"))
+	print("PROTECT (1) vs PEP: ", is_defense_effective_against_attack(DefenseType.PROTECT, "PEP"))
+	print("PROTECT (1) vs E/E: ", is_defense_effective_against_attack(DefenseType.PROTECT, "E/E"))
+	print("DETECT (2) vs IA: ", is_defense_effective_against_attack(DefenseType.DETECT, "IA"))
+	print("DETECT (2) vs PEP: ", is_defense_effective_against_attack(DefenseType.DETECT, "PEP"))
+	print("DETECT (2) vs E/E: ", is_defense_effective_against_attack(DefenseType.DETECT, "E/E"))
+	print("RESPOND (3) vs IA: ", is_defense_effective_against_attack(DefenseType.RESPOND, "IA"))
+	print("RESPOND (3) vs PEP: ", is_defense_effective_against_attack(DefenseType.RESPOND, "PEP"))
+	print("RESPOND (3) vs E/E: ", is_defense_effective_against_attack(DefenseType.RESPOND, "E/E"))
+	print("RECOVER (4) vs IA: ", is_defense_effective_against_attack(DefenseType.RECOVER, "IA"))
+	print("RECOVER (4) vs PEP: ", is_defense_effective_against_attack(DefenseType.RECOVER, "PEP"))
+	print("RECOVER (4) vs E/E: ", is_defense_effective_against_attack(DefenseType.RECOVER, "E/E"))
+	print("=== END DEFENSE MATCHING DEBUG ===")
+
+func test_new_auto_resolution_rules():
+	"""Comprehensive test of the new auto-resolution rules"""
+	print("=== TESTING NEW AUTO-RESOLUTION RULES ===")
+	
+	print("\n1. Testing Red Team Invalid Plays (Should Auto-Fail):")
+	
+	# Simulate red team trying PEP without IA
+	var mock_attack_pep = {"card_type": "PEP", "cost": 2, "time": 30, "name": "Test PEP Attack"}
+	var mock_defense_detect = {"defense_type": DefenseType.DETECT, "maturity": 3, "name": "Test Detect Defense"}
+	
+	# Set position to EMPTY to make PEP invalid
+	attack_positions[0]["state"] = AttackStep.EMPTY
+	var pairing1 = create_individual_card_pairing(mock_attack_pep, mock_defense_detect, 0)
+	
+	print("  PEP attack when position EMPTY:")
+	print("    Valid Play: ", pairing1.is_valid_play, " (should be false)")
+	print("    Auto Failure: ", pairing1.get("auto_failure", false), " (should be true)")
+	print("    Success Rate: ", pairing1.success_percentage, "% (should be 0)")
+	print("    Status: ", pairing1.defense_match_status)
+	
+	# Simulate red team trying E/E without PEP
+	var mock_attack_ee = {"card_type": "E/E", "cost": 3, "time": 45, "name": "Test E/E Attack"}
+	var mock_defense_respond = {"defense_type": DefenseType.RESPOND, "maturity": 4, "name": "Test Respond Defense"}
+	
+	# Set position to IA to make E/E invalid (needs PEP)
+	attack_positions[1]["state"] = AttackStep.IA
+	var pairing2 = create_individual_card_pairing(mock_attack_ee, mock_defense_respond, 1)
+	
+	print("  E/E attack when position IA (needs PEP):")
+	print("    Valid Play: ", pairing2.is_valid_play, " (should be false)")
+	print("    Auto Failure: ", pairing2.get("auto_failure", false), " (should be true)")
+	print("    Success Rate: ", pairing2.success_percentage, "% (should be 0)")
+	print("    Status: ", pairing2.defense_match_status)
+	
+	print("\n2. Testing Blue Team Incompatible Defense (Should Auto-Win for Red):")
+	
+	# Simulate red team IA vs blue team DETECT (incompatible)
+	var mock_attack_ia = {"card_type": "IA", "cost": 1, "time": 15, "name": "Test IA Attack"}
+	var mock_defense_detect2 = {"defense_type": DefenseType.DETECT, "maturity": 2, "name": "Test Detect Defense"}
+	
+	# Set position to EMPTY to make IA valid
+	attack_positions[2]["state"] = AttackStep.EMPTY
+	var pairing3 = create_individual_card_pairing(mock_attack_ia, mock_defense_detect2, 2)
+	
+	print("  IA attack vs DETECT defense (incompatible):")
+	print("    Valid Play: ", pairing3.is_valid_play, " (should be true)")
+	print("    Defense Effective: ", pairing3.defense_effective, " (should be false)")
+	print("    Auto Success: ", pairing3.auto_success, " (should be true)")
+	print("    Success Rate: ", pairing3.success_percentage, "% (should be 100)")
+	print("    Status: ", pairing3.defense_match_status)
+	
+	# Simulate red team PEP vs blue team PROTECT (incompatible)
+	var mock_attack_pep2 = {"card_type": "PEP", "cost": 2, "time": 30, "name": "Test PEP Attack"}
+	var mock_defense_protect = {"defense_type": DefenseType.PROTECT, "maturity": 3, "name": "Test Protect Defense"}
+	
+	# Set position to IA to make PEP valid
+	attack_positions[0]["state"] = AttackStep.IA
+	var pairing4 = create_individual_card_pairing(mock_attack_pep2, mock_defense_protect, 0)
+	
+	print("  PEP attack vs PROTECT defense (incompatible):")
+	print("    Valid Play: ", pairing4.is_valid_play, " (should be true)")
+	print("    Defense Effective: ", pairing4.defense_effective, " (should be false)")
+	print("    Auto Success: ", pairing4.auto_success, " (should be true)")
+	print("    Success Rate: ", pairing4.success_percentage, "% (should be 100)")
+	print("    Status: ", pairing4.defense_match_status)
+	
+	print("\n3. Testing Compatible Scenarios (Should Require Dice):")
+	
+	# Simulate red team IA vs blue team PROTECT (compatible)
+	var pairing5 = create_individual_card_pairing(mock_attack_ia, mock_defense_protect, 2)
+	
+	print("  IA attack vs PROTECT defense (compatible):")
+	print("    Valid Play: ", pairing5.is_valid_play, " (should be true)")
+	print("    Defense Effective: ", pairing5.defense_effective, " (should be true)")
+	print("    Auto Success: ", pairing5.auto_success, " (should be false)")
+	print("    Auto Failure: ", pairing5.get("auto_failure", false), " (should be false)")
+	print("    Success Rate: ", pairing5.success_percentage, "% (should be < 100 and > 0)")
+	print("    Status: ", pairing5.defense_match_status)
+	
+	# Simulate RECOVER wildcard (always compatible)
+	var mock_defense_recover = {"defense_type": DefenseType.RECOVER, "maturity": 5, "name": "Test Recover Defense"}
+	var pairing6 = create_individual_card_pairing(mock_attack_ia, mock_defense_recover, 2)
+	
+	print("  IA attack vs RECOVER defense (wildcard):")
+	print("    Valid Play: ", pairing6.is_valid_play, " (should be true)")
+	print("    Defense Effective: ", pairing6.defense_effective, " (should be true)")
+	print("    Is Wildcard: ", pairing6.is_wildcard_defense, " (should be true)")
+	print("    Auto Success: ", pairing6.auto_success, " (should be false)")
+	print("    Auto Failure: ", pairing6.get("auto_failure", false), " (should be false)")
+	print("    Success Rate: ", pairing6.success_percentage, "% (should be < 100)")
+	print("    Status: ", pairing6.defense_match_status)
+	
+	print("\n=== AUTO-RESOLUTION RULES TEST COMPLETE ===")
+	
+	# Reset positions for normal gameplay
+	for i in range(3):
+		attack_positions[i]["state"] = AttackStep.EMPTY
 
 # ===== DEBUG FUNCTIONS =====
 
@@ -651,7 +951,6 @@ func debug_print_attack_card_structure(card_index: int):
 					1: type_name = "IA (Initial Access)"
 					2: type_name = "PEP (Privilege Escalation/Persistence)"
 					3: type_name = "E/E (Impact/Exfiltration)"  
-					4: type_name = "PEP (Persistence)"
 					_: type_name = "Unknown (" + str(classification) + ")"
 				print("Mapped Type: ", type_name)
 			else:
@@ -690,8 +989,15 @@ func debug_print_defense_card_structure(card_index: int):
 				print("Name (3): ", defense_entry[3])
 				print("Description (4): ", defense_entry[4])
 				print("Path (5): ", defense_entry[5])
+				if defense_entry.size() > 6:
+					print("Classification/Type (6): ", defense_entry[6])
 			else:
 				print("ERROR: Entry too short - expected at least 6 fields")
+				
+			# Test defense type determination
+			var mock_card = {"card_index": card_index}
+			var determined_type = get_defense_type(mock_card)
+			print("Determined Defense Type: ", get_defense_type_name(determined_type), " (", determined_type, ")")
 		else:
 			print("ERROR: Dictionary key not found")
 	else:
@@ -754,7 +1060,6 @@ func test_attack_classification_mapping():
 			1: expected_type = "IA"
 			2: expected_type = "PEP"
 			3: expected_type = "E/E"
-			4: expected_type = "PEP"
 			_: expected_type = "IA"
 		
 		var status = "✓" if determined_type == expected_type else "✗"
@@ -781,9 +1086,11 @@ func debug_card_pairing_calculations():
 		print("  Success Rate: ", pairing.success_percentage, "%")
 		print("  Dice Threshold: ", pairing.dice_threshold)
 		print("  Auto Success: ", pairing.auto_success)
+		print("  Defense: ", pairing.defense_name)
+		print("  Defense Match: ", pairing.defense_match_status)
+		print("  Defense Effective: ", pairing.defense_effective)
 		if pairing.has("invalid_play"):
 			print("  Invalid Play: ", pairing.invalid_play)
-		print("  Defense: ", pairing.defense_name)
 		print("")
 	
 	print("=== END PAIRING DEBUG ===")
@@ -796,6 +1103,7 @@ func run_comprehensive_card_debug(attack_cards: Array, defense_cards: Array):
 	print("=".repeat(50))
 	
 	test_attack_classification_mapping()
+	debug_defense_type_matching()
 	debug_all_active_cards(attack_cards, defense_cards)
 	
 	if current_attack_cards.size() > 0 or current_defense_cards.size() > 0:
@@ -818,7 +1126,7 @@ func export_detailed_game_data_to_csv() -> String:
 		"Final_Position_1", "Final_Position_2", "Final_Position_3", 
 		"Most_Advanced_State", "Total_Attacks_Attempted", "Total_Attacks_Successful",
 		"Total_Defenses_Active", "Average_Attack_Cost", "Average_Attack_Time",
-		"Average_Defense_Maturity", "Notes"
+		"Average_Defense_Maturity", "Defense_Effectiveness_Rate", "Notes"
 	]
 	
 	csv_data += "=== GAME SUMMARY ===\n"
@@ -832,12 +1140,11 @@ func export_detailed_game_data_to_csv() -> String:
 		"Attack_1_Name", "Attack_1_Type", "Attack_1_Cost", "Attack_1_Time", "Attack_1_Valid_Play",
 		"Attack_2_Name", "Attack_2_Type", "Attack_2_Cost", "Attack_2_Time", "Attack_2_Valid_Play",
 		"Attack_3_Name", "Attack_3_Type", "Attack_3_Cost", "Attack_3_Time", "Attack_3_Valid_Play",
-		"Defense_1_Name", "Defense_1_Maturity", "Defense_1_Category", "Defense_1_Eviction",
-		"Defense_2_Name", "Defense_2_Maturity", "Defense_2_Category", "Defense_2_Eviction",
-		"Defense_3_Name", "Defense_3_Maturity", "Defense_3_Category", "Defense_3_Eviction",
+		"Defense_1_Name", "Defense_1_Type", "Defense_1_Maturity", "Defense_1_Effective",
+		"Defense_2_Name", "Defense_2_Type", "Defense_2_Maturity", "Defense_2_Effective",
+		"Defense_3_Name", "Defense_3_Type", "Defense_3_Maturity", "Defense_3_Effective",
 		"Total_Attack_Cost", "Total_Attack_Time", "Average_Defense_Maturity",
-		"Calculation_Method", "Base_Success_Rate", "Defense_Modifier", "Final_Success_Rate",
-		"Round_Outcome", "Positions_Advanced", "Round_Notes"
+		"Defense_Match_Summary", "Blue_Team_Regression_Potential", "Round_Notes"
 	]
 	
 	csv_data += ",".join(detailed_headers) + "\n"
@@ -846,58 +1153,10 @@ func export_detailed_game_data_to_csv() -> String:
 	for round_data in game_history:
 		csv_data += generate_detailed_round_row(round_data) + "\n"
 	
-	csv_data += "\n=== INDIVIDUAL ATTACK RESULTS ===\n"
-	var attack_headers = [
-		"Round", "Attack_Position", "Attack_Name", "Attack_Type", "Individual_Cost", "Individual_Time",
-		"Defense_Name", "Defense_Maturity", "Target_Position_State", "Intended_Step",
-		"Individual_Success_Rate", "Dice_Threshold", "Roll_Result", "Roll_Method",
-		"Attack_Success", "Reason", "Position_Advanced_From", "Position_Advanced_To",
-		"Attack_Chain_Progress", "Console_Output_Equivalent"
-	]
-	
-	csv_data += ",".join(attack_headers) + "\n"
-	
-	# Add individual attack data
-	for round_data in game_history:
-		if round_data.has("results"):
-			for result in round_data.results:
-				csv_data += generate_individual_attack_row(round_data, result) + "\n"
-	
-	csv_data += "\n=== POSITION STATE TRACKING ===\n"
-	var position_headers = [
-		"Round", "Event_Type", "Position_1_Before", "Position_1_After", "Position_1_Change",
-		"Position_2_Before", "Position_2_After", "Position_2_Change",
-		"Position_3_Before", "Position_3_After", "Position_3_Change",
-		"Most_Advanced_Before", "Most_Advanced_After", "Progress_Level_Change",
-		"Red_Team_Threat_Level", "Analysis_Notes"
-	]
-	
-	csv_data += ",".join(position_headers) + "\n"
-	
-	# Add position tracking data
-	for round_data in game_history:
-		csv_data += generate_position_tracking_row(round_data) + "\n"
-	
-	csv_data += "\n=== CALCULATION DETAILS ===\n"
-	var calc_headers = [
-		"Round", "Attack_Position", "Base_Cost", "Base_Time", "Lookup_Key", 
-		"Base_Success_Rate", "Defense_Present", "Defense_Maturity", "Defense_Modifier",
-		"Eviction_Bonus", "Final_Success_Rate", "Rounded_Percentage", "Dice_Threshold",
-		"Calculation_Formula", "Console_Debug_Output"
-	]
-	
-	csv_data += ",".join(calc_headers) + "\n"
-	
-	# Add calculation details
-	for round_data in game_history:
-		if round_data.has("attack_cards"):
-			for i in range(round_data.attack_cards.size()):
-				csv_data += generate_calculation_detail_row(round_data, i) + "\n"
-	
 	return csv_data
 
 func generate_game_summary_row() -> String:
-	"""Generate overall game summary row"""
+	"""Generate overall game summary row with defense effectiveness stats"""
 	var total_rounds = game_history.size()
 	var red_victory = false
 	var final_positions = ["EMPTY", "EMPTY", "EMPTY"]
@@ -905,6 +1164,7 @@ func generate_game_summary_row() -> String:
 	var total_attacks = 0
 	var successful_attacks = 0
 	var total_defenses = 0
+	var effective_defenses = 0
 	var total_cost = 0
 	var total_time = 0
 	var total_maturity = 0
@@ -939,21 +1199,26 @@ func generate_game_summary_row() -> String:
 		
 		if round_data.has("results"):
 			for result in round_data.results:
-				if result.get("success", false):
+				if result.get("red_success", false):
 					successful_attacks += 1
+				if result.get("defense_was_effective", false):
+					effective_defenses += 1
 	
 	var avg_cost = total_cost / float(max(total_attacks, 1))
 	var avg_time = total_time / float(max(total_attacks, 1))
 	var avg_maturity = total_maturity / float(max(defense_count, 1))
+	var defense_effectiveness = effective_defenses / float(max(total_defenses, 1)) * 100.0
 	
 	var game_duration = Time.get_time_string_from_system()  # This could be improved with actual duration tracking
 	
-	var notes = "Game completed with " + str(total_rounds) + " rounds. "
+	var notes = "Game completed with " + str(total_rounds) + " rounds using enhanced defense system with auto-resolution. "
 	notes += "Red team " + ("won" if red_victory else "lost") + ". "
-	notes += "Success rate: " + str(int((successful_attacks / float(max(total_attacks, 1))) * 100)) + "%"
+	notes += "Red success rate: " + str(int((successful_attacks / float(max(total_attacks, 1))) * 100)) + "%. "
+	notes += "Defense effectiveness: " + str(int(defense_effectiveness)) + "%. "
+	notes += "Auto-resolutions improve game flow by eliminating invalid plays."
 	
 	var row = [
-		"SEACAT_Connected_Attack_Chain_Game",
+		"SEACAT_Connected_Attack_Chain_Game_v3_Auto_Resolution",
 		str(total_rounds),
 		game_duration,
 		"Yes" if red_victory else "No",
@@ -967,13 +1232,14 @@ func generate_game_summary_row() -> String:
 		"%.2f" % avg_cost,
 		"%.2f" % avg_time,
 		"%.2f" % avg_maturity,
+		"%.1f" % defense_effectiveness + "%",
 		notes
 	]
 	
 	return ",".join(row)
 
 func generate_detailed_round_row(round_data: Dictionary) -> String:
-	"""Generate detailed round analysis row"""
+	"""Generate detailed round analysis row with defense matching info"""
 	var row = []
 	
 	# Basic round info
@@ -1002,15 +1268,22 @@ func generate_detailed_round_row(round_data: Dictionary) -> String:
 		else:
 			row.append_array(["---", "---", "---", "---", "---"])
 	
-	# Defense card details
+	# Defense card details with type matching
 	var defense_cards = round_data.get("defense_cards", [])
 	for i in range(3):
 		if i < defense_cards.size() and defense_cards[i] != null:
 			var defense = defense_cards[i]
 			row.append(defense.get("name", "---"))
+			row.append(get_defense_type_name(defense.get("defense_type", DefenseType.PROTECT)))
 			row.append(str(defense.get("maturity", "---")))
-			row.append("Category_" + str(i + 1))  # Could add actual category lookup
-			row.append("Yes" if defense.get("is_eviction", false) else "No")
+			# Check effectiveness from results
+			var effective = false
+			if round_data.has("results"):
+				for result in round_data.results:
+					if result.get("position_index", -1) == i:
+						effective = result.get("defense_was_effective", false)
+						break
+			row.append("Yes" if effective else "No")
 		else:
 			row.append_array(["---", "---", "---", "---"])
 	
@@ -1033,229 +1306,46 @@ func generate_detailed_round_row(round_data: Dictionary) -> String:
 	row.append(str(total_time))
 	row.append("%.2f" % (total_maturity / float(max(defense_count, 1))))
 	
-	# Analysis
-	row.append("Individual_Card_Calculations")
-	row.append("Base_Attack_Success_Table")
-	row.append("Defense_Maturity_Modifier")
-	row.append("Individual_Thresholds")
+	# Defense match summary
+	var match_summary = ""
+	var regression_potential = ""
+	var effective_defenses = 0
+	var wildcard_defenses = 0
 	
-	# Round outcome
-	var results = round_data.get("results", [])
-	var successes = 0
-	for result in results:
-		if result.get("success", false):
-			successes += 1
+	if round_data.has("results"):
+		for result in round_data.results:
+			if result.get("defense_was_effective", false):
+				effective_defenses += 1
+			if result.get("is_wildcard_defense", false):
+				wildcard_defenses += 1
 	
-	row.append(str(successes) + "_of_" + str(results.size()) + "_succeeded")
-	row.append(str(successes))
+	match_summary = str(effective_defenses) + "_effective_defenses"
+	if wildcard_defenses > 0:
+		match_summary += "_" + str(wildcard_defenses) + "_wildcards"
 	
-	var notes = "Round " + str(round_data.get("round_number", 0)) + " completed. "
-	notes += str(successes) + "/" + str(results.size()) + " attacks succeeded. "
+	regression_potential = "High" if effective_defenses > 0 else "None"
+	
+	row.append(match_summary)
+	row.append(regression_potential)
+	
+	var notes = "Round " + str(round_data.get("round_number", 0)) + " with enhanced auto-resolution system. "
+	notes += str(effective_defenses) + "/" + str(defense_count) + " defenses effective. "
+	
+	# Count auto-resolutions
+	var auto_successes = 0
+	var auto_failures = 0
+	if round_data.has("results"):
+		for result in round_data.results:
+			if result.get("auto_success", false):
+				auto_successes += 1
+			elif result.get("auto_failure", false):
+				auto_failures += 1
+	
+	if auto_successes > 0 or auto_failures > 0:
+		notes += "Auto-resolutions: " + str(auto_successes) + " successes, " + str(auto_failures) + " failures. "
+	
 	notes += "Total cost: $" + str(total_cost) + ", Total time: " + str(total_time) + " min."
 	row.append(notes)
-	
-	return ",".join(row)
-
-func generate_individual_attack_row(round_data: Dictionary, result: Dictionary) -> String:
-	"""Generate individual attack result row with console-like output"""
-	var row = []
-	
-	row.append(str(round_data.get("round_number", 0)))
-	row.append(str(result.get("position_index", 0) + 1))
-	row.append(result.get("attack_name", "Unknown"))
-	row.append(result.get("intended_step", "Unknown"))
-	row.append(str(result.get("individual_cost", 0)))
-	row.append(str(result.get("individual_time", 0)))
-	row.append(result.get("defense_name", "No Defense"))
-	row.append(str(result.get("defense_maturity", 0)))
-	row.append(result.get("previous_state", "EMPTY"))
-	row.append(result.get("intended_step", "Unknown"))
-	row.append(str(result.get("success_percentage", 0)) + "%")
-	row.append(str(result.get("dice_threshold", 10)))
-	row.append(str(result.get("roll_result", 0)))
-	
-	# Roll method
-	if result.get("auto_success", false):
-		row.append("Auto_Success")
-	elif result.get("invalid_play", false):
-		row.append("Invalid_Play")
-	elif result.get("moderator_override", "") != "":
-		row.append("Moderator_Override")
-	else:
-		row.append("Dice_Roll")
-	
-	row.append("Yes" if result.get("success", false) else "No")
-	
-	# Reason for success/failure
-	var reason = ""
-	if result.get("moderator_override", "") == "RED_WIN":
-		reason = "Moderator_Red_Win"
-	elif result.get("moderator_override", "") == "BLUE_WIN":
-		reason = "Moderator_Blue_Win"
-	elif result.get("auto_success", false):
-		reason = "No_Defense_Present"
-	elif result.get("invalid_play", false):
-		reason = "Invalid_Attack_Chain_Sequence"
-	elif result.get("success", false):
-		reason = "Roll_" + str(result.get("roll_result", 0)) + "_≤_" + str(result.get("dice_threshold", 10))
-	else:
-		reason = "Roll_" + str(result.get("roll_result", 0)) + "_>_" + str(result.get("dice_threshold", 10))
-	row.append(reason)
-	
-	row.append(result.get("previous_state", "EMPTY"))
-	row.append(result.get("new_state", "EMPTY"))
-	
-	# Attack chain progress
-	var progress = get_attack_chain_progress_description(result.get("previous_state", "EMPTY"), result.get("new_state", "EMPTY"))
-	row.append(progress)
-	
-	# Console output equivalent
-	var console_output = "Attack " + str(result.get("position_index", 0) + 1) + ": " + result.get("attack_name", "Unknown")
-	console_output += " | Cost: $" + str(result.get("individual_cost", 0)) + ", Time: " + str(result.get("individual_time", 0)) + " min"
-	console_output += " | " + result.get("previous_state", "EMPTY") + " → " + result.get("new_state", "EMPTY")
-	console_output += " | " + ("SUCCESS" if result.get("success", false) else "FAILURE")
-	if result.get("moderator_override", "") != "":
-		console_output += " (MODERATOR: " + result.get("moderator_override", "") + ")"
-	elif not result.get("auto_success", false) and not result.get("invalid_play", false):
-		console_output += " (Rolled " + str(result.get("roll_result", 0)) + "/" + str(result.get("dice_threshold", 10)) + ")"
-	row.append("\"" + console_output + "\"")
-	
-	return ",".join(row)
-
-func generate_position_tracking_row(round_data: Dictionary) -> String:
-	"""Generate position state tracking row"""
-	var row = []
-	
-	row.append(str(round_data.get("round_number", 0)))
-	row.append("Round_Resolution")
-	
-	var starting_positions = round_data.get("starting_positions", [])
-	var ending_positions = round_data.get("ending_positions", [])
-	
-	var start_most_advanced = "EMPTY"
-	var end_most_advanced = "EMPTY"
-	
-	# Position changes
-	for i in range(3):
-		var start_state = "EMPTY"
-		var end_state = "EMPTY"
-		
-		if i < starting_positions.size():
-			start_state = starting_positions[i].state
-		if i < ending_positions.size():
-			end_state = ending_positions[i].state
-		
-		row.append(start_state)
-		row.append(end_state)
-		
-		# Change description
-		if start_state == end_state:
-			row.append("No_Change")
-		else:
-			row.append(start_state + "_to_" + end_state)
-		
-		# Track most advanced
-		if is_more_advanced(start_state, start_most_advanced):
-			start_most_advanced = start_state
-		if is_more_advanced(end_state, end_most_advanced):
-			end_most_advanced = end_state
-	
-	row.append(start_most_advanced)
-	row.append(end_most_advanced)
-	
-	# Progress level change
-	var start_level = get_progress_level(start_most_advanced)
-	var end_level = get_progress_level(end_most_advanced)
-	row.append(str(end_level - start_level))
-	
-	# Threat level analysis
-	var threat_level = "Low"
-	if end_most_advanced == "E/E":
-		threat_level = "VICTORY_RED_TEAM"
-	elif end_most_advanced == "PEP":
-		threat_level = "Critical"
-	elif end_most_advanced == "IA":
-		threat_level = "Moderate"
-	row.append(threat_level)
-	
-	var analysis = "Round " + str(round_data.get("round_number", 0)) + " changed most advanced position from " + start_most_advanced + " to " + end_most_advanced
-	row.append(analysis)
-	
-	return ",".join(row)
-
-func generate_calculation_detail_row(round_data: Dictionary, attack_index: int) -> String:
-	"""Generate detailed calculation breakdown row"""
-	var row = []
-	var attack_cards = round_data.get("attack_cards", [])
-	var defense_cards = round_data.get("defense_cards", [])
-	
-	if attack_index >= attack_cards.size():
-		# Return empty row if no attack - fix the array multiplication issue
-		var empty_row = []
-		for i in range(15):
-			empty_row.append("---")
-		return ",".join(empty_row)
-	
-	var attack = attack_cards[attack_index]
-	var defense = null
-	if attack_index < defense_cards.size():
-		defense = defense_cards[attack_index]
-	
-	row.append(str(round_data.get("round_number", 0)))
-	row.append(str(attack_index + 1))
-	row.append(str(attack.get("cost", 1)))
-	row.append(str(attack.get("time", 1)))
-	
-	# Lookup key calculation
-	var clamped_cost = clamp(attack.get("cost", 1), 1, 5)
-	var clamped_time = clamp(int(attack.get("time", 1) / 24), 1, 5)
-	var lookup_key = "c" + str(clamped_cost) + "t" + str(clamped_time)
-	row.append(lookup_key)
-	
-	# Get base success rate - ensure it's a number, not array
-	var base_rate = 50  # Default
-	if attack_success_table.has(lookup_key):
-		var table_entry = attack_success_table[lookup_key]
-		base_rate = int(table_entry.likelihood)  # Ensure it's an int
-	row.append(str(base_rate) + "%")
-	
-	row.append("Yes" if defense != null else "No")
-	row.append(str(defense.get("maturity", 0)) if defense else "0")
-	
-	# Calculate modifiers - ensure all values are numbers
-	var defense_modifier = 0.0
-	if defense:
-		var maturity_val = int(defense.get("maturity", 1))
-		defense_modifier = (maturity_val - 1.0) / 4.0 * 0.4
-	row.append("%.3f" % defense_modifier)
-	
-	var eviction_bonus = 0.0
-	if defense and defense.get("is_eviction", false):
-		eviction_bonus = 0.2  # 20% bonus for eviction cards
-	row.append("%.3f" % eviction_bonus)
-	
-	# Final calculations - ensure base_rate is a number
-	var final_rate = float(base_rate) * (1.0 - defense_modifier - eviction_bonus)
-	var rounded_percentage = int(round(final_rate / 10.0) * 10)
-	var dice_threshold = rounded_percentage / 10
-	
-	row.append("%.2f" % final_rate + "%")
-	row.append(str(rounded_percentage) + "%")
-	row.append(str(dice_threshold))
-	
-	# Formula
-	var formula = str(base_rate) + "% × (1 - " + "%.3f" % defense_modifier
-	if eviction_bonus > 0:
-		formula += " - " + "%.3f" % eviction_bonus
-	formula += ") = " + "%.2f" % final_rate + "%"
-	row.append("\"" + formula + "\"")
-	
-	# Console debug equivalent
-	var debug_output = "Individual calculation - Cost: " + str(clamped_cost) + " Time: " + str(clamped_time) + " -> " + str(base_rate) + "% base"
-	if defense:
-		debug_output += ", Defense modifier: -" + "%.1f" % (defense_modifier * 100) + "%"
-	debug_output += " = " + "%.1f" % final_rate + "% final"
-	row.append("\"" + debug_output + "\"")
 	
 	return ",".join(row)
 
@@ -1281,7 +1371,9 @@ func get_attack_chain_progress_description(from_state: String, to_state: String)
 	elif to_state == "E/E" and from_state == "PEP":
 		return "Execution_Exfiltration_SUCCESS"
 	elif to_state == "EMPTY":
-		return "Position_Evicted"
+		return "Position_Regressed_To_Empty"
+	elif is_more_advanced(from_state, to_state):
+		return "Defense_Regression_" + from_state + "_to_" + to_state
 	else:
 		return from_state + "_to_" + to_state
 
