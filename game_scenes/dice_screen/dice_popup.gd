@@ -502,10 +502,28 @@ func update_dice_result_text(pairing: Dictionary):
 			dice_result_label.modulate = Color.WHITE
 		"result_shown":
 			if current_roll_result > 0:
-				var result_text = "Rolled: " + str(current_roll_result) + " (needed ≤" + str(pairing.dice_threshold) + ")\n"
+				# FIXED: Check if this was a moderator override result and use correct threshold
+				var display_threshold = pairing.dice_threshold
+				var was_moderator_override = false
+				
+				# Check the most recent result for moderator override info
+				if rolling_results.size() > 0:
+					var latest_result = rolling_results[rolling_results.size() - 1]
+					if latest_result.has("moderator_override") and latest_result.moderator_override == "MANUAL_PROBABILITY":
+						if latest_result.has("custom_threshold"):
+							display_threshold = latest_result.custom_threshold
+							was_moderator_override = true
+				
+				var result_text = "Rolled: " + str(current_roll_result) + " (needed ≤" + str(int(display_threshold)) + ")\n"
 				result_text += "Individual Stats: Cost " + str(pairing.individual_cost) + ", Time " + str(pairing.individual_time) + "\n"
-				var success = current_roll_result <= pairing.dice_threshold
+				
+				# FIXED: Use the correct threshold for success determination
+				var success = current_roll_result <= display_threshold
 				result_text += "Result: " + ("SUCCESS!" if success else "FAILURE")
+				
+				if was_moderator_override:
+					result_text += " (Moderator Override)"
+				
 				dice_result_label.text = result_text
 				dice_result_label.modulate = Color.RED if success else Color.BLUE
 			else:
