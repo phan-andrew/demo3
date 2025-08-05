@@ -414,17 +414,21 @@ func check_connected_game_end_conditions():
 		timeline_completed = current_round >= round_end
 	
 	# Connected attack chain victory handled by GameData signal
-	
+	var submitted_any = false
+
 	if timer1_expired:
 		print("🔴 Red team time expired — auto-submitting attacks")
-		_on_attack_submit_pressed()
-		return
-	elif timer2_expired:
+		call_deferred("_on_attack_submit_pressed")
+		submitted_any = true
+
+	if timer2_expired:
 		print("🔵 Blue team time expired — auto-submitting defenses")
-		_on_defense_submit_pressed()
+		call_deferred("_on_defense_submit_pressed")
+		submitted_any = true
+
+	if submitted_any:
 		return
-	elif timeline_completed:
-		handle_blue_team_victory("Timeline completed")
+
 
 
 func handle_red_team_victory(reason: String):
@@ -1074,32 +1078,46 @@ func _on_defense_submit_pressed():
 	print("🔵 Blue team auto-submitting defenses")
 
 	collapse_all_cards()
+
 	var timer2 = get_node_or_null("Timer_Label2")
 	var pause_button = get_node_or_null("Timer_Label/pause")
 
 	if timer2:
 		timer2.play = false
+		timer2.startTimer = false
+
 	disable_defend_buttons(true)
+
 	if pause_button:
 		pause_button.disabled = true
 
-	# Capture current card state for connected attack system
+	# --- ⚠️ NEW: Check if defenses are valid or force submission ---
+	var valid_defenses = false
+	for card in dCards:
+		if card and card.card_index != -1:
+			valid_defenses = true
+			break
+
+	if not valid_defenses:
+		print("⚠️ No valid defense cards selected, but forcing resolution anyway")
+
 	if use_dice_system and GameData:
 		print("=== STARTING CONNECTED ATTACK RESOLUTION ===")
 		print("Round: ", round_number)
+
 		GameData.capture_current_cards(aCards, dCards)
-		
-		# Debug output to verify connected calculations
+
 		if GameData.has_method("debug_show_attack_table"):
 			GameData.debug_show_attack_table()
 		if GameData.has_method("debug_show_game_state"):
 			GameData.debug_show_game_state()
-		
-		# Add a small delay to ensure UI updates
+
 		await get_tree().create_timer(0.1).timeout
 		show_enhanced_dice_popup()
 	else:
 		show_manual_input()
+
+
 
 
 func show_manual_input():
