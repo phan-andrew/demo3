@@ -30,6 +30,8 @@ var pauseIcon = preload("res://images/UI_images/pause_button.png")
 var use_dice_system = true
 var dice_popup_scene = preload("res://game_scenes/dice_screen/dice_popup.tscn")
 var active_dice_popup = null
+var dice_already_processed = false
+
 
 # Round tracking
 var round_number = 1
@@ -619,6 +621,8 @@ func show_enhanced_dice_popup():
 		active_dice_popup.dice_cancelled.connect(_on_dice_popup_cancelled)
 
 func _on_enhanced_dice_completed(results: Array):
+	dice_already_processed = true
+
 	print("=== ENHANCED DICE COMPLETED ===")
 	print("Individual results received: ", results.size())
 
@@ -637,12 +641,13 @@ func _on_enhanced_dice_completed(results: Array):
 		if GameData:
 			GameData.prepare_next_round()
 		continue_connected_game_flow()
-
+		
 
 func _on_discussion_time_completed(results: Array):
 	"""Handle discussion time completion from GameData"""
 	print("=== DISCUSSION TIME COMPLETED ===")
 	# The dice popup handles the discussion, so we continue game flow here
+	close_dice_popup()
 	continue_connected_game_flow()
 
 func process_connected_attack_results():
@@ -862,6 +867,7 @@ func continue_connected_game_flow():
 
 func continue_connected_game_flow_resume():
 	"""Resume gameplay after round popup is dismissed"""
+
 	reset_timer_for_next_round()
 	var timer1 = get_node_or_null("Timer_Label")
 	var pause_button = get_node_or_null("Timer_Label/pause")
@@ -869,7 +875,6 @@ func continue_connected_game_flow_resume():
 	var attack_dropdown = get_node_or_null("dropdown/attack_option")
 	var defend_dropdown = get_node_or_null("dropdown/defend_option")
 	var dropdown = get_node_or_null("dropdown")
-
 
 	disable_attack_buttons(false)
 	for card in aCards:
@@ -888,6 +893,7 @@ func continue_connected_game_flow_resume():
 	if dropdown and dropdown.has_method("set_card_references"):
 		dropdown.set_card_references(aCards, dCards)
 
+	dice_already_processed = false
 
 	print("=== ROUND ", round_number, " READY ===")
 	if GameData:
