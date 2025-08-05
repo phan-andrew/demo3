@@ -97,7 +97,7 @@ func setCard(index):
 		setTimeValue(time)
 
 	if cardType == "d":
-		var defend = Mitre.defend_dict[int(index) + 1]
+		var defend = Mitre.defend_dict[int(index) ]
 		$card.texture = load(defend[5])
 		$card/sliders/cost_slider.hide()
 		$card/sliders/time_slider.hide()

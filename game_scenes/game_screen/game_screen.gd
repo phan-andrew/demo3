@@ -414,9 +414,22 @@ func check_connected_game_end_conditions():
 		timeline_completed = current_round >= round_end
 	
 	# Connected attack chain victory handled by GameData signal
-	
-	if timer1_expired or timer2_expired or timeline_completed:
-		handle_blue_team_victory("Time/Timeline completed")
+	var submitted_any = false
+
+	if timer1_expired:
+		print("🔴 Red team time expired — auto-submitting attacks")
+		call_deferred("_on_attack_submit_pressed")
+		submitted_any = true
+
+	if timer2_expired:
+		print("🔵 Blue team time expired — auto-submitting defenses")
+		call_deferred("_on_defense_submit_pressed")
+		submitted_any = true
+
+	if submitted_any:
+		return
+
+
 
 func handle_red_team_victory(reason: String):
 	"""Handle Red Team (connected attack chain) victory"""
@@ -849,6 +862,7 @@ func continue_connected_game_flow():
 
 func continue_connected_game_flow_resume():
 	"""Resume gameplay after round popup is dismissed"""
+	reset_timer_for_next_round()
 	var timer1 = get_node_or_null("Timer_Label")
 	var pause_button = get_node_or_null("Timer_Label/pause")
 	var timeline = get_node_or_null("timeline")
@@ -1061,33 +1075,50 @@ func _on_attack_submit_pressed():
 
 func _on_defense_submit_pressed():
 	"""Handle defense submit button press - start connected attack resolution"""
+	print("🔵 Blue team auto-submitting defenses")
+
 	collapse_all_cards()
+
 	var timer2 = get_node_or_null("Timer_Label2")
 	var pause_button = get_node_or_null("Timer_Label/pause")
-	
+
 	if timer2:
 		timer2.play = false
+		timer2.startTimer = false
+
 	disable_defend_buttons(true)
+
 	if pause_button:
 		pause_button.disabled = true
-	
-	# Capture current card state for connected attack system
+
+	# --- ⚠️ NEW: Check if defenses are valid or force submission ---
+	var valid_defenses = false
+	for card in dCards:
+		if card and card.card_index != -1:
+			valid_defenses = true
+			break
+
+	if not valid_defenses:
+		print("⚠️ No valid defense cards selected, but forcing resolution anyway")
+
 	if use_dice_system and GameData:
 		print("=== STARTING CONNECTED ATTACK RESOLUTION ===")
 		print("Round: ", round_number)
+
 		GameData.capture_current_cards(aCards, dCards)
-		
-		# Debug output to verify connected calculations
+
 		if GameData.has_method("debug_show_attack_table"):
 			GameData.debug_show_attack_table()
 		if GameData.has_method("debug_show_game_state"):
 			GameData.debug_show_game_state()
-		
-		# Add a small delay to ensure UI updates
+
 		await get_tree().create_timer(0.1).timeout
 		show_enhanced_dice_popup()
 	else:
 		show_manual_input()
+
+
+
 
 func show_manual_input():
 	"""Show manual input window (legacy fallback)"""
@@ -1211,3 +1242,19 @@ func _on_spin_box_value_changed(value):
 func _on_button_pressed():
 	"""Handle manual button press (legacy compatibility)"""
 	pass
+	
+func reset_timer_for_next_round():
+	var timer1 = get_node_or_null("Timer_Label")
+	var timer2 = get_node_or_null("Timer_Label2")
+
+	if timer1:
+		timer1.initialTime = Mitre.time_limit
+		timer1.text = "%d:%02d" % [int(Mitre.time_limit) / 60, int(Mitre.time_limit) % 60]
+		timer1.startTimer = true
+		timer1.play = false
+
+	if timer2:
+		timer2.initialTime = Mitre.time_limit
+		timer2.text = "%d:%02d" % [int(Mitre.time_limit) / 60, int(Mitre.time_limit) % 60]
+		timer2.startTimer = true
+		timer2.play = false
