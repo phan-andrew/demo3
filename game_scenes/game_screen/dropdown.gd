@@ -119,6 +119,7 @@ func generate_defense_card():
 	for card in dCards:
 		if not card.inPlay:
 			card.setCard(card_id)
+			card.card_index = card_id
 			card.setText(card_id)
 			card.setMaturity(int(profile[1]))
 			card.play()

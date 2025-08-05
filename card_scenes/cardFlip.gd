@@ -228,7 +228,7 @@ func setText(index):
 		$card/definition.hide()
 	if cardType=="d":
 		# Defense cards: index 4 = Description (index 3 = Name)
-		$card/definition.text=(Mitre.defend_dict[int(index)+1][4])
+		$card/definition.text=(Mitre.defend_dict[int(index)][4])
 		$card/definition.hide()
 
 func setCost(Cost):
@@ -277,7 +277,7 @@ func getString():
 		return printable
 	if cardType == "d":
 		# Defense cards: index 3 = Name (NOT index 2!)
-		var printable = Mitre.defend_dict[card_index+1][3] + ": " + str(maturity_level) + " stars"
+		var printable = Mitre.defend_dict[card_index][3] + ": " + str(maturity_level) + " stars"
 		return printable
 
 func _on_flip_button_pressed():
