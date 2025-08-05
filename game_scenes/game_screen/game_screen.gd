@@ -1054,7 +1054,7 @@ func _on_start_game_pressed():
 func _on_attack_submit_pressed():
 	"""Handle attack submit button press"""
 	if not has_active_attacks():
-		return
+		print("⚠️ No active attacks, auto-submitting empty round")
 	
 	collapse_all_cards()
 	var timer1 = get_node_or_null("Timer_Label")
