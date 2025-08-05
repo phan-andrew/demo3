@@ -415,8 +415,17 @@ func check_connected_game_end_conditions():
 	
 	# Connected attack chain victory handled by GameData signal
 	
-	if timer1_expired or timer2_expired or timeline_completed:
-		handle_blue_team_victory("Time/Timeline completed")
+	if timer1_expired:
+		print("🔴 Red team time expired — auto-submitting attacks")
+		_on_attack_submit_pressed()
+		return
+	elif timer2_expired:
+		print("🔵 Blue team time expired — auto-submitting defenses")
+		_on_defense_submit_pressed()
+		return
+	elif timeline_completed:
+		handle_blue_team_victory("Timeline completed")
+
 
 func handle_red_team_victory(reason: String):
 	"""Handle Red Team (connected attack chain) victory"""
@@ -849,6 +858,7 @@ func continue_connected_game_flow():
 
 func continue_connected_game_flow_resume():
 	"""Resume gameplay after round popup is dismissed"""
+	reset_timer_for_next_round()
 	var timer1 = get_node_or_null("Timer_Label")
 	var pause_button = get_node_or_null("Timer_Label/pause")
 	var timeline = get_node_or_null("timeline")
@@ -1061,16 +1071,18 @@ func _on_attack_submit_pressed():
 
 func _on_defense_submit_pressed():
 	"""Handle defense submit button press - start connected attack resolution"""
+	print("🔵 Blue team auto-submitting defenses")
+
 	collapse_all_cards()
 	var timer2 = get_node_or_null("Timer_Label2")
 	var pause_button = get_node_or_null("Timer_Label/pause")
-	
+
 	if timer2:
 		timer2.play = false
 	disable_defend_buttons(true)
 	if pause_button:
 		pause_button.disabled = true
-	
+
 	# Capture current card state for connected attack system
 	if use_dice_system and GameData:
 		print("=== STARTING CONNECTED ATTACK RESOLUTION ===")
@@ -1088,6 +1100,7 @@ func _on_defense_submit_pressed():
 		show_enhanced_dice_popup()
 	else:
 		show_manual_input()
+
 
 func show_manual_input():
 	"""Show manual input window (legacy fallback)"""
@@ -1211,3 +1224,19 @@ func _on_spin_box_value_changed(value):
 func _on_button_pressed():
 	"""Handle manual button press (legacy compatibility)"""
 	pass
+	
+func reset_timer_for_next_round():
+	var timer1 = get_node_or_null("Timer_Label")
+	var timer2 = get_node_or_null("Timer_Label2")
+
+	if timer1:
+		timer1.initialTime = Mitre.time_limit
+		timer1.text = "%d:%02d" % [int(Mitre.time_limit) / 60, int(Mitre.time_limit) % 60]
+		timer1.startTimer = true
+		timer1.play = false
+
+	if timer2:
+		timer2.initialTime = Mitre.time_limit
+		timer2.text = "%d:%02d" % [int(Mitre.time_limit) / 60, int(Mitre.time_limit) % 60]
+		timer2.startTimer = true
+		timer2.play = false
