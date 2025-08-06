@@ -536,7 +536,8 @@ func get_defense_name(defense_card) -> String:
 	var card_index = defense_card.card_index
 	if has_node("/root/Mitre"):
 		var mitre = get_node("/root/Mitre")
-		var key = card_index + 1
+		# FIXED: Remove the +1 for defense cards since defense database has no header row
+		var key = card_index  # Changed from: var key = card_index + 1
 		if mitre.defend_dict.has(key):
 			var entry = mitre.defend_dict[key]
 			if entry.size() > 3:
