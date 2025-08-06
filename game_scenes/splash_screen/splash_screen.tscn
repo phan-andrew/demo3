@@ -43,15 +43,14 @@ scale = Vector2(0.7, 0.7)
 texture = ExtResource("6_1jmxl")
 
 [node name="navsea" type="Sprite2D" parent="."]
-position = Vector2(217, 499)
-scale = Vector2(0.395313, 0.382353)
+position = Vector2(186, 519)
+scale = Vector2(0.305469, 0.320588)
 texture = ExtResource("7_rkugt")
 
 [node name="Button" type="Button" parent="."]
 z_index = -2
-offset_left = -1.0
 offset_top = 1.0
-offset_right = 1154.0
+offset_right = 1155.0
 offset_bottom = 651.0
 
 [node name="Label" type="Label" parent="."]
