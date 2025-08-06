@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhrm52jek5t32"
-path="res://.godot/imported/Exploitation For Privelige Escalation.png-409e3d0dcdcafaa9d14c5b57fe6a25ad.ctex"
+uid="uid://8aujl6coa7ju"
+path="res://.godot/imported/Fixed NAVSEA.png-21b1ebf7a054b3a60ebd193f0e14bbc2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/card_images/attack/Exploitation For Privelige Escalation.png"
-dest_files=["res://.godot/imported/Exploitation For Privelige Escalation.png-409e3d0dcdcafaa9d14c5b57fe6a25ad.ctex"]
+source_file="res://Fixed NAVSEA.png"
+dest_files=["res://.godot/imported/Fixed NAVSEA.png-21b1ebf7a054b3a60ebd193f0e14bbc2.ctex"]
 
 [params]
 

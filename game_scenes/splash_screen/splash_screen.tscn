@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cfft4dopidiq3" path="res://images/UI_images/dod.png" id="5_dqmfp"]
 [ext_resource type="Texture2D" uid="uid://miyoer6h0k0v" path="res://images/UI_images/comuuv.png" id="6_1jmxl"]
 [ext_resource type="Texture2D" uid="uid://bcel5hil43bfe" path="res://images/UI_images/godotlogo.png" id="6_axrwi"]
-[ext_resource type="Texture2D" uid="uid://bdce0x0otqfo7" path="res://images/UI_images/keyport.jpg" id="8_mvm13"]
+[ext_resource type="Texture2D" uid="uid://8aujl6coa7ju" path="res://Fixed NAVSEA.png" id="7_rkugt"]
 [ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="9_4rmsb"]
 [ext_resource type="FontFile" uid="uid://duv0rbeynolx2" path="res://pixel font/kongtext.ttf" id="9_rkugt"]
 
@@ -43,9 +43,9 @@ scale = Vector2(0.7, 0.7)
 texture = ExtResource("6_1jmxl")
 
 [node name="navsea" type="Sprite2D" parent="."]
-position = Vector2(219, 458)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("8_mvm13")
+position = Vector2(217, 499)
+scale = Vector2(0.395313, 0.382353)
+texture = ExtResource("7_rkugt")
 
 [node name="Button" type="Button" parent="."]
 z_index = -2
