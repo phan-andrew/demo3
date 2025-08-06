@@ -797,11 +797,24 @@ func update_result_indicator(roll_result: int, threshold: int):
 	result_indicator.size.x = 4
 	result_indicator.visible = true
 	
-	# Color based on success/failure
-	if roll_result <= threshold:
-		result_indicator.color = Color.GREEN
-	else:
-		result_indicator.color = Color.RED
+	# FIXED: Always use bright neon green for consistency
+	result_indicator.color = Color.LIME  # Bright neon green
+
+func update_result_indicator_for_probability(probability: float, success: bool):
+	"""Update the result indicator on the strength bar for probability roll"""
+	if not result_indicator:
+		return
+		
+	var bar_width = 500.0
+	# Position indicator based on the probability threshold
+	var indicator_position = (probability / 100.0) * bar_width
+	
+	result_indicator.position.x = indicator_position - 2
+	result_indicator.size.x = 4
+	result_indicator.visible = true
+	
+	# FIXED: Always use bright neon green for consistency
+	result_indicator.color = Color.LIME  # Bright neon green
 
 func show_manual_entry():
 	"""Show manual entry controls (legacy - kept for compatibility)"""
@@ -1263,7 +1276,6 @@ func generate_round_summary():
 	summary_text += "[color=red]When ANY position reaches E/E[/color]\n"
 	summary_text += "[color=blue]Preventing this until time expires[/color]\n"
 	
-	summary_text += "\n[b]Total Attacks Resolved: " + str(rolling_results.size()) + "[/b]"
 	
 	round_summary_label.text = summary_text
 

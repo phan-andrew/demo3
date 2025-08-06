@@ -10,7 +10,6 @@ var defendbuttons = []
 var timers = []
 var continue_button: Button = null
 
-
 # Game state variables
 var save_path = OS.get_user_data_dir() + "/seacat_connected_game_data.csv"
 var currenttimer = 0
@@ -32,6 +31,10 @@ var dice_popup_scene = preload("res://game_scenes/dice_screen/dice_popup.tscn")
 var active_dice_popup = null
 var dice_already_processed = false
 
+# Timer expiration tracking - FIXED: Add timer management flags
+var red_timer_expired_handled = false
+var blue_timer_expired_handled = false
+var dice_popup_active = false
 
 # Round tracking
 var round_number = 1
@@ -47,7 +50,6 @@ var progress_bar_images = [
 # Font resource
 var kongtext_font = preload("res://pixel font/kongtext.ttf")
 var round_info_popup_scene = preload("res://game_scenes/round_info_popup/RoundInfoPopup.tscn")
-
 
 func _ready():
 	initialize_connected_game()
@@ -399,7 +401,7 @@ func update_single_progress_bar():
 				3: explanation_label.modulate = Color.RED       # E/E - Victory!
 
 func check_connected_game_end_conditions():
-	"""Check for connected game end conditions"""
+	"""Check for connected game end conditions - FIXED: Prevent timer spam"""
 	var timer1 = get_node_or_null("Timer_Label")
 	var timer2 = get_node_or_null("Timer_Label2")
 	var timeline = get_node_or_null("timeline")
@@ -415,23 +417,18 @@ func check_connected_game_end_conditions():
 		var round_end = timeline.round_end if timeline.has_method("get") else 100
 		timeline_completed = current_round >= round_end
 	
-	# Connected attack chain victory handled by GameData signal
-	var submitted_any = false
-
-	if timer1_expired:
+	# FIXED: Only handle timer expiration once per round
+	if timer1_expired and not red_timer_expired_handled:
 		print("🔴 Red team time expired — auto-submitting attacks")
+		red_timer_expired_handled = true
 		call_deferred("_on_attack_submit_pressed")
-		submitted_any = true
-
-	if timer2_expired:
-		print("🔵 Blue team time expired — auto-submitting defenses")
-		call_deferred("_on_defense_submit_pressed")
-		submitted_any = true
-
-	if submitted_any:
 		return
 
-
+	if timer2_expired and not blue_timer_expired_handled and not dice_popup_active:
+		print("🔵 Blue team time expired — auto-submitting defenses")
+		blue_timer_expired_handled = true
+		call_deferred("_on_defense_submit_pressed")
+		return
 
 func handle_red_team_victory(reason: String):
 	"""Handle Red Team (connected attack chain) victory"""
@@ -597,14 +594,17 @@ func _on_victory_continue_pressed():
 
 # Enhanced dice system event handlers
 func show_enhanced_dice_popup():
-	"""Show enhanced dice popup for connected attack chain system"""
-	if active_dice_popup:
+	"""Show enhanced dice popup for connected attack chain system - FIXED: Prevent multiple popups"""
+	if active_dice_popup or dice_popup_active:
 		return
 	
 	print("=== SHOWING ENHANCED DICE POPUP ===")
 	print("Round: ", round_number)
 	if GameData:
 		GameData.debug_show_game_state()
+	
+	# FIXED: Set flag to prevent timer interference
+	dice_popup_active = true
 	
 	active_dice_popup = dice_popup_scene.instantiate()
 	add_child(active_dice_popup)
@@ -870,7 +870,12 @@ func continue_connected_game_flow():
 	show_round_info_popup(round_number)
 
 func continue_connected_game_flow_resume():
-	"""Resume gameplay after round popup is dismissed"""
+	"""Resume gameplay after round popup is dismissed - FIXED: Reset timer flags"""
+
+	# FIXED: Reset timer expiration flags for new round
+	red_timer_expired_handled = false
+	blue_timer_expired_handled = false
+	dice_popup_active = false
 
 	reset_timer_for_next_round()
 	var timer1 = get_node_or_null("Timer_Label")
@@ -920,7 +925,6 @@ func show_round_info_popup(round_index: int):
 	add_child(popup)
 	popup.set_round_info(round_index, header, description, subsystems)
 	popup.round_info_closed.connect(continue_connected_game_flow_resume)
-
 
 func calculate_total_time_used() -> int:
 	"""Calculate total time used by all successful attacks"""
@@ -1012,10 +1016,13 @@ func _on_dice_popup_cancelled():
 		pause_button.disabled = false
 
 func close_dice_popup():
-	"""Close the active dice popup"""
+	"""Close the active dice popup - FIXED: Clear popup flag"""
 	if active_dice_popup:
 		active_dice_popup.queue_free()
 		active_dice_popup = null
+	
+	# FIXED: Clear the popup active flag
+	dice_popup_active = false
 
 # Standard game event handlers
 func _on_pause_pressed():
@@ -1060,9 +1067,13 @@ func _on_start_game_pressed():
 	# 👇 Add this line:
 	show_round_info_popup(round_number - 1)
 
-
 func _on_attack_submit_pressed():
-	"""Handle attack submit button press"""
+	"""Handle attack submit button press - FIXED: Prevent multiple submissions"""
+	# FIXED: Prevent multiple submissions
+	if red_timer_expired_handled and dice_popup_active:
+		print("Attack submission already in progress, ignoring duplicate")
+		return
+		
 	if not has_active_attacks():
 		print("⚠️ No active attacks, auto-submitting empty round")
 	
@@ -1084,8 +1095,13 @@ func _on_attack_submit_pressed():
 		defense_submit.disabled = false
 
 func _on_defense_submit_pressed():
-	"""Handle defense submit button press - start connected attack resolution"""
-	print("🔵 Blue team auto-submitting defenses")
+	"""Handle defense submit button press - start connected attack resolution - FIXED: Prevent multiple submissions"""
+	# FIXED: Prevent multiple submissions
+	if blue_timer_expired_handled and dice_popup_active:
+		print("Defense submission already in progress, ignoring duplicate")
+		return
+		
+	print("🔵 Blue team submitting defenses")
 
 	collapse_all_cards()
 
@@ -1101,7 +1117,7 @@ func _on_defense_submit_pressed():
 	if pause_button:
 		pause_button.disabled = true
 
-	# --- ⚠️ NEW: Check if defenses are valid or force submission ---
+	# Check if defenses are valid or force submission
 	var valid_defenses = false
 	for card in dCards:
 		if card and card.card_index != -1:
@@ -1126,9 +1142,6 @@ func _on_defense_submit_pressed():
 		show_enhanced_dice_popup()
 	else:
 		show_manual_input()
-
-
-
 
 func show_manual_input():
 	"""Show manual input window (legacy fallback)"""
@@ -1254,17 +1267,28 @@ func _on_button_pressed():
 	pass
 	
 func reset_timer_for_next_round():
+	"""Reset timers for next round with proper state management - FIXED: Enhanced timer reset"""
 	var timer1 = get_node_or_null("Timer_Label")
 	var timer2 = get_node_or_null("Timer_Label2")
+
+	print("=== RESETTING TIMERS FOR ROUND ", round_number, " ===")
 
 	if timer1:
 		timer1.initialTime = Mitre.time_limit
 		timer1.text = "%d:%02d" % [int(Mitre.time_limit) / 60, int(Mitre.time_limit) % 60]
 		timer1.startTimer = true
 		timer1.play = false
+		print("Timer1 reset to: ", timer1.text)
 
 	if timer2:
 		timer2.initialTime = Mitre.time_limit
 		timer2.text = "%d:%02d" % [int(Mitre.time_limit) / 60, int(Mitre.time_limit) % 60]
 		timer2.startTimer = true
 		timer2.play = false
+		print("Timer2 reset to: ", timer2.text)
+	
+	# FIXED: Reset expiration flags
+	red_timer_expired_handled = false
+	blue_timer_expired_handled = false
+	
+	print("=== TIMER RESET COMPLETE ===")
