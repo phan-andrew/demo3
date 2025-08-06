@@ -856,8 +856,12 @@ func get_defense_name_safe(defense_card) -> String:
 
 	if has_node("/root/Mitre"):
 		var mitre = get_node("/root/Mitre")
-		if mitre.defend_dict.has(card_index):
-			return mitre.defend_dict[card_index][3]  # Defense: index 3 = Name
+		if mitre.d3fendprof_dict.has(card_index):
+			var profile = mitre.d3fendprof_dict[card_index]
+			var def_id = int(profile[0])  # This is the actual ID to lookup in defend_dict
+			if mitre.defend_dict.has(def_id):
+				return mitre.defend_dict[def_id][3]
+
 	return "Defense Card"
 
 func continue_connected_game_flow():

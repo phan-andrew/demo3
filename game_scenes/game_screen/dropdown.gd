@@ -99,7 +99,7 @@ func generate_defense_card():
 		generateDCard = false
 		return
 
-	var index = defend_choice -1 # because 0 = placeholder
+	var index = defend_choice -1# because 0 = placeholder
 	if index >= defend_index_map.size():
 		print("❌ Invalid dropdown index selected: ", index)
 		generateDCard = false
@@ -131,7 +131,7 @@ func generate_defense_card():
 
 			generateDCard = false
 			$defend_option.select(0)
-			defend_choice = -1
+			defend_choice = -2
 			break
 
 
@@ -165,8 +165,8 @@ func add_defend_options():
 		print("⚠️ Mitre not ready")
 		return
 
-	for profile_index in Mitre.d3fendprof_dict.keys():
-		var profile = Mitre.d3fendprof_dict[profile_index]
+	for i in range(Mitre.d3fendprof_dict.size()):
+		var profile = Mitre.d3fendprof_dict[i]
 		if typeof(profile) != TYPE_ARRAY or profile.size() < 2:
 			continue
 
@@ -176,9 +176,7 @@ func add_defend_options():
 			if typeof(entry) == TYPE_ARRAY and entry.size() > 3:
 				var name = str(entry[3])
 				drop.add_item(name)
-				# Track both card_id and profile_index for later
-				defend_index_map.append([card_id, profile_index])
-
+				defend_index_map.append([card_id, i])  # ✅ use clean, ordered index
 
 func reset_selections():
 	"""Reset dropdown selections"""

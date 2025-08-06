@@ -48,21 +48,29 @@ func import_resources_data(user_attack_profile, user_defend_profile, user_timeli
 	opforprof_dict.erase(1)
 	opforprof_dict = _reindex_dict(opforprof_dict)
 
-	# Load defend profile
+# Load defend profile
 	var file_name5 = "res://default/defend_profile_default.txt"
 	if user_defend_profile:
 		file_name5 = "user://defend_profile.txt"
 	var file5 = FileAccess.open(file_name5, FileAccess.READ)
+
+	var first_line_skipped = false
 	while !file5.eof_reached():
 		var d3fend_data_set = Array(file5.get_csv_line())
 		if d3fend_data_set != [""]:
+			if not first_line_skipped:
+				first_line_skipped = true  # skip header row
+				continue
 			d3fendprof_dict[d3fendprof_dict.size()] = d3fend_data_set
 	file5.close()
 
+	blue_objective = "Loaded user defense profile"
+	# No need to erase(0) anymore
+	d3fendprof_dict = _reindex_dict(d3fendprof_dict)
+
+
 	# Extract blue objective
-	blue_objective = ",".join(d3fendprof_dict[1])
-	d3fendprof_dict.erase(0)
-	d3fendprof_dict.erase(1)
+	blue_objective = "Loaded user defense profile"  # or leave empty
 	d3fendprof_dict = _reindex_dict(d3fendprof_dict)
 
 	# Load timeline file
