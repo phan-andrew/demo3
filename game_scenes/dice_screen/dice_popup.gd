@@ -838,9 +838,12 @@ func _on_mode_toggle_pressed():
 		toggle_button.text = "Switch to Probability Entry"
 
 func _on_probability_value_changed(value):
-	"""Update strength bar when probability value changes"""
+	"""Update strength bar when probability value changes - preview only"""
 	if current_pairing_index < card_pairings.size():
 		update_strength_display_for_probability(value)
+		# Hide result indicator during preview since no roll has happened yet
+		if result_indicator:
+			result_indicator.visible = false
 
 # New moderator manual entry function with probability
 func _on_manual_submit_mod_pressed():
@@ -875,10 +878,10 @@ func _on_manual_submit_mod_pressed():
 	# Animate the dice roll
 	await animate_dice_roll_simple(dice_equivalent)
 	
-	# Update result indicator on the strength bar
-	update_result_indicator_for_probability(target_probability, success)
+	# FIXED: Update result indicator showing where the random roll actually landed
+	update_result_indicator_for_probability_roll(random_roll, target_probability, success)
 	
-	# Store result with individual card data - FIXED: Store the custom threshold
+	# Store result with individual card data and actual roll information
 	var custom_threshold = target_probability / 10.0
 	var result = {
 		"attack_index": pairing.attack_index,
@@ -892,7 +895,8 @@ func _on_manual_submit_mod_pressed():
 		"dice_threshold": custom_threshold,  # Store the custom threshold for display
 		"custom_threshold": custom_threshold,  # Also store separately for clarity
 		"individual_cost": pairing.individual_cost,
-		"individual_time": pairing.individual_time
+		"individual_time": pairing.individual_time,
+		"random_roll": random_roll  # FIXED: Store the actual 1-100 roll that determined success/failure
 	}
 	
 	# Hide moderator controls after use
@@ -925,24 +929,45 @@ func update_strength_display_for_probability(probability: float):
 	if strength_info:
 		strength_info.text = "Custom Probability: " + str(probability) + "% | Moderator Override"
 
-func update_result_indicator_for_probability(probability: float, success: bool):
-	"""Update the result indicator on the strength bar for probability roll"""
+func update_result_indicator_for_probability_roll(random_roll: int, target_probability: float, success: bool):
+	"""Update the result indicator showing where the actual random roll landed with offset"""
 	if not result_indicator:
 		return
 		
 	var bar_width = 500.0
-	# Position indicator based on the probability threshold
-	var indicator_position = (probability / 100.0) * bar_width
 	
-	result_indicator.position.x = indicator_position - 2
+	# FIXED: Position indicator based on where the random roll actually landed (1-100 scale)
+	var roll_position_percent = random_roll / 100.0
+	var base_indicator_position = roll_position_percent * bar_width
+	
+	# FIXED: Add offset to avoid landing exactly on the boundary
+	var threshold_position = (target_probability / 100.0) * bar_width
+	var offset = 0.0
+	
+	# If we're too close to the threshold boundary, add an offset
+	var distance_to_threshold = abs(base_indicator_position - threshold_position)
+	if distance_to_threshold < 3.0:  # Within 3 pixels of boundary
+		if success:
+			# Success: move indicator slightly left (into red/success zone)
+			offset = -5.0
+		else:
+			# Failure: move indicator slightly right (into blue/failure zone)
+			offset = 5.0
+	
+	var final_position = base_indicator_position + offset
+	
+	# Clamp to bar bounds
+	final_position = clamp(final_position, 2.0, bar_width - 2.0)
+	
+	result_indicator.position.x = final_position - 2  # Center the 4px wide indicator
 	result_indicator.size.x = 4
 	result_indicator.visible = true
 	
-	# Color based on success/failure
+	# Color based on success/failure with enhanced visibility
 	if success:
-		result_indicator.color = Color.GREEN
+		result_indicator.color = Color.LIME_GREEN  # Brighter green for success
 	else:
-		result_indicator.color = Color.RED
+		result_indicator.color = Color.CRIMSON     # Brighter red for failure
 
 func _on_manual_submit_pressed():
 	"""Handle manual roll submission (legacy - using old manual entry)"""
@@ -1191,21 +1216,24 @@ func generate_round_summary():
 		elif result.get("skipped", false):
 			summary_text += "[color=gray]Result: SKIPPED (No Effect)[/color]\n"
 		elif result.get("moderator_override", "") != "":
+			# FIXED: Simplified - all moderator overrides just show SUCCESS/FAILURE
+			var success_text = "SUCCESS" if result.success else "FAILURE"
+			var color = "green" if result.success else "red"
 			var override_type = result.moderator_override
+			
 			if override_type == "RED_WIN":
 				summary_text += "[color=red]Result: MODERATOR OVERRIDE - RED WINS[/color]\n"
 			elif override_type == "BLUE_WIN":
 				summary_text += "[color=blue]Result: MODERATOR OVERRIDE - BLUE WINS[/color]\n"
 			elif override_type == "MANUAL_ENTRY":
-				var success_text = "SUCCESS" if result.success else "FAILURE"
-				var color = "green" if result.success else "red"
 				summary_text += "Manual Roll: " + str(result.roll_result) + "/10 (needed ≤" + str(result.dice_threshold) + ")\n"
-				summary_text += "[color=" + color + "]Result: MANUAL " + success_text + "[/color]\n"
+				summary_text += "[color=" + color + "]Result: " + success_text + "[/color]\n"
 			elif override_type == "MANUAL_PROBABILITY":
-				var success_text = "SUCCESS" if result.success else "FAILURE"
-				var color = "green" if result.success else "red"
 				summary_text += "Probability Roll: Custom probability set by moderator\n"
-				summary_text += "[color=" + color + "]Result: PROBABILITY " + success_text + "[/color]\n"
+				summary_text += "[color=" + color + "]Result: " + success_text + "[/color]\n"
+			else:
+				# Catch-all for any other moderator overrides
+				summary_text += "[color=" + color + "]Result: " + success_text + "[/color]\n"
 		else:
 			var success_text = "SUCCESS" if result.success else "FAILURE"
 			var color = "green" if result.success else "red"
@@ -1215,31 +1243,18 @@ func generate_round_summary():
 		if i < rolling_results.size() - 1:
 			summary_text += "\n"
 	
-	# Position states before
-	summary_text += "\n\n[b][font_size=20]Position States[/font_size][/b]\n\n"
+	# Position states and actual changes
+	summary_text += "\n\n[b][font_size=20]Position States & Changes[/font_size][/b]\n\n"
 	
-	# Combine current state and projected changes on same line
+	# FIXED: Use our own rolling_results to determine changes instead of trying to access GameData
 	for i in range(3):
-		var current_state = "NOT ENGAGED"  # Default
-		if GameData and GameData.has_method("get_position_states_snapshot"):
-			var position_states = GameData.get_position_states_snapshot()
-			if i < position_states.size():
-				current_state = position_states[i].state
+		var current_state = get_current_position_state(i)
 		
 		# Pad current state to consistent width for alignment
-		var padded_state = current_state.rpad(6)  # Pad to 6 characters (longest is "EMPTY ")
+		var padded_state = current_state.rpad(6)
 		
-		# Find projected change for this position
-		var projected_change = "[color=gray]No attack[/color]"
-		for result in rolling_results:
-			if result.attack_index == i:
-				if result.get("skipped", false):
-					projected_change = "[color=gray]→ Skipped[/color]"
-				elif result.success:
-					projected_change = "[color=yellow]→ Advance[/color]"
-				else:
-					projected_change = "[color=gray]→ No change[/color]"
-				break
+		# Get the projected change based on our dice results
+		var projected_change = get_projected_position_change(i)
 		
 		summary_text += "Position " + str(i + 1) + ": " + padded_state + " " + projected_change + "\n"
 	
@@ -1248,10 +1263,99 @@ func generate_round_summary():
 	summary_text += "[color=red]When ANY position reaches E/E[/color]\n"
 	summary_text += "[color=blue]Preventing this until time expires[/color]\n"
 	
-	# FIXED: Add final result count for verification
 	summary_text += "\n[b]Total Attacks Resolved: " + str(rolling_results.size()) + "[/b]"
 	
 	round_summary_label.text = summary_text
+
+func get_current_position_state(position_index: int) -> String:
+	"""Get current position state from GameData"""
+	if GameData and GameData.has_method("get_position_states_snapshot"):
+		var position_states = GameData.get_position_states_snapshot()
+		if position_index < position_states.size():
+			var state = position_states[position_index].state
+			return "EMPTY" if state == "EMPTY" else state
+	return "EMPTY"
+
+func get_projected_position_change(position_index: int) -> String:
+	"""Get projected position change based on our dice results"""
+	# Find the result for this position from our rolling_results
+	for result in rolling_results:
+		if result.attack_index == position_index:
+			if result.get("skipped", false):
+				return "[color=gray]→ Skipped[/color]"
+			elif result.success:
+				# Red team wins - determine advancement type
+				var attack_type = get_attack_type_for_result(result)
+				return get_advancement_text(position_index, attack_type)
+			else:
+				# Blue team wins - determine if there's regression
+				return get_regression_text(position_index, result)
+	
+	# No attack found for this position
+	return "[color=gray]No attack[/color]"
+
+func get_attack_type_for_result(result: Dictionary) -> String:
+	"""Determine attack type from result data"""
+	# Try to get attack type from GameData if available
+	if GameData and GameData.current_attack_cards.size() > result.attack_index:
+		return GameData.current_attack_cards[result.attack_index].get("card_type", "IA")
+	
+	# Fallback - try to determine from attack name or default to IA
+	return "IA"
+
+func get_advancement_text(position_index: int, attack_type: String) -> String:
+	"""Get advancement text based on current position and attack type"""
+	var current_state = get_current_position_state(position_index)
+	
+	match attack_type:
+		"IA":
+			return "[color=yellow]→ Advance (IA established)[/color]"
+		"PEP":
+			if current_state == "IA":
+				return "[color=yellow]→ Advance (IA → PEP)[/color]"
+			else:
+				return "[color=yellow]→ Advance (PEP)[/color]"
+		"E/E":
+			if current_state == "PEP":
+				return "[color=red]→ VICTORY! (PEP → E/E)[/color]"
+			else:
+				return "[color=red]→ VICTORY! (E/E)[/color]"
+		_:
+			return "[color=yellow]→ Advance[/color]"
+
+func get_regression_text(position_index: int, result: Dictionary) -> String:
+	"""Get regression text when blue team wins"""
+	var current_state = get_current_position_state(position_index)
+	
+	# Check if we have defense information from GameData
+	if GameData and GameData.current_defense_cards.size() > position_index:
+		var defense_card = GameData.current_defense_cards[position_index]
+		if defense_card:
+			var defense_type = GameData.get_defense_type(defense_card.card) if defense_card.has("card") else 1
+			var attack_type = get_attack_type_for_result(result)
+			
+			# Check if defense is effective against the attack type
+			var is_effective = GameData.is_defense_effective_against_attack(defense_type, attack_type)
+			
+			if is_effective:
+				if defense_type == GameData.DefenseType.RECOVER:
+					return "[color=blue]→ RESET (Recover defense)[/color]"
+				else:
+					# Show regression based on current state
+					match current_state:
+						"E/E":
+							return "[color=blue]→ Regress (E/E → PEP)[/color]"
+						"PEP":
+							return "[color=blue]→ Regress (PEP → IA)[/color]"
+						"IA":
+							return "[color=blue]→ Regress (IA → EMPTY)[/color]"
+						_:
+							return "[color=blue]→ Regress[/color]"
+			else:
+				return "[color=gray]→ No change (ineffective defense)[/color]"
+	
+	# Fallback if we can't determine defense effectiveness
+	return "[color=gray]→ No change[/color]"
 
 func _on_discussion_continue_pressed():
 	"""Handle discussion continue button press"""
