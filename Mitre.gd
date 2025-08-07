@@ -48,29 +48,44 @@ func import_resources_data(user_attack_profile, user_defend_profile, user_timeli
 	opforprof_dict.erase(1)
 	opforprof_dict = _reindex_dict(opforprof_dict)
 
-# Load defend profile
-	var file_name5 = "res://default/defend_profile_default.txt"
+	# Load defense profile - ONLY if user explicitly provided one
 	if user_defend_profile:
-		file_name5 = "user://defend_profile.txt"
-	var file5 = FileAccess.open(file_name5, FileAccess.READ)
+		print("📋 Loading user defense profile...")
+		var file_name5 = "user://defend_profile.txt"
+		var file5 = FileAccess.open(file_name5, FileAccess.READ)
+		if file5:
+			var first_line_skipped = false
+			while !file5.eof_reached():
+				var d3fend_data_set = Array(file5.get_csv_line())
+				if d3fend_data_set != [""]:
+					if not first_line_skipped:
+						first_line_skipped = true  # skip header row
+						continue
+					d3fendprof_dict[d3fendprof_dict.size()] = d3fend_data_set
+			file5.close()
+			blue_objective = "Loaded user defense profile with " + str(d3fendprof_dict.size()) + " defenses"
+			print("✅ User defense profile loaded: ", d3fendprof_dict.size(), " entries")
+			
+			# Show loaded profile contents for debugging
+			print("=== LOADED DEFENSE PROFILE ===")
+			for i in range(d3fendprof_dict.size()):
+				var profile = d3fendprof_dict[i]
+				if profile.size() >= 2:
+					var card_id = int(profile[0])
+					var maturity = profile[1]
+					var name = "Unknown"
+					if defend_dict.has(card_id):
+						name = defend_dict[card_id][3]
+					print("Profile[", i, "]: ", name, " (ID: ", card_id, ", Maturity: ", maturity, ")")
+			print("=== END PROFILE ===")
+		else:
+			print("❌ Failed to load user defense profile")
+			blue_objective = "Failed to load user defense profile - using entire database"
+	else:
+		# No user profile - leave d3fendprof_dict empty to trigger "entire database" mode
+		print("📋 No user defense profile - will use entire defense database")
+		blue_objective = "Using entire defense database (" + str(defend_dict.size()) + " defenses available)"
 
-	var first_line_skipped = false
-	while !file5.eof_reached():
-		var d3fend_data_set = Array(file5.get_csv_line())
-		if d3fend_data_set != [""]:
-			if not first_line_skipped:
-				first_line_skipped = true  # skip header row
-				continue
-			d3fendprof_dict[d3fendprof_dict.size()] = d3fend_data_set
-	file5.close()
-
-	blue_objective = "Loaded user defense profile"
-	# No need to erase(0) anymore
-	d3fendprof_dict = _reindex_dict(d3fendprof_dict)
-
-
-	# Extract blue objective
-	blue_objective = "Loaded user defense profile"  # or leave empty
 	d3fendprof_dict = _reindex_dict(d3fendprof_dict)
 
 	# Load timeline file
@@ -87,7 +102,6 @@ func import_resources_data(user_attack_profile, user_defend_profile, user_timeli
 			var subsystems = ""
 			if timeline_data_set.size() > 3:
 				subsystems = str(timeline_data_set[3]).strip_edges()
-
 
 			if timeline_data_set.size() > 2:
 				description = timeline_data_set[2].strip_edges()

@@ -99,7 +99,7 @@ func generate_defense_card():
 		generateDCard = false
 		return
 
-	var index = defend_choice -1# because 0 = placeholder
+	var index = defend_choice - 1  # because 0 = placeholder
 	if index >= defend_index_map.size():
 		print("❌ Invalid dropdown index selected: ", index)
 		generateDCard = false
@@ -109,19 +109,33 @@ func generate_defense_card():
 	var card_id = card_data[0]
 	var profile_index = card_data[1]
 
-	if not Mitre.d3fendprof_dict.has(profile_index):
-		print("❌ Missing profile index: ", profile_index)
-		generateDCard = false
-		return
+	# Handle two cases: entire database (-1) vs loaded profile (valid index)
+	var maturity_level = 3  # reasonable default
+	
+	if profile_index == -1:
+		# Using entire database - no profile loaded
+		print("🔵 Using entire database - Card ID: ", card_id, " with default maturity: ", maturity_level)
+	else:
+		# Using loaded profile
+		if not Mitre.d3fendprof_dict.has(profile_index):
+			print("❌ Missing profile index: ", profile_index)
+			generateDCard = false
+			return
+		
+		var profile = Mitre.d3fendprof_dict[profile_index]
+		if profile.size() >= 2:
+			maturity_level = int(profile[1])
+			print("🔵 Using profile - Card ID: ", card_id, " with maturity: ", maturity_level)
+		else:
+			print("⚠️ Invalid profile entry, using default maturity")
 
-	var profile = Mitre.d3fendprof_dict[profile_index]
-
+	# Generate the defense card
 	for card in dCards:
 		if not card.inPlay:
 			card.setCard(card_id)
 			card.card_index = card_id
 			card.setText(card_id)
-			card.setMaturity(int(profile[1]))
+			card.setMaturity(maturity_level)
 			card.play()
 
 			if Mitre.defend_dict.has(card_id):
@@ -133,9 +147,6 @@ func generate_defense_card():
 			$defend_option.select(0)
 			defend_choice = -2
 			break
-
-
-
 
 func add_attack_options():
 	"""Populate attack dropdown with available options"""
@@ -165,18 +176,67 @@ func add_defend_options():
 		print("⚠️ Mitre not ready")
 		return
 
+	# Check if we have a loaded defense profile or should use entire database  
+	if Mitre.d3fendprof_dict.size() == 0:
+		# No defense profile loaded - show entire defense database
+		print("📋 No defense profile - showing entire defense database (", Mitre.defend_dict.size(), " defenses)")
+		populate_from_entire_database()
+	else:
+		# Defense profile loaded - show only selected defenses
+		print("📋 Defense profile loaded - showing ", Mitre.d3fendprof_dict.size(), " selected defenses")
+		populate_from_defense_profile()
+
+	print("=== DEFENSE DROPDOWN POPULATED ===")
+	print("Dropdown items: ", drop.get_item_count() - 1)  # -1 for placeholder
+
+func populate_from_entire_database():
+	"""Populate dropdown from entire defense database when no profile is loaded"""
+	var drop = $defend_option
+	
+	# Sort the keys to ensure consistent order
+	var sorted_keys = Mitre.defend_dict.keys()
+	sorted_keys.sort()
+	
+	for card_id in sorted_keys:
+		var entry = Mitre.defend_dict[card_id]
+		if typeof(entry) == TYPE_ARRAY and entry.size() > 3:
+			var name = str(entry[3])  # Defense name at index 3
+			drop.add_item(name)
+			# For entire database, profile_index is -1 (no profile entry)
+			defend_index_map.append([card_id, -1])
+			print("✅ Added from database: ", name, " (ID: ", card_id, ")")
+		else:
+			print("⚠️ Invalid database entry for card_id: ", card_id)
+
+func populate_from_defense_profile():
+	"""Populate dropdown from user's defense profile"""
+	var drop = $defend_option
+	var added_card_ids = {}  # Prevent duplicates in profile
+	
 	for i in range(Mitre.d3fendprof_dict.size()):
 		var profile = Mitre.d3fendprof_dict[i]
 		if typeof(profile) != TYPE_ARRAY or profile.size() < 2:
 			continue
 
 		var card_id = int(profile[0])
+		
+		# Skip duplicates in profile
+		if added_card_ids.has(card_id):
+			print("⚠️ Skipping duplicate in profile - Card ID: ", card_id)
+			continue
+		
 		if Mitre.defend_dict.has(card_id):
 			var entry = Mitre.defend_dict[card_id]
 			if typeof(entry) == TYPE_ARRAY and entry.size() > 3:
 				var name = str(entry[3])
 				drop.add_item(name)
-				defend_index_map.append([card_id, i])  # ✅ use clean, ordered index
+				defend_index_map.append([card_id, i])
+				added_card_ids[card_id] = true
+				print("✅ Added from profile: ", name, " (ID: ", card_id, ", Maturity: ", profile[1], ")")
+			else:
+				print("⚠️ Invalid defense entry for card_id: ", card_id)
+		else:
+			print("⚠️ Card ID not found in defend_dict: ", card_id)
 
 func reset_selections():
 	"""Reset dropdown selections"""
