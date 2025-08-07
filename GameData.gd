@@ -588,21 +588,30 @@ func get_defense_type(defense_card) -> int:
 	var card_index = defense_card.card_index
 	if has_node("/root/Mitre"):
 		var mitre = get_node("/root/Mitre")
-		if mitre.defend_dict.has(card_index + 1):
-			var defense_entry = mitre.defend_dict[card_index + 1]
-			# Try to find classification in the defense entry
-			# This assumes there's a classification field - you may need to adjust based on actual database structure
-			if defense_entry.size() > 6:
-				# If there's a classification field at index 6
-				var classification = int(defense_entry[6])
-				if classification >= 1 and classification <= 4:
-					return classification
+		
+		# FIXED: Use card_index directly (no +1) and check index 2 for classification
+		if mitre.defend_dict.has(card_index):
+			var defense_entry = mitre.defend_dict[card_index]
 			
-			# If no classification field, determine by name patterns (fallback)
+			# Classification is at index 2 in the database
+			if defense_entry.size() > 2:
+				var classification = int(defense_entry[2])
+				if classification >= 1 and classification <= 4:
+					print("✅ Defense type from database: ", defense_entry[3], " → Type ", classification, " (", get_defense_type_name(classification), ")")
+					return classification
+				else:
+					print("⚠️ Invalid classification value: ", classification, " for defense: ", defense_entry[3])
+			else:
+				print("⚠️ Defense entry too short for classification: ", defense_entry)
+			
+			# Fallback to name-based detection only if database field is invalid
 			var defense_name = defense_entry[3] if defense_entry.size() > 3 else ""
+			print("⚠️ Falling back to name-based classification for: ", defense_name)
 			return determine_defense_type_by_name(defense_name)
+		else:
+			print("❌ Defense card_index not found in defend_dict: ", card_index)
 	
-	print("Warning: Could not determine defense type for card_index: ", card_index)
+	print("❌ Could not determine defense type for card_index: ", card_index)
 	return DefenseType.PROTECT  # Default
 
 func determine_defense_type_by_name(defense_name: String) -> int:

@@ -786,19 +786,59 @@ func force_dice_position():
 		dice_sprite.position = dice_base_position
 
 func update_result_indicator(roll_result: int, threshold: int):
-	"""Update the result indicator on the strength bar"""
+	"""Update the result indicator with 5% visual variety"""
 	if not result_indicator:
 		return
 		
 	var bar_width = 500.0
-	var indicator_position = (roll_result / 10.0) * bar_width
 	
-	result_indicator.position.x = indicator_position - 2
+	# Calculate exact position (same as before)
+	var exact_position = (roll_result / 10.0) * bar_width
+	
+	# Add random 5% offset for visual variety, with guaranteed offset for boundary cases
+	var offset_range = bar_width * 0.05  # 5% of bar width = 25 pixels
+	var random_offset = 0.0
+	
+	# For boundary cases (roll == threshold), guarantee offset into correct zone
+	if roll_result == threshold:
+		# Success case - always offset into success (red) zone
+		random_offset = randf_range(-offset_range, -10.0)  # Always negative (left), minimum 10px
+	elif roll_result == threshold + 1:
+		# Just failed case - always offset into failure (blue) zone  
+		random_offset = randf_range(10.0, offset_range)  # Always positive (right), minimum 10px
+	else:
+		# Non-boundary cases - normal random offset
+		random_offset = randf_range(-offset_range, offset_range)
+	
+	# Final position with variety
+	var final_position = exact_position + random_offset
+	
+	# Ensure indicator stays within bar bounds
+	final_position = clamp(final_position, 2.0, bar_width - 2.0)
+	
+	result_indicator.position.x = final_position - 2  # Center the 4px wide indicator
 	result_indicator.size.x = 4
 	result_indicator.visible = true
 	
-	# FIXED: Always use bright neon green for consistency
-	result_indicator.color = Color.LIME  # Bright neon green
+	# Determine actual success/failure (game logic unchanged)
+	var is_success = roll_result <= threshold
+	
+	# FIXED: Always use consistent neon green color
+	result_indicator.color = Color.LIME  # Consistent bright neon green
+	
+	# Debug output showing the variety and boundary handling
+	var exact_percent = roll_result * 10
+	var final_percent = (final_position / bar_width) * 100
+	var boundary_case = (roll_result == threshold) or (roll_result == threshold + 1)
+	var boundary_type = ""
+	if roll_result == threshold:
+		boundary_type = " [BOUNDARY SUCCESS - FORCED LEFT]"
+	elif roll_result == threshold + 1:
+		boundary_type = " [BOUNDARY FAILURE - FORCED RIGHT]"
+	
+	print("🎯 Roll ", roll_result, " (", exact_percent, "%) → Visual at ", 
+		  "%.1f" % final_percent, "% (", ("SUCCESS" if is_success else "FAILURE"), ")", boundary_type)
+
 
 func update_result_indicator_for_probability(probability: float, success: bool):
 	"""Update the result indicator on the strength bar for probability roll"""
@@ -943,44 +983,31 @@ func update_strength_display_for_probability(probability: float):
 		strength_info.text = "Custom Probability: " + str(probability) + "% | Moderator Override"
 
 func update_result_indicator_for_probability_roll(random_roll: int, target_probability: float, success: bool):
-	"""Update the result indicator showing where the actual random roll landed with offset"""
+	"""Update the result indicator for probability rolls with visual variety"""
 	if not result_indicator:
 		return
 		
 	var bar_width = 500.0
 	
-	# FIXED: Position indicator based on where the random roll actually landed (1-100 scale)
-	var roll_position_percent = random_roll / 100.0
-	var base_indicator_position = roll_position_percent * bar_width
+	# Calculate exact position based on the random roll (1-100)
+	var exact_position = (random_roll / 100.0) * bar_width
 	
-	# FIXED: Add offset to avoid landing exactly on the boundary
-	var threshold_position = (target_probability / 100.0) * bar_width
-	var offset = 0.0
+	# Add random 2.5% offset for visual variety (smaller since we're on 1-100 scale)
+	var offset_range = bar_width * 0.025  # 2.5% of bar width = 12.5 pixels
+	var random_offset = randf_range(-offset_range, offset_range)
 	
-	# If we're too close to the threshold boundary, add an offset
-	var distance_to_threshold = abs(base_indicator_position - threshold_position)
-	if distance_to_threshold < 3.0:  # Within 3 pixels of boundary
-		if success:
-			# Success: move indicator slightly left (into red/success zone)
-			offset = -5.0
-		else:
-			# Failure: move indicator slightly right (into blue/failure zone)
-			offset = 5.0
-	
-	var final_position = base_indicator_position + offset
+	# Final position with variety
+	var final_position = exact_position + random_offset
 	
 	# Clamp to bar bounds
 	final_position = clamp(final_position, 2.0, bar_width - 2.0)
 	
-	result_indicator.position.x = final_position - 2  # Center the 4px wide indicator
+	result_indicator.position.x = final_position - 2
 	result_indicator.size.x = 4
 	result_indicator.visible = true
 	
-	# Color based on success/failure with enhanced visibility
-	if success:
-		result_indicator.color = Color.LIME_GREEN  # Brighter green for success
-	else:
-		result_indicator.color = Color.CRIMSON     # Brighter red for failure
+	# FIXED: Always use consistent neon green color
+	result_indicator.color = Color.LIME
 
 func _on_manual_submit_pressed():
 	"""Handle manual roll submission (legacy - using old manual entry)"""
