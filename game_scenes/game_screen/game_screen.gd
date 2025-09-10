@@ -16,6 +16,10 @@ var currenttimer = 0
 var timeTaken = 0
 var game_won = false
 
+# Firebase Vars
+var firebase_manager = null
+var multiplayer_enabled = false
+
 # Connected attack chain system variables
 var current_roll_results = []
 var progress_bar_sprite = null  # Single progress bar sprite
@@ -36,6 +40,11 @@ var red_timer_expired_handled = false
 var blue_timer_expired_handled = false
 var dice_popup_active = false
 
+# Firebase Vars
+var firebase_enabled = false
+var my_team = ""
+var room_code = ""
+
 # Round tracking
 var round_number = 1
 
@@ -54,6 +63,12 @@ var round_info_popup_scene = preload("res://game_scenes/round_info_popup/RoundIn
 func _ready():
 	initialize_connected_game()
 	setup_connections()
+	firebase_manager = get_node_or_null("/root/FirebaseManager")
+	if firebase_manager:
+		firebase_manager.card_played_by_opponent.connect(_on_card_played_by_opponent)
+		firebase_manager.phase_changed.connect(_on_phase_changed)
+		firebase_manager.game_state_changed.connect(_on_game_state_changed)
+		print("🔥 Firebase Manager connected")
 
 func initialize_connected_game():
 	"""Initialize the game with connected attack chain system"""
@@ -642,6 +657,9 @@ func _on_enhanced_dice_completed(results: Array):
 			GameData.prepare_next_round()
 		continue_connected_game_flow()
 		
+	if firebase_manager and firebase_manager.is_host:
+		firebase_manager.sync_dice_results(results)
+		
 
 func _on_discussion_time_completed(results: Array):
 	"""Handle discussion time completion from GameData"""
@@ -1093,6 +1111,9 @@ func _on_attack_submit_pressed():
 			card.disable_buttons(true)
 	if defense_submit:
 		defense_submit.disabled = false
+		
+	if firebase_manager and firebase_manager.sync_enabled:
+		firebase_manager.sync_phase_change("defense_phase")
 
 func _on_defense_submit_pressed():
 	"""Handle defense submit button press - start connected attack resolution - FIXED: Prevent multiple submissions"""
@@ -1142,6 +1163,9 @@ func _on_defense_submit_pressed():
 		show_enhanced_dice_popup()
 	else:
 		show_manual_input()
+		
+	if firebase_manager and firebase_manager.sync_enabled:
+		firebase_manager.sync_phase_change("attack_phase")
 
 func show_manual_input():
 	"""Show manual input window (legacy fallback)"""
@@ -1290,5 +1314,19 @@ func reset_timer_for_next_round():
 	# FIXED: Reset expiration flags
 	red_timer_expired_handled = false
 	blue_timer_expired_handled = false
+	
+func _on_card_played_by_opponent(team: String, position: int, card_data: Dictionary):
+	"""Handle opponent card plays"""
+	print("👥 Opponent played: ", team, " card at position ", position + 1)
+	# Update UI to show opponent's card if needed
+
+func _on_phase_changed(new_phase: String):
+	"""Handle phase changes from other players"""
+	print("🔄 Phase changed to: ", new_phase)
+	# Update UI based on phase if needed
+
+func _on_game_state_changed(new_state: Dictionary):
+	"""Handle game state updates"""
+	print("🔄 Game state updated")
 	
 	print("=== TIMER RESET COMPLETE ===")
