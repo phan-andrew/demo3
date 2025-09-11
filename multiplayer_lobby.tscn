@@ -1,0 +1,318 @@
+[gd_scene load_steps=4 format=3 uid="uid://dnd374dkvrp84"]
+
+[ext_resource type="Theme" uid="uid://b2ufqqc6nun3o" path="res://pixel font/mid_font_theme.tres" id="1_h8dew"]
+[ext_resource type="Texture2D" uid="uid://wyhspu3kjkna" path="res://images/UI_images/Startscreen.png" id="3_183mr"]
+
+[sub_resource type="GDScript" id="GDScript_1"]
+script/source = "# SEACAT Multiplayer Lobby - Original working version with REAL input
+extends Control
+
+@onready var firebase_manager = get_node(\"/root/FirebaseManager\")
+
+# Variables for player setup
+var player_name = \"Player\"
+var selected_team = 0  # 0 = Red, 1 = Blue
+var room_code_entered = \"\"
+
+# UI nodes
+@onready var create_room_btn = $CreateRoomButton
+@onready var join_room_btn = $JoinRoomButton
+@onready var name_setup_btn = $NameSetupButton
+@onready var team_btn = $TeamButton
+@onready var back_btn = $BackButton
+@onready var status_label = $StatusLabel
+@onready var room_code_display = $RoomCodeDisplay
+
+func _ready():
+	# Set dynamic background based on theme - exactly like options screen
+	$Sprite2D2.texture = load(Settings.textured[Settings.theme])
+	
+	# Connect buttons
+	create_room_btn.pressed.connect(_on_create_room_pressed)
+	join_room_btn.pressed.connect(_on_join_room_pressed)
+	name_setup_btn.pressed.connect(_on_name_setup_pressed)
+	team_btn.pressed.connect(_on_team_pressed)
+	back_btn.pressed.connect(_on_back_pressed)
+	
+	# Connect Firebase signals
+	if firebase_manager:
+		firebase_manager.room_created.connect(_on_room_created)
+		firebase_manager.room_joined.connect(_on_room_joined)
+	
+	# Initial UI state
+	room_code_display.visible = false
+	update_team_button_text()
+	status_label.text = \"Set your name and team, then create or join a room\"
+
+func _on_name_setup_pressed():
+	Music.mouse_click()
+	# Simple name input via popup - keeping it basic like your game style
+	var new_name = await get_player_name_input()
+	if new_name.length() > 0:
+		player_name = new_name
+		name_setup_btn.text = \"NAME: \" + player_name
+
+func _on_team_pressed():
+	Music.mouse_click()
+	# Toggle between teams
+	selected_team = 1 - selected_team
+	update_team_button_text()
+
+func update_team_button_text():
+	if selected_team == 0:
+		team_btn.text = \"TEAM: RED\"
+	else:
+		team_btn.text = \"TEAM: BLUE\"
+
+func _on_create_room_pressed():
+	Music.mouse_click()
+	if player_name == \"Player\":
+		status_label.text = \"Please set your name first\"
+		return
+	
+	status_label.text = \"Creating room...\"
+	create_room_btn.disabled = true
+	
+	var team_name = \"red\" if selected_team == 0 else \"blue\"
+	var room_code = firebase_manager.create_room(player_name, team_name)
+	
+func _on_join_room_pressed():
+	Music.mouse_click()
+	if player_name == \"Player\":
+		status_label.text = \"Please set your name first\"
+		return
+	
+	# Simple room code input
+	var code = await get_room_code_input()
+	if code.length() == 6:
+		status_label.text = \"Joining room...\"
+		join_room_btn.disabled = true
+		
+		var team_name = \"red\" if selected_team == 0 else \"blue\"
+		firebase_manager.join_room(code, player_name, team_name)
+	else:
+		status_label.text = \"Room code must be 6 characters\"
+
+func _on_back_pressed():
+	Music.mouse_click()
+	get_tree().change_scene_to_file(\"res://game_scenes/start_screen/start_screen.tscn\")
+	hide()
+
+func _on_room_created(code: String):
+	room_code_display.text = \"Room Code: \" + code + \"\\nShare this code with other player\"
+	room_code_display.visible = true
+	status_label.text = \"Waiting for other player to join...\"
+	
+	# Auto-start after 15 seconds
+	await get_tree().create_timer(15.0).timeout
+	status_label.text = \"Starting game...\"
+	start_multiplayer_game()
+
+func _on_room_joined(code: String):
+	status_label.text = \"Joined room \" + code + \"! Starting game...\"
+	await get_tree().create_timer(2.0).timeout
+	start_multiplayer_game()
+
+func start_multiplayer_game():
+	if firebase_manager:
+		firebase_manager.multiplayer_enabled = true
+	get_tree().change_scene_to_file(\"res://game_scenes/good_screen/game_screen.tscn\")
+
+# FIXED - Real input methods with proper styling
+func get_player_name_input() -> String:
+	# Create a simple dialog on-the-fly with proper theming
+	var dialog = AcceptDialog.new()
+	dialog.title = \"Enter Player Name\"
+	dialog.size = Vector2(400, 200)
+	dialog.theme = load(\"res://pixel font/mid_font_theme.tres\")
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override(\"separation\", 15)
+	
+	var label = Label.new()
+	label.text = \"Enter your player name:\"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.theme = load(\"res://pixel font/mid_font_theme.tres\")
+	label.add_theme_font_override(\"font\", load(\"res://pixel font/kongtext.ttf\"))
+	label.add_theme_font_size_override(\"font_size\", 16)
+	
+	var line_edit = LineEdit.new()
+	line_edit.placeholder_text = \"Your name...\"
+	line_edit.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	line_edit.max_length = 20
+	line_edit.theme = load(\"res://pixel font/mid_font_theme.tres\")
+	line_edit.add_theme_font_override(\"font\", load(\"res://pixel font/kongtext.ttf\"))
+	line_edit.add_theme_font_size_override(\"font_size\", 14)
+	
+	vbox.add_child(label)
+	vbox.add_child(line_edit)
+	dialog.add_child(vbox)
+	add_child(dialog)
+	
+	dialog.popup_centered()
+	line_edit.grab_focus()
+	
+	await dialog.confirmed
+	
+	var result = line_edit.text.strip_edges()
+	dialog.queue_free()
+	
+	if result.length() > 0:
+		return result
+	else:
+		return \"Player\"
+
+func get_room_code_input() -> String:
+	# Create a simple dialog on-the-fly with proper theming
+	var dialog = AcceptDialog.new()
+	dialog.title = \"Enter Room Code\"
+	dialog.size = Vector2(400, 200)
+	dialog.theme = load(\"res://pixel font/mid_font_theme.tres\")
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override(\"separation\", 15)
+	
+	var label = Label.new()
+	label.text = \"Enter 6-character room code:\"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.theme = load(\"res://pixel font/mid_font_theme.tres\")
+	label.add_theme_font_override(\"font\", load(\"res://pixel font/kongtext.ttf\"))
+	label.add_theme_font_size_override(\"font_size\", 16)
+	
+	var line_edit = LineEdit.new()
+	line_edit.placeholder_text = \"ABC123\"
+	line_edit.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	line_edit.max_length = 6
+	line_edit.theme = load(\"res://pixel font/mid_font_theme.tres\")
+	line_edit.add_theme_font_override(\"font\", load(\"res://pixel font/kongtext.ttf\"))
+	line_edit.add_theme_font_size_override(\"font_size\", 14)
+	
+	vbox.add_child(label)
+	vbox.add_child(line_edit)
+	dialog.add_child(vbox)
+	add_child(dialog)
+	
+	dialog.popup_centered()
+	line_edit.grab_focus()
+	
+	await dialog.confirmed
+	
+	var result = line_edit.text.strip_edges().to_upper()
+	dialog.queue_free()
+	
+	return result
+"
+
+[node name="Control2" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_1")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 0
+offset_top = 69.0
+offset_right = 1151.0
+offset_bottom = 120.0
+theme = ExtResource("1_h8dew")
+theme_override_font_sizes/font_size = 50
+text = "MULTIPLAYER"
+horizontal_alignment = 1
+
+[node name="UnderlineLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 121.0
+offset_right = 1153.0
+offset_bottom = 145.0
+theme = ExtResource("1_h8dew")
+theme_override_font_sizes/font_size = 23
+text = "___________________"
+horizontal_alignment = 1
+
+[node name="NameSetupButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 167.0
+offset_top = 180.0
+offset_right = 557.0
+offset_bottom = 255.0
+focus_mode = 0
+theme = ExtResource("1_h8dew")
+text = "NAME: Player"
+
+[node name="TeamButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 586.0
+offset_top = 180.0
+offset_right = 976.0
+offset_bottom = 255.0
+focus_mode = 0
+theme = ExtResource("1_h8dew")
+text = "TEAM: RED"
+
+[node name="CreateRoomButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 167.0
+offset_top = 300.0
+offset_right = 557.0
+offset_bottom = 375.0
+focus_mode = 0
+theme = ExtResource("1_h8dew")
+text = "CREATE ROOM"
+
+[node name="JoinRoomButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 586.0
+offset_top = 300.0
+offset_right = 976.0
+offset_bottom = 375.0
+focus_mode = 0
+theme = ExtResource("1_h8dew")
+text = "JOIN ROOM"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 501.0
+offset_top = 504.0
+offset_right = 651.0
+offset_bottom = 579.0
+focus_mode = 0
+theme = ExtResource("1_h8dew")
+text = "BACK"
+
+[node name="StatusLabel" type="Label" parent="."]
+layout_mode = 0
+offset_top = 420.0
+offset_right = 1152.0
+offset_bottom = 450.0
+theme = ExtResource("1_h8dew")
+theme_override_font_sizes/font_size = 20
+text = "Set your name and team, then create or join a room"
+horizontal_alignment = 1
+
+[node name="RoomCodeDisplay" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_top = 450.0
+offset_right = 1152.0
+offset_bottom = 490.0
+theme = ExtResource("1_h8dew")
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "Room Code: ABCD12"
+horizontal_alignment = 1
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(576, 324)
+scale = Vector2(1.152, 0.972973)
+texture = ExtResource("3_183mr")
+
+[connection signal="pressed" from="NameSetupButton" to="." method="_on_name_setup_pressed"]
+[connection signal="pressed" from="TeamButton" to="." method="_on_team_pressed"]
+[connection signal="pressed" from="CreateRoomButton" to="." method="_on_create_room_pressed"]
+[connection signal="pressed" from="JoinRoomButton" to="." method="_on_join_room_pressed"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_pressed"]

@@ -22,6 +22,7 @@ Settings="*res://settings.gd"
 Music="*res://audio/music.tscn"
 TransitionScene="*res://game_scenes/splash_screen/transition_scene.tscn"
 GameData="*res://GameData.gd"
+FirebaseManager="*res://FirebaseManager.gd"
 
 [display]
 
